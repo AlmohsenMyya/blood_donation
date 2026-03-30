@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "521609468615",
+    "project_id": "blood-f5990",
+    "storage_bucket": "blood-f5990.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521609468615:android:38d8ff8ca3e8dc913e3ce2",
+        "android_client_info": {
+          "package_name": "com.sheryan.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMF2T_0S5YNCi2tYcBRoAzaS0lnGwsmtY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
