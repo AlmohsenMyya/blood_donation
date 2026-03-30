@@ -449,8 +449,9 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                           Navigator.pop(context, true);
                         } on FirebaseAuthException catch (e) {
                           String msg = e.message ?? 'Error';
-                          if (e.code == 'wrong-password')
+                          if (e.code == 'wrong-password') {
                             msg = 'Password is incorrect';
+                          }
                           ScaffoldMessenger.of(
                             context,
                           ).showSnackBar(SnackBar(content: Text(msg)));

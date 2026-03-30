@@ -64,7 +64,7 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
           // 3️⃣ Filter manually in Dart (case-insensitive)
           donors = querySnapshot.docs
               .map((doc) {
-                final data = doc.data() as Map<String, dynamic>;
+                final data = doc.data();
                 data['id'] = doc.id;
                 return data;
               })

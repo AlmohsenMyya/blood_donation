@@ -63,8 +63,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
               onPrimary: Colors.white,
               surface: Colors.black,
               onSurface: Colors.white,
-            ),
-            dialogBackgroundColor: Colors.grey[900],
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.grey[900]),
           ),
           child: child!,
         );

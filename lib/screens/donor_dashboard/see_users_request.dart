@@ -152,11 +152,11 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                           child: ElevatedButton(onPressed: (){
                             _makePhoneCall(
                                           (data['phone'] ?? '').toString());
-                          }, child: Text('Call',style: TextStyle(fontSize: 16,color: Colors.white),),
+                          },
                            style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    ),
+                                    ), child: Text('Call',style: TextStyle(fontSize: 16,color: Colors.white),),
                           ),
                         )
                       ],

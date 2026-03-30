@@ -83,7 +83,7 @@ class _DonorsListState extends State<DonorsList> {
       final c = (d['city'] ?? '').toString();
       if (c.isNotEmpty) citySet.add(c);
     }
-    final List<String> cities = ['All', ...citySet.toList()];
+    final List<String> cities = ['All', ...citySet];
 
     const List<String> bloodGroups = [
       'All',
@@ -115,7 +115,7 @@ class _DonorsListState extends State<DonorsList> {
                     children: [
                       Expanded(
                         child: DropdownButtonFormField<String>(
-                          value: selectedCity,
+                          initialValue: selectedCity,
                           dropdownColor: Colors.black,
                           decoration: const InputDecoration(
                             labelText: 'City',
@@ -141,7 +141,7 @@ class _DonorsListState extends State<DonorsList> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: DropdownButtonFormField<String>(
-                          value: selectedBlood,
+                          initialValue: selectedBlood,
                           dropdownColor: Colors.black,
                           decoration: const InputDecoration(
                             labelText: 'Blood Group',

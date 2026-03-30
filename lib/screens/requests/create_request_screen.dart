@@ -170,7 +170,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                   Expanded(
                     flex: 2,
                     child: DropdownButtonFormField<String>(
-                      value: _selectedGroup,
+                      initialValue: _selectedGroup,
                       dropdownColor: const Color(0xFF161616),
                       decoration: InputDecoration(
                         labelText: 'Blood Group',
