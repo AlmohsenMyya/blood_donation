@@ -1,11 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sheryan/firebase_options.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
+import 'package:sheryan/providers/locale/locale_provider.dart';
 import 'package:sheryan/screens/auth/role_selection_screen.dart';
 import 'package:sheryan/screens/home/home_screen.dart';
 import 'package:sheryan/screens/misc/splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +21,19 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Blood Donation App',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -42,10 +55,8 @@ class StartupRouter extends ConsumerWidget {
     return authAsync.when(
       data: (user) {
         if (user != null) {
-          // ✅ User already signed in → go to Home
           return const HomeScreen();
         } else {
-          // ❌ User not signed in → start from Role Selection → then Login/Signup
           return const RoleSelectionScreen();
         }
       },
@@ -53,10 +64,10 @@ class StartupRouter extends ConsumerWidget {
         body: Center(child: CircularProgressIndicator()),
       ),
       error: (err, stack) => Scaffold(
-        body: Center(child: Text('Error: $err')),
+        body: Center(
+          child: Text(AppLocalizations.of(context)!.genericError(err.toString())),
+        ),
       ),
     );
   }
 }
-
-
