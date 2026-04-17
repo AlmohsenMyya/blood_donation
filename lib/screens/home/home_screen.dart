@@ -159,7 +159,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     backgroundColor: Colors.black,
     elevation: 0,
     title: Text(
-      role == 'donor' ? 'Donor Dashboard' : 'Blood Donation App',
+      role == 'donor' ? l10n.donorDashboard : l10n.appTitle,
       style: const TextStyle(fontWeight: FontWeight.bold),
     ),
     actions: [
@@ -193,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 Icon(Icons.settings, color: Colors.black54),
                 SizedBox(width: 8),
-                Text('Settings'),
+                Text(l10n.settings),
               ],
             ),
           ),
@@ -203,7 +203,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 Icon(Icons.logout, color: Colors.black54),
                 SizedBox(width: 8),
-                Text('Logout'),
+                Text(l10n.logout),
               ],
             ),
           ),
@@ -239,13 +239,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _greeting() {
-    final name = userData?['name'] ?? 'Friend';
+    final l10n = AppLocalizations.of(context)!;
+    final name = userData?['name'] ?? l10n.friend;
     final hour = DateTime.now().hour;
     final greeting = hour < 12
-        ? 'Good morning'
+        ? l10n.goodMorning
         : hour < 18
-        ? 'Good afternoon'
-        : 'Good evening';
+        ? l10n.goodAfternoon
+        : l10n.goodEvening;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -332,6 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildBody(String role) {
+    final l10n = AppLocalizations.of(context)!;
     if (loading) return const Center(child: CircularProgressIndicator());
 
     if (role == 'donor') {
@@ -349,7 +351,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SizedBox(height: 10,),
               _buildmotivationalCard(
                 Icons.emoji_events,
-                'Motivational Quote',
+                l10n.motivationTitle,
                 _currentQuote,
                 onTap: () {
                   // Refresh quote on tap
@@ -363,12 +365,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Expanded(
                     child: _statCard(
-                      'Blood Group',
+                      l10n.bloodGroup,
                       userData?['bloodGroup'] ?? '-',
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: _statCard('City', userData?['city'] ?? '-')),
+                  Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
                 ],
               ),
               
@@ -389,12 +391,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Icons.bloodtype_rounded,
                       color: Colors.red,
                     ),
-                    title: const Text(
-                      'Users Blood Requests',
+                    title: Text(
+                      l10n.usersBloodRequests,
                       style: TextStyle(color: Colors.white),
                     ),
-                    subtitle: const Text(
-                      'View all requests from users across',
+                    subtitle: Text(
+                      l10n.viewAllRequestsFromUsersAcross,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -414,12 +416,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: const Color(0xFF0F0F0F),
                   child: ListTile(
                     leading: const Icon(Icons.bloodtype, color: Colors.red),
-                    title: const Text(
-                      'Nearby Requests',
+                    title: Text(
+                      l10n.nearbyRequests,
                       style: TextStyle(color: Colors.white),
                     ),
-                    subtitle: const Text(
-                      'Check nearby blood requests',
+                    subtitle: Text(
+                      l10n.checkNearbyBloodRequests,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -439,12 +441,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Icons.tips_and_updates,
                       color: Colors.red,
                     ),
-                    title: const Text(
-                      'Awareness',
+                    title: Text(
+                      l10n.awareness,
                       style: TextStyle(color: Colors.white),
                     ),
-                    subtitle: const Text(
-                      'Donate with confidence: Essential tips and guidelines',
+                    subtitle: Text(
+                      l10n.awarenessDonorSubtitle,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -469,19 +471,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Expanded(
                     child: _statCard(
-                      'Blood Group',
+                      l10n.bloodGroup,
                       userData?['bloodGroup'] ?? '-',
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: _statCard('City', userData?['city'] ?? '-')),
+                  Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
                 ],
               ),
               const SizedBox(height: 18),
               _buildCard(
                 Icons.bloodtype,
-                'Request Blood',
-                'Create a new blood request',
+                l10n.requestBlood,
+                l10n.createNewBloodRequest,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const RequestBloodScreen()),
@@ -489,8 +491,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _buildCard(
                 Icons.favorite_outline,
-                'My Requests',
-                'Track your previous requests',
+                l10n.myRequests,
+                l10n.trackPreviousRequests,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const RequestsListScreen()),
@@ -498,8 +500,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _buildCard(
                 Icons.near_me,
-                'Nearby Donors',
-                'Track all your nearby donors',
+                l10n.nearbyDonors,
+                l10n.trackNearbyDonors,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const NearbyDonorsScreen()),
@@ -507,8 +509,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _buildCard(
                 Icons.tips_and_updates,
-                'Awareness',
-                'Stay Safe, Donate Safe: Essential Tips for Blood Donors',
+                l10n.awareness,
+                l10n.awarenessUserSubtitle,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const TipsScreen()),
@@ -524,6 +526,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider) ?? userData?['role'] ?? 'user';
+    final l10n = AppLocalizations.of(context)!;
 
 
     // Role-based tabs
@@ -536,27 +539,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ];
 
     final List<BottomNavigationBarItem> items = [
-      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: const Icon(Icons.home), label: l10n.homeTab),
       if (role == 'user')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: 'Donors',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.people),
+          label: l10n.donorsTab,
         ),
       if (role == 'user')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person),
+          label: l10n.profileTab,
         ),
 
       if (role == 'donor')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person_3),
-          label: 'All donors',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person_3),
+          label: l10n.allDonorsTab,
         ),
         if (role == 'donor')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person_3),
-          label: 'Profile',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person_3),
+          label: l10n.profileTab,
         ),
     ];
 
