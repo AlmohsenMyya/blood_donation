@@ -1,0 +1,15 @@
+{
+  "@@locale": "ar",
+  "appTitle": "تطبيق التبرع بالدم",
+  "changeLanguage": "تغيير اللغة",
+  "languageEnglish": "English",
+  "languageArabic": "العربية",
+  "genericError": "خطأ: {error}",
+  "@genericError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -14,10 +14,12 @@ import 'package:sheryan/screens/requests/requests_list_screen.dart';
 import 'package:sheryan/screens/settings/userside_settings_screen.dart';
 import 'package:sheryan/services/auth_service.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
+import 'package:sheryan/providers/locale/locale_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -77,7 +79,82 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  Future<void> _showLanguageSheet() async {
+    final l10n = AppLocalizations.of(context)!;
+    final currentCode = ref.read(localeProvider)?.languageCode;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF121212),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 44,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l10n.changeLanguage,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ListTile(
+                leading: const Text('🇺🇸', style: TextStyle(fontSize: 20)),
+                title: Text(
+                  l10n.languageEnglish,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                trailing: currentCode == 'en'
+                    ? const Icon(Icons.check, color: Colors.red)
+                    : null,
+                onTap: () async {
+                  await ref.read(localeProvider.notifier).setLocale(
+                    const Locale('en'),
+                  );
+                  if (context.mounted) Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Text('🇸🇦', style: TextStyle(fontSize: 20)),
+                title: Text(
+                  l10n.languageArabic,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                trailing: currentCode == 'ar'
+                    ? const Icon(Icons.check, color: Colors.red)
+                    : null,
+                onTap: () async {
+                  await ref.read(localeProvider.notifier).setLocale(
+                    const Locale('ar'),
+                  );
+                  if (context.mounted) Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _topAppBar(String role) {
+  final l10n = AppLocalizations.of(context)!;
   return AppBar(
     backgroundColor: Colors.black,
     elevation: 0,
@@ -86,6 +163,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       style: const TextStyle(fontWeight: FontWeight.bold),
     ),
     actions: [
+      IconButton(
+        tooltip: l10n.changeLanguage,
+        icon: const Icon(Icons.language, color: Colors.white),
+        onPressed: _showLanguageSheet,
+      ),
       PopupMenuButton<String>(
         icon: const Icon(Icons.settings, color: Colors.white),
         onSelected: (v) {
