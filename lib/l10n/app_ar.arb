@@ -1,0 +1,12 @@
+{
+  "@@locale": "ar",
+  "appTitle": "تطبيق التبرع بالدم",
+  "genericError": "خطأ: {error}",
+  "@genericError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

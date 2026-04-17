@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "appTitle": "Blood Donation App",
+  "genericError": "Error: {error}",
+  "@genericError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}
