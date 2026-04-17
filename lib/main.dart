@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheryan/firebase_options.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/providers/locale/locale_provider.dart';
 import 'package:sheryan/screens/auth/role_selection_screen.dart';

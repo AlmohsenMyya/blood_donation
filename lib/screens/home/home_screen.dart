@@ -19,8 +19,10 @@ import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -187,7 +189,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         },
         itemBuilder: (ctx) => [
           // ✅ Show Settings for both roles now
-          PopupMenuItem(
+           PopupMenuItem(
             value: 'settings',
             child: Row(
               children: [
@@ -197,7 +199,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           ),
-          PopupMenuItem(
+           PopupMenuItem(
             value: 'logout',
             child: Row(
               children: [

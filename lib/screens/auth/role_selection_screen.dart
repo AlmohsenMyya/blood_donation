@@ -3,7 +3,7 @@ import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:sheryan/screens/auth/sign_up_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 

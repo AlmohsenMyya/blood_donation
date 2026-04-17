@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>(
@@ -42,9 +42,5 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_prefKey);
   }
-  LocaleNotifier() : super(null);
 
-  void setLocale(Locale locale) => state = locale;
-
-  void clearLocale() => state = null;
 }
