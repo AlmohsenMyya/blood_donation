@@ -1,6 +1,9 @@
 {
   "@@locale": "en",
   "appTitle": "Blood Donation App",
+  "changeLanguage": "Change language",
+  "languageEnglish": "English",
+  "languageArabic": "العربية",
   "genericError": "Error: {error}",
   "@genericError": {
     "placeholders": {
