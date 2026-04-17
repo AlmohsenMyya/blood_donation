@@ -1,0 +1,167 @@
+{
+  "@@locale": "en",
+  "appTitle": "Blood Donation App",
+  "changeLanguage": "Change language",
+  "languageEnglish": "English",
+  "languageArabic": "العربية",
+  "donorDashboard": "Donor Dashboard",
+  "settings": "Settings",
+  "logout": "Logout",
+  "goodMorning": "Good morning",
+  "goodAfternoon": "Good afternoon",
+  "goodEvening": "Good evening",
+  "friend": "Friend",
+  "motivationTitle": "Motivational Quote",
+  "bloodGroup": "Blood Group",
+  "city": "City",
+  "usersBloodRequests": "Users Blood Requests",
+  "viewAllRequestsFromUsersAcross": "View all requests from users across",
+  "nearbyRequests": "Nearby Requests",
+  "checkNearbyBloodRequests": "Check nearby blood requests",
+  "awareness": "Awareness",
+  "awarenessDonorSubtitle": "Donate with confidence: Essential tips and guidelines",
+  "requestBlood": "Request Blood",
+  "createNewBloodRequest": "Create a new blood request",
+  "myRequests": "My Requests",
+  "trackPreviousRequests": "Track your previous requests",
+  "nearbyDonors": "Nearby Donors",
+  "trackNearbyDonors": "Track all your nearby donors",
+  "awarenessUserSubtitle": "Stay Safe, Donate Safe: Essential Tips for Blood Donors",
+  "homeTab": "Home",
+  "donorsTab": "Donors",
+  "profileTab": "Profile",
+  "allDonorsTab": "All donors",
+  "roleWhoAreYou": "Who are you?",
+  "roleSelectContinue": "Select your role to continue",
+  "roleDonor": "Donor",
+  "roleDonorSubtitle": "I want to donate blood",
+  "roleUser": "User",
+  "roleUserSubtitle": "I need blood or browse donors",
+  "alreadyHaveAccountLogin": "Already have an account? Login",
+  "loginEnterEmailPassword": "Enter email & password",
+  "loginFailed": "Login failed: {error}",
+  "@loginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeBack": "Welcome Back 👋",
+  "loginToAccount": "Login to your account",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "dontHaveAccountSignUp": "Don't have an account? Sign Up",
+  "signupFillAllFields": "Please fill all fields",
+  "signupValidEmail": "Please enter a valid email",
+  "signupPasswordStrong": "Password must be at least 6 characters and include letters & numbers",
+  "accountCreated": "Account created",
+  "signupFailed": "Signup failed",
+  "emailAlreadyInUse": "Email already in use",
+  "createAccountTitle": "Create Account 🩸",
+  "fillDetailsCreateAccount": "Fill details to create an account",
+  "fullName": "Full name",
+  "phoneWithCountryCode": "Phone (with country code)",
+  "enterCityOrVillage": "Enter city or village",
+  "selectLastDonationDate": "Select last donation date",
+  "lastDonatedOn": "Last donated: {date}",
+  "@lastDonatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "signUp": "Sign Up",
+  "requestFillRequiredFields": "Please fill all required fields",
+  "requestSubmittedSuccessfully": "Request submitted successfully",
+  "requestSubmittingError": "Error submitting: {error}",
+  "@requestSubmittingError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createBloodRequest": "Create Blood Request",
+  "patientName": "Patient Name",
+  "hospitalName": "Hospital Name",
+  "phoneNumber": "Phone Number",
+  "units": "Units",
+  "whenBloodNeededTap": "When is blood needed? (tap to select)",
+  "neededAtValue": "Needed: {date}",
+  "@neededAtValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "submitRequest": "Submit Request",
+  "notSpecified": "Not specified",
+  "markAsDone": "Mark as Done",
+  "confirmRequestFulfilled": "Are you sure this blood request is fulfilled?",
+  "cancel": "Cancel",
+  "yesDone": "Yes, Done",
+  "myBloodRequests": "My Blood Requests",
+  "noBloodRequestsFound": "No blood requests found",
+  "hospitalLabel": "🏥 Hospital: {value}",
+  "@hospitalLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "cityLabel": "📍 City: {value}",
+  "@cityLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneLabel": "📞 Phone: {value}",
+  "@phoneLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "unitsLabel": "💉 Units: {value}",
+  "@unitsLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "neededAtLabel": "🕒 Needed At: {value}",
+  "@neededAtLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedOnLabel": "📅 Requested On: {value}",
+  "@requestedOnLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownPatient": "Unknown Patient",
+  "notAvailable": "N/A",
+  "genericError": "Error: {error}",
+  "@genericError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

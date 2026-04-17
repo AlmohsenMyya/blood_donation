@@ -14,10 +14,12 @@ import 'package:sheryan/screens/requests/requests_list_screen.dart';
 import 'package:sheryan/screens/settings/userside_settings_screen.dart';
 import 'package:sheryan/services/auth_service.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
+import 'package:sheryan/providers/locale/locale_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -77,15 +79,95 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  Future<void> _showLanguageSheet() async {
+    final l10n = AppLocalizations.of(context)!;
+    final currentCode = ref.read(localeProvider)?.languageCode;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF121212),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 44,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l10n.changeLanguage,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ListTile(
+                leading: const Text('🇺🇸', style: TextStyle(fontSize: 20)),
+                title: Text(
+                  l10n.languageEnglish,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                trailing: currentCode == 'en'
+                    ? const Icon(Icons.check, color: Colors.red)
+                    : null,
+                onTap: () async {
+                  await ref.read(localeProvider.notifier).setLocale(
+                    const Locale('en'),
+                  );
+                  if (context.mounted) Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Text('🇸🇦', style: TextStyle(fontSize: 20)),
+                title: Text(
+                  l10n.languageArabic,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                trailing: currentCode == 'ar'
+                    ? const Icon(Icons.check, color: Colors.red)
+                    : null,
+                onTap: () async {
+                  await ref.read(localeProvider.notifier).setLocale(
+                    const Locale('ar'),
+                  );
+                  if (context.mounted) Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _topAppBar(String role) {
+  final l10n = AppLocalizations.of(context)!;
   return AppBar(
     backgroundColor: Colors.black,
     elevation: 0,
     title: Text(
-      role == 'donor' ? 'Donor Dashboard' : 'Blood Donation App',
+      role == 'donor' ? l10n.donorDashboard : l10n.appTitle,
       style: const TextStyle(fontWeight: FontWeight.bold),
     ),
     actions: [
+      IconButton(
+        tooltip: l10n.changeLanguage,
+        icon: const Icon(Icons.language, color: Colors.white),
+        onPressed: _showLanguageSheet,
+      ),
       PopupMenuButton<String>(
         icon: const Icon(Icons.settings, color: Colors.white),
         onSelected: (v) {
@@ -105,23 +187,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         },
         itemBuilder: (ctx) => [
           // ✅ Show Settings for both roles now
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'settings',
             child: Row(
               children: [
                 Icon(Icons.settings, color: Colors.black54),
                 SizedBox(width: 8),
-                Text('Settings'),
+                Text(l10n.settings),
               ],
             ),
           ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'logout',
             child: Row(
               children: [
                 Icon(Icons.logout, color: Colors.black54),
                 SizedBox(width: 8),
-                Text('Logout'),
+                Text(l10n.logout),
               ],
             ),
           ),
@@ -157,13 +239,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _greeting() {
-    final name = userData?['name'] ?? 'Friend';
+    final l10n = AppLocalizations.of(context)!;
+    final name = userData?['name'] ?? l10n.friend;
     final hour = DateTime.now().hour;
     final greeting = hour < 12
-        ? 'Good morning'
+        ? l10n.goodMorning
         : hour < 18
-        ? 'Good afternoon'
-        : 'Good evening';
+        ? l10n.goodAfternoon
+        : l10n.goodEvening;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -250,6 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildBody(String role) {
+    final l10n = AppLocalizations.of(context)!;
     if (loading) return const Center(child: CircularProgressIndicator());
 
     if (role == 'donor') {
@@ -267,7 +351,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SizedBox(height: 10,),
               _buildmotivationalCard(
                 Icons.emoji_events,
-                'Motivational Quote',
+                l10n.motivationTitle,
                 _currentQuote,
                 onTap: () {
                   // Refresh quote on tap
@@ -281,12 +365,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Expanded(
                     child: _statCard(
-                      'Blood Group',
+                      l10n.bloodGroup,
                       userData?['bloodGroup'] ?? '-',
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: _statCard('City', userData?['city'] ?? '-')),
+                  Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
                 ],
               ),
               
@@ -307,12 +391,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Icons.bloodtype_rounded,
                       color: Colors.red,
                     ),
-                    title: const Text(
-                      'Users Blood Requests',
+                    title: Text(
+                      l10n.usersBloodRequests,
                       style: TextStyle(color: Colors.white),
                     ),
-                    subtitle: const Text(
-                      'View all requests from users across',
+                    subtitle: Text(
+                      l10n.viewAllRequestsFromUsersAcross,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -332,12 +416,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: const Color(0xFF0F0F0F),
                   child: ListTile(
                     leading: const Icon(Icons.bloodtype, color: Colors.red),
-                    title: const Text(
-                      'Nearby Requests',
+                    title: Text(
+                      l10n.nearbyRequests,
                       style: TextStyle(color: Colors.white),
                     ),
-                    subtitle: const Text(
-                      'Check nearby blood requests',
+                    subtitle: Text(
+                      l10n.checkNearbyBloodRequests,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -357,12 +441,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Icons.tips_and_updates,
                       color: Colors.red,
                     ),
-                    title: const Text(
-                      'Awareness',
+                    title: Text(
+                      l10n.awareness,
                       style: TextStyle(color: Colors.white),
                     ),
-                    subtitle: const Text(
-                      'Donate with confidence: Essential tips and guidelines',
+                    subtitle: Text(
+                      l10n.awarenessDonorSubtitle,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -387,19 +471,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Expanded(
                     child: _statCard(
-                      'Blood Group',
+                      l10n.bloodGroup,
                       userData?['bloodGroup'] ?? '-',
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: _statCard('City', userData?['city'] ?? '-')),
+                  Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
                 ],
               ),
               const SizedBox(height: 18),
               _buildCard(
                 Icons.bloodtype,
-                'Request Blood',
-                'Create a new blood request',
+                l10n.requestBlood,
+                l10n.createNewBloodRequest,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const RequestBloodScreen()),
@@ -407,8 +491,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _buildCard(
                 Icons.favorite_outline,
-                'My Requests',
-                'Track your previous requests',
+                l10n.myRequests,
+                l10n.trackPreviousRequests,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const RequestsListScreen()),
@@ -416,8 +500,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _buildCard(
                 Icons.near_me,
-                'Nearby Donors',
-                'Track all your nearby donors',
+                l10n.nearbyDonors,
+                l10n.trackNearbyDonors,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const NearbyDonorsScreen()),
@@ -425,8 +509,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _buildCard(
                 Icons.tips_and_updates,
-                'Awareness',
-                'Stay Safe, Donate Safe: Essential Tips for Blood Donors',
+                l10n.awareness,
+                l10n.awarenessUserSubtitle,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const TipsScreen()),
@@ -442,6 +526,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider) ?? userData?['role'] ?? 'user';
+    final l10n = AppLocalizations.of(context)!;
 
 
     // Role-based tabs
@@ -454,27 +539,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ];
 
     final List<BottomNavigationBarItem> items = [
-      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: const Icon(Icons.home), label: l10n.homeTab),
       if (role == 'user')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: 'Donors',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.people),
+          label: l10n.donorsTab,
         ),
       if (role == 'user')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person),
+          label: l10n.profileTab,
         ),
 
       if (role == 'donor')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person_3),
-          label: 'All donors',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person_3),
+          label: l10n.allDonorsTab,
         ),
         if (role == 'donor')
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person_3),
-          label: 'Profile',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person_3),
+          label: l10n.profileTab,
         ),
     ];
 

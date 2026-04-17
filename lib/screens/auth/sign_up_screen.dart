@@ -6,6 +6,7 @@ import 'package:sheryan/screens/home/home_screen.dart';
 import 'package:sheryan/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -64,27 +65,28 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       password.length >= 6 && RegExp(r'^(?=.*[a-zA-Z])(?=.*\d).+$').hasMatch(password);
 
   Future<void> _signUp() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_name.text.trim().isEmpty ||
         _email.text.trim().isEmpty ||
         _password.text.isEmpty ||
         _phone.text.trim().isEmpty ||
         _city.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
+        SnackBar(content: Text(l10n.signupFillAllFields)),
       );
       return;
     }
 
     if (!_isEmailValid(_email.text.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid email')),
+        SnackBar(content: Text(l10n.signupValidEmail)),
       );
       return;
     }
 
     if (!_isPasswordStrong(_password.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password must be at least 6 characters and include letters & numbers')),
+        SnackBar(content: Text(l10n.signupPasswordStrong)),
       );
       return;
     }
@@ -112,30 +114,30 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       if (ok) {
         ref.read(roleProvider.notifier).setRole(_selectedRole);
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Account created')));
+            .showSnackBar(SnackBar(content: Text(l10n.accountCreated)));
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const HomeScreen()),
         );
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Signup failed')));
+            .showSnackBar(SnackBar(content: Text(l10n.signupFailed)));
       }
     } on FirebaseAuthException catch (e) {
       setState(() => _loading = false);
       if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Email already in use')),
+          SnackBar(content: Text(l10n.emailAlreadyInUse)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.message}')),
+          SnackBar(content: Text(l10n.genericError(e.message ?? ''))),
         );
       }
     } catch (e) {
       setState(() => _loading = false);
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+          .showSnackBar(SnackBar(content: Text(l10n.genericError(e.toString()))));
     }
   }
   
@@ -175,6 +177,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDonor = _selectedRole == 'donor';
     return Scaffold(
       body: SafeArea(
@@ -185,8 +188,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 22),
-                const Text(
-                  'Create Account 🩸',
+                Text(
+                  l10n.createAccountTitle,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 28,
@@ -194,19 +197,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'Fill details to create an account',
+                Text(
+                  l10n.fillDetailsCreateAccount,
                   style: TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 20),
 
-                _buildTextField(_name, 'Full name', Icons.person),
+                _buildTextField(_name, l10n.fullName, Icons.person),
                 const SizedBox(height: 12),
-                _buildTextField(_email, 'Email', Icons.email),
+                _buildTextField(_email, l10n.email, Icons.email),
                 const SizedBox(height: 12),
-                _buildTextField(_password, 'Password', Icons.lock, obscure: true),
+                _buildTextField(_password, l10n.password, Icons.lock, obscure: true),
                 const SizedBox(height: 12),
-                _buildTextField(_phone, 'Phone (with country code)', Icons.phone),
+                _buildTextField(_phone, l10n.phoneWithCountryCode, Icons.phone),
                 const SizedBox(height: 12),
 
                 // Role dropdown
@@ -225,7 +228,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                             (r) => DropdownMenuItem(
                               value: r,
                               child: Text(
-                                r,
+                                r == 'donor' ? l10n.roleDonor : l10n.roleUser,
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
@@ -239,7 +242,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 12),
 
                 // City text field instead of dropdown
-                _buildTextField(_city, 'Enter city or village', Icons.location_city),
+                _buildTextField(_city, l10n.enterCityOrVillage, Icons.location_city),
                 const SizedBox(height: 12),
 
                 if (isDonor) ...[
@@ -285,8 +288,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     child: Text(
                       _lastDonated == null
-                          ? 'Select last donation date'
-                          : 'Last donated: ${DateFormat('yyyy-MM-dd').format(_lastDonated!)}',
+                          ? l10n.selectLastDonationDate
+                          : l10n.lastDonatedOn(DateFormat('yyyy-MM-dd').format(_lastDonated!)),
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -306,8 +309,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     child: _loading
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Sign Up',
+                        : Text(
+                            l10n.signUp,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                   ),
@@ -320,8 +323,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                     ),
-                    child: const Text(
-                      'Already have an account? Login',
+                    child: Text(
+                      l10n.alreadyHaveAccountLogin,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),

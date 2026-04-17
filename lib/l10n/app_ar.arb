@@ -1,0 +1,167 @@
+{
+  "@@locale": "ar",
+  "appTitle": "تطبيق التبرع بالدم",
+  "changeLanguage": "تغيير اللغة",
+  "languageEnglish": "English",
+  "languageArabic": "العربية",
+  "donorDashboard": "لوحة المتبرع",
+  "settings": "الإعدادات",
+  "logout": "تسجيل الخروج",
+  "goodMorning": "صباح الخير",
+  "goodAfternoon": "مساء الخير",
+  "goodEvening": "مساء الخير",
+  "friend": "صديقي",
+  "motivationTitle": "اقتباس تحفيزي",
+  "bloodGroup": "فصيلة الدم",
+  "city": "المدينة",
+  "usersBloodRequests": "طلبات الدم للمستخدمين",
+  "viewAllRequestsFromUsersAcross": "عرض جميع طلبات المستخدمين",
+  "nearbyRequests": "الطلبات القريبة",
+  "checkNearbyBloodRequests": "تحقق من طلبات الدم القريبة",
+  "awareness": "التوعية",
+  "awarenessDonorSubtitle": "تبرع بثقة: نصائح وإرشادات أساسية",
+  "requestBlood": "طلب دم",
+  "createNewBloodRequest": "إنشاء طلب دم جديد",
+  "myRequests": "طلباتي",
+  "trackPreviousRequests": "تابع طلباتك السابقة",
+  "nearbyDonors": "المتبرعون القريبون",
+  "trackNearbyDonors": "تابع جميع المتبرعين القريبين",
+  "awarenessUserSubtitle": "تبرع بأمان: نصائح أساسية للمتبرعين",
+  "homeTab": "الرئيسية",
+  "donorsTab": "المتبرعون",
+  "profileTab": "الملف الشخصي",
+  "allDonorsTab": "كل المتبرعين",
+  "roleWhoAreYou": "من أنت؟",
+  "roleSelectContinue": "اختر دورك للمتابعة",
+  "roleDonor": "متبرع",
+  "roleDonorSubtitle": "أريد التبرع بالدم",
+  "roleUser": "مستخدم",
+  "roleUserSubtitle": "أحتاج دماً أو أريد تصفح المتبرعين",
+  "alreadyHaveAccountLogin": "لديك حساب بالفعل؟ سجل الدخول",
+  "loginEnterEmailPassword": "أدخل البريد الإلكتروني وكلمة المرور",
+  "loginFailed": "فشل تسجيل الدخول: {error}",
+  "@loginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeBack": "مرحباً بعودتك 👋",
+  "loginToAccount": "سجل الدخول إلى حسابك",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "login": "تسجيل الدخول",
+  "dontHaveAccountSignUp": "ليس لديك حساب؟ أنشئ حساباً",
+  "signupFillAllFields": "يرجى تعبئة جميع الحقول",
+  "signupValidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+  "signupPasswordStrong": "يجب أن تكون كلمة المرور 6 أحرف على الأقل وتحتوي على أحرف وأرقام",
+  "accountCreated": "تم إنشاء الحساب",
+  "signupFailed": "فشل إنشاء الحساب",
+  "emailAlreadyInUse": "البريد الإلكتروني مستخدم بالفعل",
+  "createAccountTitle": "إنشاء حساب 🩸",
+  "fillDetailsCreateAccount": "املأ البيانات لإنشاء حساب",
+  "fullName": "الاسم الكامل",
+  "phoneWithCountryCode": "رقم الهاتف (مع رمز الدولة)",
+  "enterCityOrVillage": "أدخل المدينة أو القرية",
+  "selectLastDonationDate": "اختر تاريخ آخر تبرع",
+  "lastDonatedOn": "آخر تبرع: {date}",
+  "@lastDonatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "signUp": "إنشاء حساب",
+  "requestFillRequiredFields": "يرجى تعبئة جميع الحقول المطلوبة",
+  "requestSubmittedSuccessfully": "تم إرسال الطلب بنجاح",
+  "requestSubmittingError": "خطأ أثناء الإرسال: {error}",
+  "@requestSubmittingError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createBloodRequest": "إنشاء طلب دم",
+  "patientName": "اسم المريض",
+  "hospitalName": "اسم المستشفى",
+  "phoneNumber": "رقم الهاتف",
+  "units": "الوحدات",
+  "whenBloodNeededTap": "متى تحتاج الدم؟ (اضغط للاختيار)",
+  "neededAtValue": "مطلوب في: {date}",
+  "@neededAtValue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "submitRequest": "إرسال الطلب",
+  "notSpecified": "غير محدد",
+  "markAsDone": "تحديد كمكتمل",
+  "confirmRequestFulfilled": "هل أنت متأكد أن طلب الدم تم تلبيته؟",
+  "cancel": "إلغاء",
+  "yesDone": "نعم، مكتمل",
+  "myBloodRequests": "طلبات دمي",
+  "noBloodRequestsFound": "لم يتم العثور على طلبات دم",
+  "hospitalLabel": "🏥 المستشفى: {value}",
+  "@hospitalLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "cityLabel": "📍 المدينة: {value}",
+  "@cityLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneLabel": "📞 الهاتف: {value}",
+  "@phoneLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "unitsLabel": "💉 الوحدات: {value}",
+  "@unitsLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "neededAtLabel": "🕒 المطلوب في: {value}",
+  "@neededAtLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedOnLabel": "📅 تاريخ الطلب: {value}",
+  "@requestedOnLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownPatient": "مريض غير معروف",
+  "notAvailable": "غير متوفر",
+  "genericError": "خطأ: {error}",
+  "@genericError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

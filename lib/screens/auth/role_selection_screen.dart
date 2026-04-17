@@ -3,6 +3,7 @@ import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:sheryan/screens/auth/sign_up_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
@@ -23,6 +24,7 @@ class RoleSelectionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -30,14 +32,14 @@ class RoleSelectionScreen extends ConsumerWidget {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Who are you?', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                child: Text(l10n.roleWhoAreYou, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 8),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Select your role to continue', style: TextStyle(color: Colors.grey)),
+                child: Text(l10n.roleSelectContinue, style: const TextStyle(color: Colors.grey)),
               ),
               const SizedBox(height: 30),
               Expanded(
@@ -46,15 +48,15 @@ class RoleSelectionScreen extends ConsumerWidget {
                   children: [
                     _RoleCard(
                       icon: Icons.bloodtype,
-                      title: 'Donor',
-                      subtitle: 'I want to donate blood',
+                      title: l10n.roleDonor,
+                      subtitle: l10n.roleDonorSubtitle,
                       onTap: () => _onRoleTap(context, ref, 'donor'),
                     ),
                     const SizedBox(height: 16),
                     _RoleCard(
                       icon: Icons.person,
-                      title: 'User',
-                      subtitle: 'I need blood or browse donors',
+                      title: l10n.roleUser,
+                      subtitle: l10n.roleUserSubtitle,
                       onTap: () => _onRoleTap(context, ref, 'user'),
                     ),
                   ],
@@ -65,7 +67,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                   // If user already has saved role and wants to login directly:
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
                 },
-                child: const Text('Already have an account? Login', style: TextStyle(color: Colors.grey)),
+                child: Text(l10n.alreadyHaveAccountLogin, style: const TextStyle(color: Colors.grey)),
               ),
               const SizedBox(height: 12),
             ],

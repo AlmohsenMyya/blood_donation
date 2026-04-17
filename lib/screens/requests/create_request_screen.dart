@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class RequestBloodScreen extends StatefulWidget {
@@ -44,6 +45,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
   }
 
   Future<void> _submitRequest() async {
+    final l10n = AppLocalizations.of(context)!;
     final patient = _patientName.text.trim();
     final hospital = _hospital.text.trim();
     final city = _city.text.trim();
@@ -51,7 +53,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
     final phone = _phone.text.trim();
 
     if (patient.isEmpty || hospital.isEmpty || city.isEmpty || units.isEmpty || phone.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all required fields')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.requestFillRequiredFields)));
       return;
     }
 
@@ -66,12 +68,12 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
         'bloodGroup': _selectedGroup,
         'units': units,
         'phone': phone,
-        'neededAt': _neededAt != null ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!) : 'Not specified',
+        'neededAt': _neededAt != null ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!) : l10n.notSpecified,
         'createdAt': FieldValue.serverTimestamp(),
         'status': 'pending', // pending | done
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Request submitted successfully')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.requestSubmittedSuccessfully)));
       // clear form
       _patientName.clear();
       _hospital.clear();
@@ -83,7 +85,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
       });
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error submitting: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.requestSubmittingError(e.toString()))));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -91,10 +93,11 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Request Blood'),
+        title: Text(l10n.requestBlood),
         backgroundColor: Colors.black,
       ),
       body: SafeArea(
@@ -103,7 +106,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Create Blood Request',
+              Text(l10n.createBloodRequest,
                   style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 14),
 
@@ -112,7 +115,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                 controller: _patientName,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'Patient Name',
+                  labelText: l10n.patientName,
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: const Color(0xFF161616),
@@ -126,7 +129,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                 controller: _hospital,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'Hospital Name',
+                  labelText: l10n.hospitalName,
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: const Color(0xFF161616),
@@ -140,7 +143,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                 controller: _city,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'City',
+                  labelText: l10n.city,
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: const Color(0xFF161616),
@@ -155,7 +158,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                 keyboardType: TextInputType.phone,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'Phone Number',
+                  labelText: l10n.phoneNumber,
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: const Color(0xFF161616),
@@ -173,7 +176,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       initialValue: _selectedGroup,
                       dropdownColor: const Color(0xFF161616),
                       decoration: InputDecoration(
-                        labelText: 'Blood Group',
+                        labelText: l10n.bloodGroup,
                         labelStyle: const TextStyle(color: Colors.white70),
                         filled: true,
                         fillColor: const Color(0xFF161616),
@@ -193,7 +196,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       keyboardType: TextInputType.number,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Units',
+                        labelText: l10n.units,
                         labelStyle: const TextStyle(color: Colors.white70),
                         filled: true,
                         fillColor: const Color(0xFF161616),
@@ -220,8 +223,8 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       Expanded(
                         child: Text(
                           _neededAt == null
-                              ? 'When is blood needed? (tap to select)'
-                              : 'Needed: ${DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!)}',
+                              ? l10n.whenBloodNeededTap
+                              : l10n.neededAtValue(DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!)),
                           style: const TextStyle(color: Colors.white70),
                         ),
                       ),
@@ -242,7 +245,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: _loading ? const CircularProgressIndicator(color: Colors.white) : const Text('Submit Request',style: TextStyle(color: Colors.white),),
+                  child: _loading ? const CircularProgressIndicator(color: Colors.white) : Text(l10n.submitRequest,style: const TextStyle(color: Colors.white),),
                 ),
               ),
             ],
