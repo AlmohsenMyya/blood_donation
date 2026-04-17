@@ -42,4 +42,9 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_prefKey);
   }
+  LocaleNotifier() : super(null);
+
+  void setLocale(Locale locale) => state = locale;
+
+  void clearLocale() => state = null;
 }
