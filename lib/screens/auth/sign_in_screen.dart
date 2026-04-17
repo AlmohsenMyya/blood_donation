@@ -6,6 +6,7 @@ import 'package:sheryan/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
@@ -25,8 +26,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   
 Future<void> _login() async {
+  final l10n = AppLocalizations.of(context)!;
   if (_email.text.trim().isEmpty || _password.text.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Enter email & password')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.loginEnterEmailPassword)));
     return;
   }
 
@@ -71,13 +73,14 @@ Future<void> _login() async {
     );
   } catch (e, st) {
     debugPrint('Login error: $e\n$st');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed: ${e.toString()}')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.loginFailed(e.toString()))));
   } finally {
     if (mounted) setState(() => _loading = false);
   }
 }
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       // full modern dark screen
       body: SafeArea(
@@ -88,8 +91,8 @@ Future<void> _login() async {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                const Text(
-                  'Welcome Back 👋',
+                Text(
+                  l10n.welcomeBack,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 28,
@@ -97,8 +100,8 @@ Future<void> _login() async {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Login to your account',
+                Text(
+                  l10n.loginToAccount,
                   style: TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 24),
@@ -107,7 +110,7 @@ Future<void> _login() async {
                   controller: _email,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: l10n.email,
                     hintStyle: const TextStyle(color: Colors.grey),
                     prefixIcon: const Icon(Icons.email, color: Colors.grey),
                     filled: true,
@@ -125,7 +128,7 @@ Future<void> _login() async {
                   obscureText: _obscure,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: l10n.password,
                     hintStyle: const TextStyle(color: Colors.grey),
                     prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                     suffixIcon: IconButton(
@@ -157,8 +160,8 @@ Future<void> _login() async {
                     ),
                     child: _loading
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Login',
+                        : Text(
+                            l10n.login,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                   ),
@@ -174,8 +177,8 @@ Future<void> _login() async {
                         ),
                       ),
                     ),
-                    child: const Text(
-                      "Don't have an account? Sign Up",
+                    child: Text(
+                      l10n.dontHaveAccountSignUp,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),

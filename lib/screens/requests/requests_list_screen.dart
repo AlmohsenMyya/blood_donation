@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class RequestsListScreen extends StatefulWidget {
@@ -30,20 +31,21 @@ class _RequestsScreenState extends State<RequestsListScreen> {
   }
 
   Future<void> _markAsDone(String docId) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Mark as Done'),
-        content: const Text('Are you sure this blood request is fulfilled?'),
+        title: Text(l10n.markAsDone),
+        content: Text(l10n.confirmRequestFulfilled),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Yes, Done'),
+            child: Text(l10n.yesDone),
           ),
         ],
       ),
@@ -59,10 +61,11 @@ class _RequestsScreenState extends State<RequestsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: const Text('My Blood Requests'),
+        title: Text(l10n.myBloodRequests),
         backgroundColor: Colors.grey[900],
         centerTitle: true,
       ),
@@ -75,12 +78,12 @@ class _RequestsScreenState extends State<RequestsListScreen> {
             }
 
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white)));
+              return Center(child: Text(l10n.genericError(snapshot.error.toString()), style: const TextStyle(color: Colors.white)));
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(
-                child: Text('No blood requests found', style: TextStyle(color: Colors.white70)),
+              return Center(
+                child: Text(l10n.noBloodRequestsFound, style: const TextStyle(color: Colors.white70)),
               );
             }
 
@@ -120,7 +123,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                data['patientName'] ?? 'Unknown Patient',
+                                data['patientName'] ?? l10n.unknownPatient,
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -135,18 +138,18 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Text('🏥 Hospital: ${data['hospital'] ?? 'N/A'}',
+                        Text(l10n.hospitalLabel((data['hospital'] ?? l10n.notAvailable).toString()),
                             style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text('📍 City: ${data['city'] ?? 'N/A'}',
+                        Text(l10n.cityLabel((data['city'] ?? l10n.notAvailable).toString()),
                             style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                             Text('📞 Phone: ${data['phone'] ?? 'N/A'}',
+                             Text(l10n.phoneLabel((data['phone'] ?? l10n.notAvailable).toString()),
                             style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text('💉 Units: ${data['units'] ?? 'N/A'}',
+                        Text(l10n.unitsLabel((data['units'] ?? l10n.notAvailable).toString()),
                             style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text('🕒 Needed At: ${data['neededAt'] ?? 'N/A'}',
+                        Text(l10n.neededAtLabel((data['neededAt'] ?? l10n.notAvailable).toString()),
                             style: const TextStyle(color: Colors.white70, fontSize: 14)),
                         const SizedBox(height: 10),
-                        Text('📅 Requested On: $formattedDate',
+                        Text(l10n.requestedOnLabel(formattedDate),
                             style: const TextStyle(color: Colors.white54, fontSize: 13)),
                         const SizedBox(height: 10),
                         if (status != 'done')
@@ -159,7 +162,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                               ),
                               icon: const Icon(Icons.check, color: Colors.white),
-                              label: const Text('Mark as Done', style: TextStyle(color: Colors.white)),
+                              label: Text(l10n.markAsDone, style: const TextStyle(color: Colors.white)),
                             ),
                           ),
                       ],

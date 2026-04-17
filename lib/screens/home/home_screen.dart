@@ -187,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         },
         itemBuilder: (ctx) => [
           // ✅ Show Settings for both roles now
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'settings',
             child: Row(
               children: [
@@ -197,7 +197,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'logout',
             child: Row(
               children: [
