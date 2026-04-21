@@ -163,5 +163,42 @@
         "type": "String"
       }
     }
-  }
+  },
+  "statusDone": "Done",
+  "statusPending": "Pending",
+  "account": "Account",
+  "helpSupport": "Help & Support",
+  "contactSupport": "Contact Support",
+  "privacyLegal": "Privacy & Legal",
+  "privacyPolicy": "Privacy Policy",
+  "termsConditions": "Terms & Conditions",
+  "about": "About",
+  "aboutApp": "About App",
+  "changePassword": "Change Password",
+  "enterCurrentPassword": "Enter current password",
+  "enterNewPassword": "Enter new password",
+  "passwordUpdated": "Password updated successfully",
+  "currentPasswordIncorrect": "Current password is incorrect",
+  "forgotPassword": "Forgot Password",
+  "resetPassword": "Reset Password",
+  "passwordResetSent": "Password reset email sent",
+  "sendResetLinkTo": "Send reset link to {email}",
+  "@sendResetLinkTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "signOut": "Sign Out",
+  "confirmSignOut": "Are you sure you want to sign out?",
+  "deleteAccount": "Delete Account",
+  "confirmDeleteAccount": "This will permanently delete your account and data. This action cannot be undone. Are you sure?",
+  "permanentlyDeleteData": "Permanently delete your account and data",
+  "confirmPasswordToDelete": "Enter your current password to delete your account.",
+  "allRequestsDeleted": "All requests deleted successfully",
+  "resetAllRequests": "Reset All Requests",
+  "confirmResetRequests": "Are you sure you want to delete all your requests?",
+  "appPreferences": "App Preferences",
+  "resetRequests": "Reset Requests"
 }

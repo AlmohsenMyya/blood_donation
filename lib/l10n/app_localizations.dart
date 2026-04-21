@@ -619,6 +619,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error: {error}'**
   String genericError(String error);
+
+  /// No description provided for @statusDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get statusDone;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Support'**
+  String get contactSupport;
+
+  /// No description provided for @privacyLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Legal'**
+  String get privacyLegal;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions'**
+  String get termsConditions;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @aboutApp.
+  ///
+  /// In en, this message translates to:
+  /// **'About App'**
+  String get aboutApp;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @enterCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter current password'**
+  String get enterCurrentPassword;
+
+  /// No description provided for @enterNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get enterNewPassword;
+
+  /// No description provided for @passwordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully'**
+  String get passwordUpdated;
+
+  /// No description provided for @currentPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect'**
+  String get currentPasswordIncorrect;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forgotPassword;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @passwordResetSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset email sent'**
+  String get passwordResetSent;
+
+  /// No description provided for @sendResetLinkTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset link to {email}'**
+  String sendResetLinkTo(String email);
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOut;
+
+  /// No description provided for @confirmSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get confirmSignOut;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @confirmDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete your account and data. This action cannot be undone. Are you sure?'**
+  String get confirmDeleteAccount;
+
+  /// No description provided for @permanentlyDeleteData.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account and data'**
+  String get permanentlyDeleteData;
+
+  /// No description provided for @confirmPasswordToDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current password to delete your account.'**
+  String get confirmPasswordToDelete;
+
+  /// No description provided for @allRequestsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'All requests deleted successfully'**
+  String get allRequestsDeleted;
+
+  /// No description provided for @resetAllRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset All Requests'**
+  String get resetAllRequests;
+
+  /// No description provided for @confirmResetRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all your requests?'**
+  String get confirmResetRequests;
+
+  /// No description provided for @appPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'App Preferences'**
+  String get appPreferences;
+
+  /// No description provided for @resetRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Requests'**
+  String get resetRequests;
 }
 
 class _AppLocalizationsDelegate

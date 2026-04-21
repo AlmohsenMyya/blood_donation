@@ -291,4 +291,98 @@ class AppLocalizationsAr extends AppLocalizations {
   String genericError(String error) {
     return 'خطأ: $error';
   }
+
+  @override
+  String get statusDone => 'مكتمل';
+
+  @override
+  String get statusPending => 'قيد الانتظار';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get helpSupport => 'المساعدة والدعم';
+
+  @override
+  String get contactSupport => 'اتصل بالدعم';
+
+  @override
+  String get privacyLegal => 'الخصوصية والقانون';
+
+  @override
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get termsConditions => 'الشروط والأحكام';
+
+  @override
+  String get about => 'حول';
+
+  @override
+  String get aboutApp => 'حول التطبيق';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get enterCurrentPassword => 'أدخل كلمة المرور الحالية';
+
+  @override
+  String get enterNewPassword => 'أدخل كلمة المرور الجديدة';
+
+  @override
+  String get passwordUpdated => 'تم تحديث كلمة المرور بنجاح';
+
+  @override
+  String get currentPasswordIncorrect => 'كلمة المرور الحالية غير صحيحة';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور';
+
+  @override
+  String get resetPassword => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get passwordResetSent =>
+      'تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور';
+
+  @override
+  String sendResetLinkTo(String email) {
+    return 'إرسال رابط إعادة التعيين إلى $email';
+  }
+
+  @override
+  String get signOut => 'تسجيل الخروج';
+
+  @override
+  String get confirmSignOut => 'هل أنت متأكد من تسجيل الخروج؟';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get confirmDeleteAccount =>
+      'سيؤدي هذا إلى حذف حسابك وبياناتك نهائيًا. لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد؟';
+
+  @override
+  String get permanentlyDeleteData => 'حذف حسابك وبياناتك نهائيًا';
+
+  @override
+  String get confirmPasswordToDelete => 'أدخل كلمة المرور الحالية لحذف حسابك.';
+
+  @override
+  String get allRequestsDeleted => 'تم حذف جميع الطلبات بنجاح';
+
+  @override
+  String get resetAllRequests => 'إعادة تعيين جميع الطلبات';
+
+  @override
+  String get confirmResetRequests => 'هل أنت متأكد أنك تريد حذف جميع طلباتك؟';
+
+  @override
+  String get appPreferences => 'تفضيلات التطبيق';
+
+  @override
+  String get resetRequests => 'إعادة تعيين الطلبات';
 }

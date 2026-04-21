@@ -163,5 +163,42 @@
         "type": "String"
       }
     }
-  }
+  },
+  "statusDone": "مكتمل",
+  "statusPending": "قيد الانتظار",
+  "account": "الحساب",
+  "helpSupport": "المساعدة والدعم",
+  "contactSupport": "اتصل بالدعم",
+  "privacyLegal": "الخصوصية والقانون",
+  "privacyPolicy": "سياسة الخصوصية",
+  "termsConditions": "الشروط والأحكام",
+  "about": "حول",
+  "aboutApp": "حول التطبيق",
+  "changePassword": "تغيير كلمة المرور",
+  "enterCurrentPassword": "أدخل كلمة المرور الحالية",
+  "enterNewPassword": "أدخل كلمة المرور الجديدة",
+  "passwordUpdated": "تم تحديث كلمة المرور بنجاح",
+  "currentPasswordIncorrect": "كلمة المرور الحالية غير صحيحة",
+  "forgotPassword": "نسيت كلمة المرور",
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "passwordResetSent": "تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور",
+  "sendResetLinkTo": "إرسال رابط إعادة التعيين إلى {email}",
+  "@sendResetLinkTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "signOut": "تسجيل الخروج",
+  "confirmSignOut": "هل أنت متأكد من تسجيل الخروج؟",
+  "deleteAccount": "حذف الحساب",
+  "confirmDeleteAccount": "سيؤدي هذا إلى حذف حسابك وبياناتك نهائيًا. لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد؟",
+  "permanentlyDeleteData": "حذف حسابك وبياناتك نهائيًا",
+  "confirmPasswordToDelete": "أدخل كلمة المرور الحالية لحذف حسابك.",
+  "allRequestsDeleted": "تم حذف جميع الطلبات بنجاح",
+  "resetAllRequests": "إعادة تعيين جميع الطلبات",
+  "confirmResetRequests": "هل أنت متأكد أنك تريد حذف جميع طلباتك؟",
+  "appPreferences": "تفضيلات التطبيق",
+  "resetRequests": "إعادة تعيين الطلبات"
 }

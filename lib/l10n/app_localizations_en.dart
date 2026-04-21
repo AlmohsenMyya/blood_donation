@@ -295,4 +295,100 @@ class AppLocalizationsEn extends AppLocalizations {
   String genericError(String error) {
     return 'Error: $error';
   }
+
+  @override
+  String get statusDone => 'Done';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get helpSupport => 'Help & Support';
+
+  @override
+  String get contactSupport => 'Contact Support';
+
+  @override
+  String get privacyLegal => 'Privacy & Legal';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsConditions => 'Terms & Conditions';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get aboutApp => 'About App';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get enterCurrentPassword => 'Enter current password';
+
+  @override
+  String get enterNewPassword => 'Enter new password';
+
+  @override
+  String get passwordUpdated => 'Password updated successfully';
+
+  @override
+  String get currentPasswordIncorrect => 'Current password is incorrect';
+
+  @override
+  String get forgotPassword => 'Forgot Password';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get passwordResetSent => 'Password reset email sent';
+
+  @override
+  String sendResetLinkTo(String email) {
+    return 'Send reset link to $email';
+  }
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String get confirmSignOut => 'Are you sure you want to sign out?';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get confirmDeleteAccount =>
+      'This will permanently delete your account and data. This action cannot be undone. Are you sure?';
+
+  @override
+  String get permanentlyDeleteData =>
+      'Permanently delete your account and data';
+
+  @override
+  String get confirmPasswordToDelete =>
+      'Enter your current password to delete your account.';
+
+  @override
+  String get allRequestsDeleted => 'All requests deleted successfully';
+
+  @override
+  String get resetAllRequests => 'Reset All Requests';
+
+  @override
+  String get confirmResetRequests =>
+      'Are you sure you want to delete all your requests?';
+
+  @override
+  String get appPreferences => 'App Preferences';
+
+  @override
+  String get resetRequests => 'Reset Requests';
 }
