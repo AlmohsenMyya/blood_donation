@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -32,15 +31,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final List<String> motivationalQuotes = [
-    "Your single act can save lives.",
-    "Be the reason someone survives today.",
-    "Every drop counts — donate blood.",
-    "Giving blood is giving hope.",
-    "Heroes don’t wear capes, they donate blood.",
-    "You can make a difference today.",
-    "One call, one donation, one life saved.",
-  ];
+  
   final FirebaseFirestore _fs = FirebaseFirestore.instance;
   Map<String, dynamic>? userData;
   bool loading = true;
@@ -51,7 +42,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _loadUser();
-    _currentQuote = (motivationalQuotes..shuffle()).first;
   }
 
   Future<void> _loadUser() async {
@@ -62,6 +52,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (doc.exists) {
         userData = doc.data();
       }
+    }
+    if (mounted) {
+       final l10n = AppLocalizations.of(context)!;
+       final List<String> quotes = [
+        l10n.quote1,
+        l10n.quote2,
+        l10n.quote3,
+        l10n.quote4,
+        l10n.quote5,
+        l10n.quote6,
+        l10n.quote7,
+      ];
+      _currentQuote = (quotes..shuffle()).first;
     }
     setState(() => loading = false);
   }
@@ -174,7 +177,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         icon: const Icon(Icons.settings, color: Colors.white),
         onSelected: (v) {
           if (v == 'settings') {
-            // ✅ Open different Settings screens based on role
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -188,13 +190,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           }
         },
         itemBuilder: (ctx) => [
-          // ✅ Show Settings for both roles now
            PopupMenuItem(
             value: 'settings',
             child: Row(
               children: [
-                Icon(Icons.settings, color: Colors.black54),
-                SizedBox(width: 8),
+                const Icon(Icons.settings, color: Colors.black54),
+                const SizedBox(width: 8),
                 Text(l10n.settings),
               ],
             ),
@@ -203,8 +204,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             value: 'logout',
             child: Row(
               children: [
-                Icon(Icons.logout, color: Colors.black54),
-                SizedBox(width: 8),
+                const Icon(Icons.logout, color: Colors.black54),
+                const SizedBox(width: 8),
                 Text(l10n.logout),
               ],
             ),
@@ -277,10 +278,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        // leading: CircleAvatar(
-        //   backgroundColor: Colors.red.shade700,
-        //   child: Icon(icon, color: Colors.white),
-        // ),
         title: Text(
           title,
           style: const TextStyle(
@@ -290,13 +287,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           textAlign: TextAlign.center,
         ),
         subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey),textAlign: TextAlign.center,),
-        // trailing: const Icon(
-        //   Icons.arrow_forward_ios,
-        //   color: Colors.grey,
-        //   size: 16,
         ),
-       // onTap: onTap,
-      
     );
   }
 
@@ -350,17 +341,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               
               _greeting(),
 
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               _buildmotivationalCard(
                 Icons.emoji_events,
                 l10n.motivationTitle,
                 _currentQuote,
-                onTap: () {
-                  // Refresh quote on tap
-                  // setState(() {
-                  //   _currentQuote = (motivationalQuotes..shuffle()).first;
-                  // });
-                },
               ),
               const SizedBox(height: 16),
               Row(
@@ -384,7 +369,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UsersRequestsScreen(),
+                        builder: (context) => const UsersRequestsScreen(),
                       ),
                     );
                   },
@@ -395,11 +380,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     title: Text(
                       l10n.usersBloodRequests,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                     subtitle: Text(
                       l10n.viewAllRequestsFromUsersAcross,
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
@@ -410,7 +395,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => NearbyRequestsScreen(),
+                      builder: (context) => const NearbyRequestsScreen(),
                     ),
                   );
                 },
@@ -420,11 +405,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     leading: const Icon(Icons.bloodtype, color: Colors.red),
                     title: Text(
                       l10n.nearbyRequests,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                     subtitle: Text(
                       l10n.checkNearbyBloodRequests,
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
@@ -433,7 +418,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TipsScreen()),
+                    MaterialPageRoute(builder: (context) => const TipsScreen()),
                   );
                 },
                 child: Card(
@@ -445,11 +430,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     title: Text(
                       l10n.awareness,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                     subtitle: Text(
                       l10n.awarenessDonorSubtitle,
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),

@@ -200,5 +200,35 @@
   "resetAllRequests": "إعادة تعيين جميع الطلبات",
   "confirmResetRequests": "هل أنت متأكد أنك تريد حذف جميع طلباتك؟",
   "appPreferences": "تفضيلات التطبيق",
-  "resetRequests": "إعادة تعيين الطلبات"
+  "resetRequests": "إعادة تعيين الطلبات",
+  "all": "الكل",
+  "noPhoneNumber": "لا يوجد رقم هاتف",
+  "cannotMakeCall": "لا يمكن إجراء المكالمة",
+  "availableDonors": "المتبرعون المتاحون",
+  "noDonorsFound": "لم يتم العثور على متبرعين",
+  "unknown": "غير معروف",
+  "quote1": "عملك البسيط قد ينقذ حياة.",
+  "quote2": "كن السبب في بقاء شخص ما على قيد الحياة اليوم.",
+  "quote3": "كل قطرة تهم — تبرع بالدم.",
+  "quote4": "إعطاء الدم هو إعطاء الأمل.",
+  "quote5": "الأبطال لا يرتدون عباءات، بل يتبرعون بالدم.",
+  "quote6": "يمكنك إحداث فرق اليوم.",
+  "quote7": "مكالمة واحدة، تبرع واحد، إنقاذ حياة واحدة.",
+  "donorDetails": "تفاصيل المتبرع",
+  "donorNotFound": "المتبرع غير موجود",
+  "unknownDonor": "متبرع غير معروف",
+  "bloodGroupLabel": "فصيلة الدم: {value}",
+  "@bloodGroupLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "phone": "الهاتف",
+  "lastDonated": "تاريخ آخر تبرع",
+  "availableToDonate": "متاح للتبرع",
+  "yes": "نعم",
+  "no": "لا",
+  "callDonor": "الاتصال بالمتبرع"
 }

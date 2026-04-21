@@ -1,8 +1,7 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class DonorDetailScreen extends StatefulWidget {
   final String donorId;
@@ -59,12 +58,18 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
   }
 
   Future<void> _makePhoneCall(String phone) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.noPhoneNumber)));
+      return;
+    }
     final uri = Uri(scheme: 'tel', path: phone);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Cannot make call')));
+          .showSnackBar(SnackBar(content: Text(l10n.cannotMakeCall)));
     }
   }
 
@@ -76,13 +81,14 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text(
-          'Donor Details',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.donorDetails,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 4,
@@ -90,10 +96,10 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
       body: loading
           ? const Center(child: CircularProgressIndicator(color: Colors.red))
           : donor == null
-              ? const Center(
+              ? Center(
                   child: Text(
-                    'Donor not found',
-                    style: TextStyle(color: Colors.white70),
+                    l10n.donorNotFound,
+                    style: const TextStyle(color: Colors.white70),
                   ),
                 )
               : FadeTransition(
@@ -131,7 +137,7 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                donor!['name'] ?? 'Unknown Donor',
+                                donor!['name'] ?? l10n.unknownDonor,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 22,
@@ -141,7 +147,7 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
                               const SizedBox(height: 6),
                               Text(
                                 donor!['bloodGroup'] != null
-                                    ? 'Blood Group: ${donor!['bloodGroup']}'
+                                    ? l10n.bloodGroupLabel(donor!['bloodGroup'].toString())
                                     : '',
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 16),
@@ -167,15 +173,15 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
-                              _infoRow(Icons.phone, 'Phone', donor!['phone']),
-                              _infoRow(Icons.email, 'Email', donor!['email']),
-                              _infoRow(Icons.location_on, 'City', donor!['city']),
-                              _infoRow(Icons.calendar_today, 'Last Donated',
-                                  donor!['lastDonated'] ?? 'N/A'),
+                              _infoRow(Icons.phone, l10n.phone, donor!['phone']),
+                              _infoRow(Icons.email, l10n.email, donor!['email']),
+                              _infoRow(Icons.location_on, l10n.city, donor!['city']),
+                              _infoRow(Icons.calendar_today, l10n.lastDonated,
+                                  donor!['lastDonated'] ?? l10n.notAvailable),
                               _infoRow(
                                 Icons.favorite,
-                                'Available to Donate',
-                                isAvailable ? 'Yes ✅' : 'No ❌',
+                                l10n.availableToDonate,
+                                isAvailable ? '${l10n.yes} ✅' : '${l10n.no} ❌',
                                 color:
                                     isAvailable ? Colors.green : Colors.orange,
                               ),
@@ -199,9 +205,9 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
                           onPressed: () =>
                               _makePhoneCall(donor!['phone'] ?? ''),
                           icon: const Icon(Icons.phone, color: Colors.white),
-                          label: const Text(
-                            'Call Donor',
-                            style: TextStyle(
+                          label: Text(
+                            l10n.callDonor,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
@@ -216,14 +222,15 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
 
 
 Widget _infoRow(IconData icon, String label, String? value, {Color? color}) {
-  final display = (value == null || value.trim().isEmpty) ? 'N/A' : value;
+  final l10n = AppLocalizations.of(context)!;
+  final display = (value == null || value.trim().isEmpty) ? l10n.notAvailable : value;
 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.redAccent
+         Icon(icon, color: Colors.redAccent
         ),
         const SizedBox(width: 14),
         Expanded(

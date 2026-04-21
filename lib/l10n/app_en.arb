@@ -200,5 +200,35 @@
   "resetAllRequests": "Reset All Requests",
   "confirmResetRequests": "Are you sure you want to delete all your requests?",
   "appPreferences": "App Preferences",
-  "resetRequests": "Reset Requests"
+  "resetRequests": "Reset Requests",
+  "all": "All",
+  "noPhoneNumber": "No phone number",
+  "cannotMakeCall": "Cannot make call",
+  "availableDonors": "Available Donors",
+  "noDonorsFound": "No donors found",
+  "unknown": "Unknown",
+  "quote1": "Your single act can save lives.",
+  "quote2": "Be the reason someone survives today.",
+  "quote3": "Every drop counts — donate blood.",
+  "quote4": "Giving blood is giving hope.",
+  "quote5": "Heroes don’t wear capes, they donate blood.",
+  "quote6": "You can make a difference today.",
+  "quote7": "One call, one donation, one life saved.",
+  "donorDetails": "Donor Details",
+  "donorNotFound": "Donor not found",
+  "unknownDonor": "Unknown Donor",
+  "bloodGroupLabel": "Blood Group: {value}",
+  "@bloodGroupLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "phone": "phone",
+  "lastDonated": "Last Donated",
+  "availableToDonate": "Available to Donate",
+  "yes": "Yes",
+  "no": "No",
+  "callDonor": "Call Donor"
 }

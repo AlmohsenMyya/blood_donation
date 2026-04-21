@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,8 +6,9 @@ final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>(
   (ref) => LocaleNotifier(),
 );
 
-class LocaleNotifier extends StateNotifier<Locale?> {
-  LocaleNotifier() : super(null) {
+class LocaleNotifier extends StateNotifier<Locale> {
+  // جعل اللغة العربية هي اللغة الافتراضية عند بدء التشغيل لأول مرة
+  LocaleNotifier() : super(const Locale('ar')) {
     _loadSavedLocale();
   }
 
@@ -19,8 +19,11 @@ class LocaleNotifier extends StateNotifier<Locale?> {
   Future<void> _loadSavedLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final savedCode = prefs.getString(_prefKey);
-    if (savedCode == _enCode || savedCode == _arCode) {
-      state = Locale(savedCode!);
+    if (savedCode != null && (savedCode == _enCode || savedCode == _arCode)) {
+      state = Locale(savedCode);
+    } else {
+      // إذا لم يكن هناك لغة محفوظة، نثبت العربية كافتراضية
+      state = const Locale(_arCode);
     }
   }
 
@@ -31,16 +34,16 @@ class LocaleNotifier extends StateNotifier<Locale?> {
   }
 
   Future<void> toggleLocale() async {
-    final next = state?.languageCode == _arCode
+    final next = state.languageCode == _arCode
         ? const Locale(_enCode)
         : const Locale(_arCode);
     await setLocale(next);
   }
 
   Future<void> clearLocale() async {
-    state = null;
+    // العودة للافتراضي (العربية) بدلاً من null
+    state = const Locale(_arCode);
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_prefKey);
   }
-
 }

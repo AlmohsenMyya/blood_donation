@@ -391,4 +391,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetRequests => 'Reset Requests';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get noPhoneNumber => 'No phone number';
+
+  @override
+  String get cannotMakeCall => 'Cannot make call';
+
+  @override
+  String get availableDonors => 'Available Donors';
+
+  @override
+  String get noDonorsFound => 'No donors found';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get quote1 => 'Your single act can save lives.';
+
+  @override
+  String get quote2 => 'Be the reason someone survives today.';
+
+  @override
+  String get quote3 => 'Every drop counts — donate blood.';
+
+  @override
+  String get quote4 => 'Giving blood is giving hope.';
+
+  @override
+  String get quote5 => 'Heroes don’t wear capes, they donate blood.';
+
+  @override
+  String get quote6 => 'You can make a difference today.';
+
+  @override
+  String get quote7 => 'One call, one donation, one life saved.';
+
+  @override
+  String get donorDetails => 'Donor Details';
+
+  @override
+  String get donorNotFound => 'Donor not found';
+
+  @override
+  String get unknownDonor => 'Unknown Donor';
+
+  @override
+  String bloodGroupLabel(String value) {
+    return 'Blood Group: $value';
+  }
+
+  @override
+  String get phone => 'phone';
+
+  @override
+  String get lastDonated => 'Last Donated';
+
+  @override
+  String get availableToDonate => 'Available to Donate';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get callDonor => 'Call Donor';
 }

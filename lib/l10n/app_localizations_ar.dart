@@ -385,4 +385,75 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resetRequests => 'إعادة تعيين الطلبات';
+
+  @override
+  String get all => 'الكل';
+
+  @override
+  String get noPhoneNumber => 'لا يوجد رقم هاتف';
+
+  @override
+  String get cannotMakeCall => 'لا يمكن إجراء المكالمة';
+
+  @override
+  String get availableDonors => 'المتبرعون المتاحون';
+
+  @override
+  String get noDonorsFound => 'لم يتم العثور على متبرعين';
+
+  @override
+  String get unknown => 'غير معروف';
+
+  @override
+  String get quote1 => 'عملك البسيط قد ينقذ حياة.';
+
+  @override
+  String get quote2 => 'كن السبب في بقاء شخص ما على قيد الحياة اليوم.';
+
+  @override
+  String get quote3 => 'كل قطرة تهم — تبرع بالدم.';
+
+  @override
+  String get quote4 => 'إعطاء الدم هو إعطاء الأمل.';
+
+  @override
+  String get quote5 => 'الأبطال لا يرتدون عباءات، بل يتبرعون بالدم.';
+
+  @override
+  String get quote6 => 'يمكنك إحداث فرق اليوم.';
+
+  @override
+  String get quote7 => 'مكالمة واحدة، تبرع واحد، إنقاذ حياة واحدة.';
+
+  @override
+  String get donorDetails => 'تفاصيل المتبرع';
+
+  @override
+  String get donorNotFound => 'المتبرع غير موجود';
+
+  @override
+  String get unknownDonor => 'متبرع غير معروف';
+
+  @override
+  String bloodGroupLabel(String value) {
+    return 'فصيلة الدم: $value';
+  }
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get lastDonated => 'تاريخ آخر تبرع';
+
+  @override
+  String get availableToDonate => 'متاح للتبرع';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get callDonor => 'الاتصال بالمتبرع';
 }

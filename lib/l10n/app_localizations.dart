@@ -799,6 +799,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset Requests'**
   String get resetRequests;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @noPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'No phone number'**
+  String get noPhoneNumber;
+
+  /// No description provided for @cannotMakeCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot make call'**
+  String get cannotMakeCall;
+
+  /// No description provided for @availableDonors.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Donors'**
+  String get availableDonors;
+
+  /// No description provided for @noDonorsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No donors found'**
+  String get noDonorsFound;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @quote1.
+  ///
+  /// In en, this message translates to:
+  /// **'Your single act can save lives.'**
+  String get quote1;
+
+  /// No description provided for @quote2.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the reason someone survives today.'**
+  String get quote2;
+
+  /// No description provided for @quote3.
+  ///
+  /// In en, this message translates to:
+  /// **'Every drop counts — donate blood.'**
+  String get quote3;
+
+  /// No description provided for @quote4.
+  ///
+  /// In en, this message translates to:
+  /// **'Giving blood is giving hope.'**
+  String get quote4;
+
+  /// No description provided for @quote5.
+  ///
+  /// In en, this message translates to:
+  /// **'Heroes don’t wear capes, they donate blood.'**
+  String get quote5;
+
+  /// No description provided for @quote6.
+  ///
+  /// In en, this message translates to:
+  /// **'You can make a difference today.'**
+  String get quote6;
+
+  /// No description provided for @quote7.
+  ///
+  /// In en, this message translates to:
+  /// **'One call, one donation, one life saved.'**
+  String get quote7;
+
+  /// No description provided for @donorDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Donor Details'**
+  String get donorDetails;
+
+  /// No description provided for @donorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Donor not found'**
+  String get donorNotFound;
+
+  /// No description provided for @unknownDonor.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Donor'**
+  String get unknownDonor;
+
+  /// No description provided for @bloodGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Group: {value}'**
+  String bloodGroupLabel(String value);
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'phone'**
+  String get phone;
+
+  /// No description provided for @lastDonated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Donated'**
+  String get lastDonated;
+
+  /// No description provided for @availableToDonate.
+  ///
+  /// In en, this message translates to:
+  /// **'Available to Donate'**
+  String get availableToDonate;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @callDonor.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Donor'**
+  String get callDonor;
 }
 
 class _AppLocalizationsDelegate

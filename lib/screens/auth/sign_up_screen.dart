@@ -1,5 +1,4 @@
 
-
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:sheryan/screens/home/home_screen.dart';
@@ -190,7 +189,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 22),
                 Text(
                   l10n.createAccountTitle,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -199,7 +198,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 6),
                 Text(
                   l10n.fillDetailsCreateAccount,
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 20),
 
@@ -311,7 +310,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text(
                             l10n.signUp,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                   ),
                 ),
@@ -325,7 +324,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     child: Text(
                       l10n.alreadyHaveAccountLogin,
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
