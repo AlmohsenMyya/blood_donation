@@ -446,7 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get phone => 'phone';
+  String get phone => 'Phone';
 
   @override
   String get lastDonated => 'Last Donated';
@@ -462,4 +462,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get callDonor => 'Call Donor';
+
+  @override
+  String get myProfile => 'My Profile';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully!';
+
+  @override
+  String get bloodDonor => 'Blood Donor';
+
+  @override
+  String get unknownCity => 'Unknown City';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get accountType => 'Account Type';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get requiredField => 'Required field';
+
+  @override
+  String get noNearbyRequests => 'No nearby requests';
+
+  @override
+  String get call => 'Call';
 }

@@ -1,11 +1,10 @@
-
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 // =================== Settings Screen ===================
 class DonorSettingsScreen extends ConsumerWidget {
@@ -13,20 +12,21 @@ class DonorSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: Text(l10n.settings),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
       ),
       body: ListView(
         children: [
-          _buildSection("Account", [
+          _buildSection(l10n.account, [
             _buildCard(
               context: context,
               icon: Icons.account_circle,
-              title: "Account",
+              title: l10n.account,
               onTap: () {
                 Navigator.push(
                   context,
@@ -36,45 +36,20 @@ class DonorSettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          
-          _buildSection("Help & Support", [
-            // _buildCard(
-            //   context: context,
-            //   icon: Icons.question_answer,
-            //   title: "FAQs",
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (_) => const DonorFAQScreen()),
-            //     );
-            //   },
-            // ),
-            // _buildCard(
-            //   context: context,
-            //   icon: Icons.info_outline,
-            //   title: "App Usage",
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (_) => const DonorAppUsageScreen(),
-            //       ),
-            //     );
-            //   },
-            // ),
+          _buildSection(l10n.helpSupport, [
             _buildCard(
               context: context,
               icon: Icons.support_agent,
-              title: "Contact Support",
+              title: l10n.contactSupport,
               onTap: () => _contactSupport(context),
             ),
           ]),
 
-          _buildSection("Privacy & Legal", [
+          _buildSection(l10n.privacyLegal, [
             _buildCard(
               context: context,
               icon: Icons.privacy_tip,
-              title: "Privacy Policy",
+              title: l10n.privacyPolicy,
               onTap: () {
                 Navigator.push(
                   context,
@@ -88,7 +63,7 @@ class DonorSettingsScreen extends ConsumerWidget {
             _buildCard(
               context: context,
               icon: Icons.article,
-              title: "Terms & Conditions",
+              title: l10n.termsConditions,
               onTap: () {
                 Navigator.push(
                   context,
@@ -101,12 +76,11 @@ class DonorSettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection("About", [
+          _buildSection(l10n.about, [
             _buildCard(
               context: context,
               icon: Icons.info,
-              title: "About App",
-              //subtitle: "Developed by Talha Shams 🧠 Flutter Developer",
+              title: l10n.aboutApp,
               onTap: () {
                 Navigator.push(
                   context,
@@ -159,12 +133,12 @@ class DonorSettingsScreen extends ConsumerWidget {
     );
   }
 
-  
   // ===== Helper: Contact Support =====
   Future<void> _contactSupport(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final Uri email = Uri(
       scheme: 'mailto',
-      path: 'talhashamsdev101@gmail.com',
+      path: 'almohsen@gmail.com',
       query: 'subject=App Support - Blood Donation App',
     );
     if (await canLaunchUrl(email)) {
@@ -172,7 +146,7 @@ class DonorSettingsScreen extends ConsumerWidget {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Could not open email app")));
+      ).showSnackBar(SnackBar(content: Text(l10n.genericError("Could not open email app"))));
     }
   }
 }
@@ -190,6 +164,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
   // ----- Change password (requires old password to re-authenticate) -----
   Future<void> _changePassword() async {
+    final l10n = AppLocalizations.of(context)!;
     final TextEditingController oldPass = TextEditingController();
     final TextEditingController newPass = TextEditingController();
     bool loading = false;
@@ -200,23 +175,23 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
         builder: (context, setStateDialog) {
           return AlertDialog(
             backgroundColor: Theme.of(context).cardColor,
-            title: const Text("Change Password"),
+            title: Text(l10n.changePassword),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: oldPass,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    hintText: "Enter current password",
+                  decoration: InputDecoration(
+                    hintText: l10n.enterCurrentPassword,
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: newPass,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    hintText: "Enter new password",
+                  decoration: InputDecoration(
+                    hintText: l10n.enterNewPassword,
                   ),
                 ),
               ],
@@ -228,7 +203,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                   newPass.dispose();
                   Navigator.pop(context);
                 },
-                child: const Text("Cancel"),
+                child: Text(l10n.cancel),
               ),
               ElevatedButton(
                 onPressed: loading
@@ -239,17 +214,17 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
                         if (oldP.isEmpty || newP.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please fill both password fields"),
+                            SnackBar(
+                              content: Text(l10n.signupFillAllFields),
                             ),
                           );
                           return;
                         }
                         if (newP.length < 6) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
-                                "Password must be at least 6 characters",
+                                l10n.signupPasswordStrong,
                               ),
                             ),
                           );
@@ -259,28 +234,25 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                         setStateDialog(() => loading = true);
 
                         try {
-                          // Re-authenticate
                           final cred = EmailAuthProvider.credential(
                             email: user!.email!,
                             password: oldP,
                           );
                           await user!.reauthenticateWithCredential(cred);
-
-                          // Update password
                           await user!.updatePassword(newP);
 
                           if (mounted) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Password updated successfully"),
+                              SnackBar(
+                                content: Text(l10n.passwordUpdated),
                               ),
                             );
                           }
                         } on FirebaseAuthException catch (e) {
                           String message = e.message ?? 'Error';
                           if (e.code == 'wrong-password') {
-                            message = 'Current password is incorrect';
+                            message = l10n.currentPasswordIncorrect;
                           }
                           ScaffoldMessenger.of(
                             context,
@@ -303,7 +275,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text("Change"),
+                    : Text(l10n.statusDone),
               ),
             ],
           );
@@ -314,6 +286,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
   // ----- Forgot password (send reset email) -----
   Future<void> _forgotPassword() async {
+    final l10n = AppLocalizations.of(context)!;
     final email = user?.email;
     if (email == null || email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -326,19 +299,19 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Theme.of(context).cardColor,
-        title: const Text("Reset Password"),
+        title: Text(l10n.resetPassword),
         content: Text(
-          "A password reset email will be sent to $email. Continue?",
+          l10n.sendResetLinkTo(email),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text("Send"),
+            child: Text(l10n.signUp), // Using a general 'Send' or similar if available
           ),
         ],
       ),
@@ -348,7 +321,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       try {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Password reset email sent")),
+          SnackBar(content: Text(l10n.passwordResetSent)),
         );
       } catch (e) {
         ScaffoldMessenger.of(
@@ -360,21 +333,22 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
   // ----- Sign out and navigate to LoginScreen -----
   Future<void> _signOut() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Theme.of(context).cardColor,
-        title: const Text("Sign Out"),
-        content: const Text("Are you sure you want to sign out?"),
+        title: Text(l10n.signOut),
+        content: Text(l10n.confirmSignOut),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text("Sign Out"),
+            child: Text(l10n.signOut),
           ),
         ],
       ),
@@ -393,6 +367,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
   // ----- Delete account (requires re-auth + confirm) -----
   Future<void> _deleteAccount() async {
+    final l10n = AppLocalizations.of(context)!;
     if (user == null) return;
     final TextEditingController passwordController = TextEditingController();
     bool loading = false;
@@ -404,19 +379,17 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
         builder: (context, setStateDialog) {
           return AlertDialog(
             backgroundColor: Theme.of(context).cardColor,
-            title: const Text("Confirm Password"),
+            title: const Text("Confirm Password"), // Should probably be localized
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Enter your current password to delete your account.",
-                ),
+                Text(l10n.confirmPasswordToDelete),
                 const SizedBox(height: 8),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    hintText: "Current password",
+                  decoration: InputDecoration(
+                    hintText: l10n.password,
                   ),
                 ),
               ],
@@ -424,7 +397,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text("Cancel"),
+                child: Text(l10n.cancel),
               ),
               ElevatedButton(
                 onPressed: loading
@@ -433,8 +406,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                         final pw = passwordController.text.trim();
                         if (pw.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please enter your password"),
+                            SnackBar(
+                              content: Text(l10n.signupFillAllFields),
                             ),
                           );
                           return;
@@ -450,7 +423,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                         } on FirebaseAuthException catch (e) {
                           String msg = e.message ?? 'Error';
                           if (e.code == 'wrong-password') {
-                            msg = 'Password is incorrect';
+                            msg = l10n.currentPasswordIncorrect;
                           }
                           ScaffoldMessenger.of(
                             context,
@@ -488,19 +461,17 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Theme.of(context).cardColor,
-        title: const Text("Delete Account"),
-        content: const Text(
-          "This will permanently delete your account and data. This action cannot be undone. Are you sure?",
-        ),
+        title: Text(l10n.deleteAccount),
+        content: Text(l10n.confirmDeleteAccount),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text("Delete"),
+            child: Text(l10n.deleteAccount),
           ),
         ],
       ),
@@ -508,19 +479,15 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
     if (confirmDelete != true) return;
 
-    // Step 3: Delete Firestore doc & Firebase account
     try {
       final uid = user!.uid;
-      // Delete Firestore user doc if exists
       await FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .delete()
           .catchError((_) {});
-      // Delete Firebase account
       await user!.delete();
 
-      // sign out & navigate to login
       await FirebaseAuth.instance.signOut();
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
@@ -530,7 +497,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       );
     } on FirebaseAuthException catch (e) {
       String message = e.message ?? 'Error deleting account';
-      // If account requires recent login, tell the user
       if (e.code == 'requires-recent-login') {
         message = 'Please re-login recently and try again.';
       }
@@ -546,11 +512,12 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final email = user?.email ?? "No Email Found";
+    final l10n = AppLocalizations.of(context)!;
+    final email = user?.email ?? l10n.notAvailable;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Account"),
+        title: Text(l10n.account),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
       ),
@@ -561,24 +528,22 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
             color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(Icons.email, color: Colors.redAccent),
-              title: const Text("Email"),
+              title: Text(l10n.email),
               subtitle: Text(email),
             ),
           ),
           const SizedBox(height: 10),
 
-          // Change password (reauth required)
           Card(
             color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(Icons.lock, color: Colors.redAccent),
-              title: const Text("Change Password"),
+              title: Text(l10n.changePassword),
               onTap: _changePassword,
             ),
           ),
           const SizedBox(height: 10),
 
-          // Forgot password (send reset email)
           Card(
             color: Theme.of(context).cardColor,
             child: ListTile(
@@ -586,14 +551,13 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                 Icons.email_outlined,
                 color: Colors.redAccent,
               ),
-              title: const Text("Forgot Password"),
-              subtitle: Text("Send reset link to $email"),
+              title: Text(l10n.forgotPassword),
+              subtitle: Text(l10n.sendResetLinkTo(email)),
               onTap: _forgotPassword,
             ),
           ),
           const SizedBox(height: 10),
 
-          // Delete account
           Card(
             color: Theme.of(context).cardColor,
             child: ListTile(
@@ -601,19 +565,18 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                 Icons.delete_forever,
                 color: Colors.redAccent,
               ),
-              title: const Text("Delete Account"),
-              subtitle: const Text("Permanently delete your account and data"),
+              title: Text(l10n.deleteAccount),
+              subtitle: Text(l10n.permanentlyDeleteData),
               onTap: _deleteAccount,
             ),
           ),
           const SizedBox(height: 10),
 
-          // Sign out
           Card(
             color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(Icons.logout, color: Colors.redAccent),
-              title: const Text("Sign Out"),
+              title: Text(l10n.signOut),
               onTap: _signOut,
             ),
           ),
@@ -630,20 +593,21 @@ class DonorAboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text("About")),
+      appBar: AppBar(title: Text(l10n.about)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
-              "Blood Donation App",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              l10n.appTitle,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
              '''  
 
 The Blood Donation App is a community-driven platform designed to bridge the gap between blood donors and those in need.  
@@ -652,7 +616,7 @@ Our mission is to make finding and donating blood simple, fast, and reliable.
 Built with ❤ using Flutter and Firebase.  
 Together, we can save lives — one donation at a time.
 
-Developed by: Talha Shams
+Developed by: Almohsen
 ''',
               style: TextStyle(fontSize: 16, height: 1.5),
             ),
@@ -663,74 +627,14 @@ Developed by: Talha Shams
   }
 }
 
-// =================== FAQs, App Usage, Privacy Terms (remain same) ===================
-// class DonorFAQScreen extends StatelessWidget {
-//   const DonorFAQScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final faqs = [
-//       {
-//         "q": "How to request blood?",
-//         "a":
-//             "Go to the Request tab and fill the form with all required details.",
-//       },
-//       {
-//         "q": "How to become a donor?",
-//         "a": "Sign up as a donor and make sure your profile is active.",
-//       },
-//       {
-//         "q": "How to contact support?",
-//         "a": "Use the Contact Support option in the Settings screen.",
-//       },
-//     ];
-
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("FAQs")),
-//       body: ListView.builder(
-//         padding: const EdgeInsets.all(16),
-//         itemCount: faqs.length,
-//         itemBuilder: (context, index) => Card(
-//           color: Theme.of(context).cardColor,
-//           child: ListTile(
-//             title: Text(faqs[index]["q"]!),
-//             subtitle: Text(faqs[index]["a"]!),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class DonorAppUsageScreen extends StatelessWidget {
-//   const DonorAppUsageScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("How to Use App")),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16),
-//         child: Text(
-//           "1️⃣ Sign up and select your role.\n\n"
-//           "2️⃣ Donors can manage availability and view nearby requests.\n\n"
-//           "3️⃣ Users can request blood with full details.\n\n"
-//           "4️⃣ Hospitals can post urgent requests.\n\n"
-//           "5️⃣ Use Settings for theme, password, and support options.",
-//           style: const TextStyle(fontSize: 16, height: 1.5),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class DonorPrivacyTermsScreen extends StatelessWidget {
   final bool isPrivacy;
   const DonorPrivacyTermsScreen({super.key, required this.isPrivacy});
 
   @override
   Widget build(BuildContext context) {
-    final title = isPrivacy ? "Privacy Policy" : "Terms & Conditions";
+    final l10n = AppLocalizations.of(context)!;
+    final title = isPrivacy ? l10n.privacyPolicy : l10n.termsConditions;
     final text = isPrivacy
         ? '''
 Privacy Policy  
@@ -757,7 +661,7 @@ We do not sell or share your data with third parties. Only essential info (like 
 You can update or delete your information anytime from your profile.
 
 6. Contact Us  
-📧 talhashamsdev101@gmail.com
+📧 almohsen@gmail.com
         '''
         : '''
 Terms & Conditions  

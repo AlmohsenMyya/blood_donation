@@ -230,5 +230,15 @@
   "availableToDonate": "متاح للتبرع",
   "yes": "نعم",
   "no": "لا",
-  "callDonor": "الاتصال بالمتبرع"
+  "callDonor": "الاتصال بالمتبرع",
+  "myProfile": "ملفي الشخصي",
+  "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح!",
+  "bloodDonor": "متبرع بالدم",
+  "unknownCity": "مدينة غير معروفة",
+  "name": "الاسم",
+  "accountType": "نوع الحساب",
+  "saveChanges": "حفظ التغييرات",
+  "requiredField": "حقل مطلوب",
+  "noNearbyRequests": "لا توجد طلبات قريبة",
+  "call": "اتصال"
 }

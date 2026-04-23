@@ -1,9 +1,8 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class UsersRequestsScreen extends StatefulWidget {
   const UsersRequestsScreen({super.key});
@@ -24,10 +23,11 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
         .snapshots(); // All users' requests
   }
 
-    Future<void> _makePhoneCall(String phone) async {
+  Future<void> _makePhoneCall(String phone) async {
+    final l10n = AppLocalizations.of(context)!;
     if (phone.isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('No phone number')));
+          .showSnackBar(SnackBar(content: Text(l10n.noPhoneNumber)));
       return;
     }
     final uri = Uri(scheme: 'tel', path: phone);
@@ -35,16 +35,17 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
       await launchUrl(uri);
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Cannot make call')));
+          .showSnackBar(SnackBar(content: Text(l10n.cannotMakeCall)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: const Text('Blood Requests'),
+        title: Text(l10n.usersBloodRequests),
         backgroundColor: Colors.grey[900],
         centerTitle: true,
       ),
@@ -59,14 +60,14 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
 
             if (snapshot.hasError) {
               return Center(
-                  child: Text('Error: ${snapshot.error}',
+                  child: Text(l10n.genericError(snapshot.error.toString()),
                       style: const TextStyle(color: Colors.white)));
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(
-                child: Text('No blood requests found',
-                    style: TextStyle(color: Colors.white70)),
+              return Center(
+                child: Text(l10n.noBloodRequestsFound,
+                    style: const TextStyle(color: Colors.white70)),
               );
             }
 
@@ -110,7 +111,7 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                data['patientName'] ?? 'Unknown Patient',
+                                data['patientName'] ?? l10n.unknownPatient,
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -127,24 +128,24 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Text('🏥 Hospital: ${data['hospital'] ?? 'N/A'}',
+                        Text(l10n.hospitalLabel(data['hospital'] ?? l10n.notAvailable),
                             style: const TextStyle(
                                 color: Colors.white70, fontSize: 14)),
-                        Text('📍 City: ${data['city'] ?? 'N/A'}',
+                        Text(l10n.cityLabel(data['city'] ?? l10n.notAvailable),
                             style: const TextStyle(
                                 color: Colors.white70, fontSize: 14)),
-                                 Text('📞 Phone: ${data['phone'] ?? 'N/A'}',
+                                 Text(l10n.phoneLabel(data['phone'] ?? l10n.notAvailable),
                             style: const TextStyle(
                                 color: Colors.white70, fontSize: 14)),
-                        Text('💉 Units: ${data['units'] ?? 'N/A'}',
+                        Text(l10n.unitsLabel(data['units'] ?? l10n.notAvailable),
                             style: const TextStyle(
                                 color: Colors.white70, fontSize: 14)),
-                        Text('🕒 Needed At: ${data['neededAt'] ?? 'N/A'}',
+                        Text(l10n.neededAtLabel(data['neededAt'] ?? l10n.notAvailable),
                             style: const TextStyle(
                                 color: Colors.white70, fontSize: 14)),
                        
                         const SizedBox(height: 10),
-                        Text('📅 Requested On: $formattedDate',
+                        Text(l10n.requestedOnLabel(formattedDate),
                             style: const TextStyle(
                                 color: Colors.white54, fontSize: 13)),
                         const SizedBox(height: 10),
@@ -156,7 +157,7 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                            style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    ), child: Text('Call',style: TextStyle(fontSize: 16,color: Colors.white),),
+                                    ), child: Text(l10n.call, style: const TextStyle(fontSize: 16,color: Colors.white),),
                           ),
                         )
                       ],

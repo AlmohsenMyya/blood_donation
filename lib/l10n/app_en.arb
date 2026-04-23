@@ -225,10 +225,20 @@
       }
     }
   },
-  "phone": "phone",
+  "phone": "Phone",
   "lastDonated": "Last Donated",
   "availableToDonate": "Available to Donate",
   "yes": "Yes",
   "no": "No",
-  "callDonor": "Call Donor"
+  "callDonor": "Call Donor",
+  "myProfile": "My Profile",
+  "profileUpdatedSuccessfully": "Profile updated successfully!",
+  "bloodDonor": "Blood Donor",
+  "unknownCity": "Unknown City",
+  "name": "Name",
+  "accountType": "Account Type",
+  "saveChanges": "Save Changes",
+  "requiredField": "Required field",
+  "noNearbyRequests": "No nearby requests",
+  "call": "Call"
 }

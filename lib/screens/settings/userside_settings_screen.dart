@@ -208,7 +208,7 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _contactSupport(BuildContext context) async {
     final Uri email = Uri(
       scheme: 'mailto',
-      path: 'talhashamsdev101@gmail.com',
+      path: 'almohsen@gmail.com',
       query: 'subject=App Support - Blood Donation App',
     );
     if (await canLaunchUrl(email)) {
@@ -695,7 +695,7 @@ Our mission is to make finding and donating blood simple, fast, and reliable.
 Built with ❤ using Flutter and Firebase.  
 Together, we can save lives — one donation at a time.
 
-Developed by: Talha Shams
+Developed by: Almohsen Shams
 '''),
           ],
         ),
@@ -766,7 +766,7 @@ Developed by: Talha Shams
 // Built with ❤ using Flutter and Firebase.
 // Together, we can save lives — one donation at a time.
 
-// Developed by: *Talha Shams*
+
 // ''', style: const TextStyle(fontSize: 16, height: 1.5)),
 //       ),
 //     );
@@ -807,7 +807,7 @@ We do not sell or share your data with third parties. Only essential info (like 
 You can update or delete your information anytime from your profile.
 
 6. Contact Us  
-📧 talhashamsdev101@gmail.com
+📧 Almohsen@gmail.com
         '''
         : '''
 Terms & Conditions  

@@ -456,4 +456,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get callDonor => 'الاتصال بالمتبرع';
+
+  @override
+  String get myProfile => 'ملفي الشخصي';
+
+  @override
+  String get profileUpdatedSuccessfully => 'تم تحديث الملف الشخصي بنجاح!';
+
+  @override
+  String get bloodDonor => 'متبرع بالدم';
+
+  @override
+  String get unknownCity => 'مدينة غير معروفة';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get accountType => 'نوع الحساب';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get requiredField => 'حقل مطلوب';
+
+  @override
+  String get noNearbyRequests => 'لا توجد طلبات قريبة';
+
+  @override
+  String get call => 'اتصال';
 }

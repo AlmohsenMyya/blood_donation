@@ -905,7 +905,7 @@ abstract class AppLocalizations {
   /// No description provided for @phone.
   ///
   /// In en, this message translates to:
-  /// **'phone'**
+  /// **'Phone'**
   String get phone;
 
   /// No description provided for @lastDonated.
@@ -937,6 +937,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Call Donor'**
   String get callDonor;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get myProfile;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully!'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @bloodDonor.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Donor'**
+  String get bloodDonor;
+
+  /// No description provided for @unknownCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown City'**
+  String get unknownCity;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @accountType.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Type'**
+  String get accountType;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @requiredField.
+  ///
+  /// In en, this message translates to:
+  /// **'Required field'**
+  String get requiredField;
+
+  /// No description provided for @noNearbyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'No nearby requests'**
+  String get noNearbyRequests;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
 }
 
 class _AppLocalizationsDelegate

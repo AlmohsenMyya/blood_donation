@@ -1,9 +1,7 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class DonorProfileScreen extends StatefulWidget {
   const DonorProfileScreen({super.key});
@@ -80,6 +78,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
 
   // 💾 Save updated profile data
   Future<void> _saveProfile() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     await _firestore.collection('users').doc(user.uid).update({
@@ -91,7 +90,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated successfully!')),
+      SnackBar(content: Text(l10n.profileUpdatedSuccessfully)),
     );
   }
 
@@ -105,14 +104,15 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey[950],
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 5,
-        title: const Text(
-          'My Profile',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.myProfile,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: SafeArea(
@@ -133,7 +133,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                       // 🧑 Profile Header Card
                       Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             colors: [Colors.redAccent, Colors.deepOrangeAccent],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -164,7 +164,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                                   Text(
                                     _name.text.isNotEmpty
                                         ? _name.text
-                                        : 'Blood Donor',
+                                        : l10n.bloodDonor,
                                     style: const TextStyle(
                                       fontSize: 20,
                                       color: Colors.white,
@@ -173,7 +173,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    _bloodGroup,
+                                    _bloodGroup == 'N/A' ? l10n.notAvailable : _bloodGroup,
                                     style: const TextStyle(
                                       color: Colors.white70,
                                       fontSize: 16,
@@ -183,7 +183,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                                   Text(
                                     _city.text.isNotEmpty
                                         ? _city.text
-                                        : 'Unknown City',
+                                        : l10n.unknownCity,
                                     style: const TextStyle(
                                         color: Colors.white70, fontSize: 14),
                                   ),
@@ -208,34 +208,34 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                             key: _formKey,
                             child: Column(
                               children: [
-                                _buildTextField('Name', _name,
+                                _buildTextField(l10n.name, _name,
                                     icon: Icons.person),
                                 const SizedBox(height: 12),
-                                _buildTextField('Email',
+                                _buildTextField(l10n.email,
                                     TextEditingController(text: user.email),
                                     enabled: false,
                                     icon: Icons.email),
                                 const SizedBox(height: 12),
-                                _buildTextField('Phone', _phone,
+                                _buildTextField(l10n.phone, _phone,
                                     icon: Icons.phone),
                                 const SizedBox(height: 12),
-                                _buildTextField('City', _city,
+                                _buildTextField(l10n.city, _city,
                                     icon: Icons.location_city),
                                 const SizedBox(height: 12),
                                 _buildTextField(
-                                  'Blood Group',
-                                  TextEditingController(text: _bloodGroup),
+                                  l10n.bloodGroup,
+                                  TextEditingController(text: _bloodGroup == 'N/A' ? l10n.notAvailable : _bloodGroup),
                                   enabled: false,
                                   icon: Icons.bloodtype,
                                 ),
                                 const SizedBox(height: 12),
                                 _buildDateField(
-                                    'Last Donated', _lastDonated,
+                                    l10n.lastDonated, _lastDonated,
                                     icon: Icons.calendar_today),
                                 const SizedBox(height: 12),
                                 _buildTextField(
-                                  'Account Type',
-                                  TextEditingController(text: _accountType),
+                                  l10n.accountType,
+                                  TextEditingController(text: _accountType == 'donor' ? l10n.roleDonor : l10n.roleUser),
                                   enabled: false,
                                   icon: Icons.verified_user,
                                 ),
@@ -257,9 +257,9 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                           elevation: 6,
                           shadowColor: Colors.redAccent.withOpacity(0.4),
                         ),
-                        child: const Text(
-                          '💾 Save Changes',
-                          style: TextStyle(
+                        child: Text(
+                          l10n.saveChanges,
+                          style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
@@ -277,6 +277,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
   // 🧱 Reusable text field widget
   Widget _buildTextField(String label, TextEditingController controller,
       {bool enabled = true, IconData? icon}) {
+    final l10n = AppLocalizations.of(context)!;
     return TextFormField(
       controller: controller,
       enabled: enabled,
@@ -298,7 +299,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
         ),
       ),
       validator: (v) =>
-          (enabled && (v == null || v.isEmpty)) ? 'Required field' : null,
+          (enabled && (v == null || v.isEmpty)) ? l10n.requiredField : null,
     );
   }
 
