@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class NearbyDonorsScreen extends StatefulWidget {
   const NearbyDonorsScreen({super.key});
@@ -23,10 +24,11 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
   }
 
   Future<void> _makePhoneCall(String phone) async {
+    final l10n = AppLocalizations.of(context)!;
     if (phone.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('No phone number')));
+      ).showSnackBar(SnackBar(content: Text(l10n.noPhoneNumber)));
       return;
     }
     final uri = Uri(scheme: 'tel', path: phone);
@@ -35,7 +37,7 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Cannot make call')));
+      ).showSnackBar(SnackBar(content: Text(l10n.cannotMakeCall)));
     }
   }
 
@@ -80,7 +82,7 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
         }
       }
     } catch (e) {
-      print('Error fetching donors: $e');
+      debugPrint('Error fetching donors: $e');
     }
 
     setState(() => isLoading = false);
@@ -88,20 +90,25 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nearby Donors'),
+        title: Text(l10n.nearbyDonors),
         backgroundColor: Colors.black,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.red))
           : donors.isEmpty
           ? Center(
-              child: Text(
-                city == null
-                    ? 'Unable to detect your city.'
-                    : 'No donors found in $city.',
-                style: const TextStyle(fontSize: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  city == null
+                      ? l10n.unableToDetectCity
+                      : l10n.noDonorsFoundInCity(city!),
+                  style: const TextStyle(fontSize: 16, color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
               ),
             )
           : ListView.builder(
@@ -130,7 +137,7 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                       child: Icon(Icons.person, color: Colors.white),
                     ),
                     title: Text(
-                      donor['name'] ?? 'Unknown',
+                      donor['name'] ?? l10n.unknown,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -140,11 +147,11 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Blood Group: ${donor['bloodGroup'] ?? 'N/A'}',
+                          l10n.bloodGroupLabel(donor['bloodGroup'] ?? l10n.notAvailable),
                           style: const TextStyle(color: Colors.white70),
                         ),
                         Text(
-                          'City: ${donor['city'] ?? ''}',
+                          l10n.cityLabel(donor['city'] ?? ''),
                           style: const TextStyle(color: Colors.white70),
                         ),
                       ],
@@ -154,8 +161,7 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                       onPressed: () {
                         final phone = donor['phone'];
                         if (phone != null && phone.toString().isNotEmpty) {
-                          // You can later implement call functionality here
-                          _makePhoneCall((donor['phone'] ?? '').toString());
+                          _makePhoneCall(phone.toString());
                         }
                       },
                     ),

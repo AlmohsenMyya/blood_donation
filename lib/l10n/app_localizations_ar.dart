@@ -486,4 +486,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get call => 'اتصال';
+
+  @override
+  String get unableToDetectCity => 'تعذر تحديد مدينتك.';
+
+  @override
+  String noDonorsFoundInCity(String city) {
+    return 'لم يتم العثور على متبرعين في $city';
+  }
 }

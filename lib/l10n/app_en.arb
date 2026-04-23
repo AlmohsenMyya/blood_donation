@@ -240,5 +240,14 @@
   "saveChanges": "Save Changes",
   "requiredField": "Required field",
   "noNearbyRequests": "No nearby requests",
-  "call": "Call"
+  "call": "Call",
+  "unableToDetectCity": "Unable to detect your city.",
+  "noDonorsFoundInCity": "No donors found in {city}",
+  "@noDonorsFoundInCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  }
 }

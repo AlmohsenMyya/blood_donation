@@ -997,6 +997,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Call'**
   String get call;
+
+  /// No description provided for @unableToDetectCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to detect your city.'**
+  String get unableToDetectCity;
+
+  /// No description provided for @noDonorsFoundInCity.
+  ///
+  /// In en, this message translates to:
+  /// **'No donors found in {city}'**
+  String noDonorsFoundInCity(String city);
 }
 
 class _AppLocalizationsDelegate

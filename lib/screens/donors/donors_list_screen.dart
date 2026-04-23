@@ -1,8 +1,8 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'donor_detail_screen.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class DonorListScreen extends StatefulWidget {
   const DonorListScreen({super.key});
@@ -17,8 +17,9 @@ class _DonorListScreenState extends State<DonorListScreen> {
   List<Map<String, dynamic>> filteredDonors = [];
   bool loading = true;
 
-  String selectedCity = 'All';
-  String selectedBlood = 'All';
+  // Use 'all' as a programmatic constant for internal logic
+  String selectedCity = 'all';
+  String selectedBlood = 'all';
 
   @override
   void initState() {
@@ -52,18 +53,19 @@ class _DonorListScreenState extends State<DonorListScreen> {
       filteredDonors = donors.where((donor) {
         final donorCity = (donor['city'] ?? '').toString();
         final donorBlood = (donor['bloodGroup'] ?? '').toString();
-        final matchesCity = selectedCity == 'All' || donorCity == selectedCity;
+        final matchesCity = selectedCity == 'all' || donorCity == selectedCity;
         final matchesBlood =
-            selectedBlood == 'All' || donorBlood == selectedBlood;
+            selectedBlood == 'all' || donorBlood == selectedBlood;
         return matchesCity && matchesBlood;
       }).toList();
     });
   }
 
   Future<void> _makePhoneCall(String phone) async {
+    final l10n = AppLocalizations.of(context)!;
     if (phone.isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('No phone number')));
+          .showSnackBar(SnackBar(content: Text(l10n.noPhoneNumber)));
       return;
     }
     final uri = Uri(scheme: 'tel', path: phone);
@@ -71,22 +73,23 @@ class _DonorListScreenState extends State<DonorListScreen> {
       await launchUrl(uri);
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Cannot make call')));
+          .showSnackBar(SnackBar(content: Text(l10n.cannotMakeCall)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     // Build explicit List<String> for cities (unique)
     final citySet = <String>{};
     for (final d in donors) {
       final c = (d['city'] ?? '').toString();
       if (c.isNotEmpty) citySet.add(c);
     }
-    final List<String> cities = ['All', ...citySet];
 
-    const List<String> bloodGroups = [
-      'All',
+    final List<String> bloodGroups = [
+      'all',
       'A+',
       'A-',
       'B+',
@@ -99,7 +102,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Available Donors'),
+        title: Text(l10n.availableDonors),
         backgroundColor: Colors.black,
       ),
       backgroundColor: const Color(0xFF0F0F0F),
@@ -115,52 +118,60 @@ class _DonorListScreenState extends State<DonorListScreen> {
                     children: [
                       Expanded(
                         child: DropdownButtonFormField<String>(
-                          initialValue: selectedCity,
+                          value: selectedCity,
                           dropdownColor: Colors.black,
-                          decoration: const InputDecoration(
-                            labelText: 'City',
-                            labelStyle: TextStyle(color: Colors.white70),
+                          decoration: InputDecoration(
+                            labelText: l10n.city,
+                            labelStyle: const TextStyle(color: Colors.white70),
                             filled: true,
-                            fillColor: Color(0xFF161616),
+                            fillColor: const Color(0xFF161616),
                           ),
-                          items: cities
-                              .map((city) => DropdownMenuItem<String>(
-                                    value: city,
-                                    child: Text(city,
-                                        style:
-                                            const TextStyle(color: Colors.white)),
-                                  ))
-                              .toList(),
+                          items: [
+                            DropdownMenuItem(
+                              value: 'all',
+                              child: Text(l10n.all, style: const TextStyle(color: Colors.white)),
+                            ),
+                            ...citySet.map((city) => DropdownMenuItem(
+                                  value: city,
+                                  child: Text(city,
+                                      style:
+                                          const TextStyle(color: Colors.white)),
+                                )),
+                          ],
                           onChanged: (value) {
                             if (value == null) return;
-                            selectedCity = value;
-                            _filterDonors();
+                            setState(() {
+                              selectedCity = value;
+                              _filterDonors();
+                            });
                           },
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: DropdownButtonFormField<String>(
-                          initialValue: selectedBlood,
+                          value: selectedBlood,
                           dropdownColor: Colors.black,
-                          decoration: const InputDecoration(
-                            labelText: 'Blood Group',
-                            labelStyle: TextStyle(color: Colors.white70),
+                          decoration: InputDecoration(
+                            labelText: l10n.bloodGroup,
+                            labelStyle: const TextStyle(color: Colors.white70),
                             filled: true,
-                            fillColor: Color(0xFF161616),
+                            fillColor: const Color(0xFF161616),
                           ),
                           items: bloodGroups
                               .map((bg) => DropdownMenuItem<String>(
                                     value: bg,
-                                    child: Text(bg,
+                                    child: Text(bg == 'all' ? l10n.all : bg,
                                         style:
                                             const TextStyle(color: Colors.white)),
                                   ))
                               .toList(),
                           onChanged: (value) {
                             if (value == null) return;
-                            selectedBlood = value;
-                            _filterDonors();
+                            setState(() {
+                              selectedBlood = value;
+                              _filterDonors();
+                            });
                           },
                         ),
                       ),
@@ -171,18 +182,18 @@ class _DonorListScreenState extends State<DonorListScreen> {
                 // Donor List
                 Expanded(
                   child: filteredDonors.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Text(
-                            'No donors found',
-                            style: TextStyle(color: Colors.white70),
+                            l10n.noDonorsFound,
+                            style: const TextStyle(color: Colors.white70),
                           ),
                         )
                       : ListView.builder(
                           itemCount: filteredDonors.length,
                           itemBuilder: (ctx, i) {
                             final donor = filteredDonors[i];
-                            final blood = (donor['bloodGroup'] ?? 'N/A').toString();
-                            final city = (donor['city'] ?? 'N/A').toString();
+                            final blood = (donor['bloodGroup'] ?? l10n.notAvailable).toString();
+                            final city = (donor['city'] ?? l10n.notAvailable).toString();
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -212,7 +223,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
                                     ),
                                   ),
                                   title: Text(
-                                    donor['name'] ?? 'Unknown',
+                                    donor['name'] ?? l10n.unknown,
                                     style:
                                         const TextStyle(color: Colors.white),
                                   ),

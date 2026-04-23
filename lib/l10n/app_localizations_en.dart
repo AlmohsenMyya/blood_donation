@@ -492,4 +492,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get call => 'Call';
+
+  @override
+  String get unableToDetectCity => 'Unable to detect your city.';
+
+  @override
+  String noDonorsFoundInCity(String city) {
+    return 'No donors found in $city';
+  }
 }

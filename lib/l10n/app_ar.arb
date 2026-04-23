@@ -240,5 +240,14 @@
   "saveChanges": "حفظ التغييرات",
   "requiredField": "حقل مطلوب",
   "noNearbyRequests": "لا توجد طلبات قريبة",
-  "call": "اتصال"
+  "call": "اتصال",
+  "unableToDetectCity": "تعذر تحديد مدينتك.",
+  "noDonorsFoundInCity": "لم يتم العثور على متبرعين في {city}",
+  "@noDonorsFoundInCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  }
 }
