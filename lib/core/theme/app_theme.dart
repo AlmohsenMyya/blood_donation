@@ -7,23 +7,40 @@ import 'package:flutter/material.dart';
 class AppTheme {
   /// Returns the appropriate theme based on the user role
   static ThemeData getTheme(UserRole? role) {
-    if (role == UserRole.donor) {
-      return _buildTheme(
-        appBarColor: AppColors.donorAccent,
-        primary: AppColors.donorPrimary,
-        accent: AppColors.donorAccent,
-        scaffoldBackground: AppColors.backgroundDark,
-        surface: AppColors.surfaceDark,
-      );
-    } else {
-      // Default / Recipient Theme
-      return _buildTheme(
-        appBarColor: AppColors.recipientAccent,
-        primary: AppColors.recipientPrimary,
-        accent: AppColors.recipientAccent,
-        scaffoldBackground: AppColors.backgroundBlack,
-        surface: AppColors.surfaceDark,
-      );
+    switch (role) {
+      case UserRole.donor:
+        return _buildTheme(
+          primary: AppColors.donorPrimary,
+          accent: AppColors.donorAccent,
+          scaffoldBackground: AppColors.backgroundDark,
+          surface: AppColors.surfaceDark,
+          appBarColor: AppColors.donorAccent,
+        );
+      case UserRole.hospitalAdmin:
+        return _buildTheme(
+          primary: AppColors.hospitalPrimary,
+          accent: AppColors.hospitalAccent,
+          scaffoldBackground: AppColors.backgroundDark,
+          surface: AppColors.surfaceDark,
+          appBarColor: AppColors.hospitalAccent,
+        );
+      case UserRole.superAdmin:
+        return _buildTheme(
+          primary: AppColors.adminPrimary,
+          accent: AppColors.adminAccent,
+          scaffoldBackground: AppColors.backgroundDark,
+          surface: AppColors.surfaceDark,
+          appBarColor: AppColors.adminAccent,
+        );
+      case UserRole.recipient:
+      default:
+        return _buildTheme(
+          primary: AppColors.recipientPrimary,
+          accent: AppColors.recipientAccent,
+          scaffoldBackground: AppColors.backgroundBlack,
+          surface: AppColors.surfaceDark,
+          appBarColor: AppColors.recipientAccent,
+        );
     }
   }
 
@@ -34,10 +51,8 @@ class AppTheme {
     required Color scaffoldBackground,
     required Color surface,
     required Color appBarColor,
-
   }) {
     return ThemeData(
-      bottomAppBarTheme: BottomAppBarThemeData(color:appBarColor ),
       useMaterial3: true,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: scaffoldBackground,
@@ -130,6 +145,8 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
+      // Bottom App Bar Theme
+      bottomAppBarTheme: BottomAppBarThemeData(color: appBarColor),
     );
   }
 

@@ -99,6 +99,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
         'neededAt': _neededAt != null ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!) : l10n.notSpecified,
         'createdAt': FieldValue.serverTimestamp(),
         'status': 'pending', // pending | done
+        'isVerified': false, // ✅ Added for validation by hospital admin
       });
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.requestSubmittedSuccessfully)));

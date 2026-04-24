@@ -21,6 +21,7 @@ class AuthService {
     required String role,
     required String phone,
     String? lastDonated,
+    String? hospitalId,
   }) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
@@ -36,6 +37,7 @@ class AuthService {
         'role': role,
         'phone': phone,
         'lastDonated': lastDonated,
+        'hospitalId': hospitalId, // ✅ For hospitalAdmin
         'fcmToken': token,
         'createdAt': FieldValue.serverTimestamp(),
       });

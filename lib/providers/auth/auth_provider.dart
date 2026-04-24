@@ -12,7 +12,7 @@ final authStateProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
 
-/// Holds the selected role (donor or recipient)
+/// Holds the selected role
 final roleProvider = StateNotifierProvider<RoleNotifier, UserRole?>(
   (ref) => RoleNotifier(),
 );
@@ -29,6 +29,10 @@ class RoleNotifier extends StateNotifier<UserRole?> {
       state = UserRole.donor;
     } else if (roleStr == 'user' || roleStr == 'recipient') {
       state = UserRole.recipient;
+    } else if (roleStr == 'hospitalAdmin') {
+      state = UserRole.hospitalAdmin;
+    } else if (roleStr == 'superAdmin') {
+      state = UserRole.superAdmin;
     } else {
       state = null;
     }

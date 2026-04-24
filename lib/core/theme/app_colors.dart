@@ -18,11 +18,17 @@ class AppColors {
   static const Color textGrey = Colors.grey;
   
   // Role-Specific Colors
-  static const Color donorPrimary = Color(0xFF37F450); // Deep Warm Red
+  static const Color donorPrimary = Color(0xFFB71C1C); // Deep Warm Red
   static const Color donorAccent = Color(0xFFCFB53B);   // Old Gold / Warm Yellow
   
   static const Color recipientPrimary = Color(0xFFE53935); // Standard Bright Red
   static const Color recipientAccent = Color(0xFF455A64);  // Blue Grey Accent
+
+  static const Color hospitalPrimary = Color(0xFF1976D2);  // Official Blue
+  static const Color hospitalAccent = Color(0xFF64B5F6);   // Light Blue
+
+  static const Color adminPrimary = Color(0xFF455A64);     // Professional Dark Grey/Blue
+  static const Color adminAccent = Color(0xFF90A4AE);      // Silver/Grey
   
   // Status Colors
   static const Color success = Colors.green;
