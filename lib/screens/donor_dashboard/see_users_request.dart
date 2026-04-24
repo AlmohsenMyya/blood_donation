@@ -108,13 +108,40 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                               ],
                             ),
                             const Divider(height: 20),
-                            _buildInfoRow(Icons.local_hospital, l10n.hospitalName, request['hospitalName']),
+                            _buildInfoRow(Icons.local_hospital, l10n.hospitalName, request['hospital']),
                             _buildInfoRow(Icons.location_on, l10n.city, request['city']),
                             _buildInfoRow(Icons.invert_colors, l10n.units, request['units'].toString()),
-                            _buildInfoRow(Icons.access_time, l10n.neededAtLabel(""), 
-                              request['neededAt'] != null 
-                              ? DateFormat('yyyy-MM-dd HH:mm').format((request['neededAt'] as Timestamp).toDate()) 
-                              : l10n.notSpecified),
+                            _buildInfoRow(
+                              Icons.access_time,
+                              l10n.neededAtLabel(""),
+                              (() {
+                                final neededAt = request['neededAt'];
+
+                                if (neededAt == null) {
+                                  return l10n.notSpecified;
+                                }
+
+                                if (neededAt is Timestamp) {
+                                  return DateFormat('yyyy-MM-dd HH:mm')
+                                      .format(neededAt.toDate());
+                                }
+
+                                if (neededAt is String) {
+                                  try {
+                                    final parsed = DateFormat('dd MMM yyyy, hh:mm a')
+                                        .parse(neededAt);
+                                    return DateFormat('yyyy-MM-dd HH:mm')
+                                        .format(parsed);
+                                  } catch (e) {
+                                    return neededAt; // fallback
+                                  }
+                                }
+
+                                return l10n.notSpecified;
+                              })(),
+                            ),
+
+
                             const SizedBox(height: 12),
                             SizedBox(
                               width: double.infinity,

@@ -6,7 +6,7 @@ class AppColors {
   static const Color accentRed = Color(0xFFFF5252);
   
   // Background Colors
-  static const Color backgroundBlack = Color(0x5ADCE679);
+  static const Color backgroundBlack = Color(0xFF000000);
   static const Color backgroundDark = Color(0xFF0D0D0D);
   static const Color surfaceDark = Color(0xFF161616);
   static const Color fieldDark = Color(0xFF2E2E2E);
