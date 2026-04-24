@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 
 class DonorProfileScreen extends StatefulWidget {
@@ -35,12 +37,15 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
     final doc = await _firestore.collection('users').doc(user.uid).get();
     final data = doc.data() ?? {};
 
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+
     setState(() {
       _name.text = data['name'] ?? '';
       _phone.text = data['phone'] ?? '';
       _city.text = data['city'] ?? '';
       _lastDonated.text = data['lastDonated'] ?? '';
-      _bloodGroup = data['bloodGroup'] ?? 'N/A';
+      _bloodGroup = data['bloodGroup'] ?? l10n.notAvailable;
       _accountType = data['role'] ?? 'user';
       _loading = false;
     });
@@ -57,11 +62,11 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: Colors.red,
-              onPrimary: Colors.white,
-              surface: Colors.black,
-              onSurface: Colors.white,
-            ), dialogTheme: DialogThemeData(backgroundColor: Colors.grey[900]),
+              primary: AppColors.primaryRed,
+              onPrimary: AppColors.textPrimary,
+              surface: AppColors.backgroundDark,
+              onSurface: AppColors.textPrimary,
+            ),
           ),
           child: child!,
         );
@@ -105,26 +110,22 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Colors.grey[950],
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 5,
-        title: Text(
-          l10n.myProfile,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        title: Text(l10n.myProfile),
       ),
       body: SafeArea(
         child: _loading
-            ? const Center(child: CircularProgressIndicator(color: Colors.red))
+            ? const Center(child: CircularProgressIndicator())
             : RefreshIndicator(
                 onRefresh: _refreshProfile,
-                color: Colors.red,
-                backgroundColor: Colors.black,
+                color: AppColors.primaryRed,
+                backgroundColor: AppColors.backgroundBlack,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(18),
+                  padding: AppDesignConstants.edgeInsetsMedium,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -134,27 +135,27 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                       Container(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Colors.redAccent, Colors.deepOrangeAccent],
+                            colors: [AppColors.primaryRed, AppColors.accentRed],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: AppDesignConstants.borderRadiusLarge,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.redAccent.withOpacity(0.4),
+                              color: AppColors.primaryRed.withOpacity(0.4),
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.all(16),
+                        padding: AppDesignConstants.edgeInsetsMedium,
                         child: Row(
                           children: [
                             const CircleAvatar(
                               radius: 35,
                               backgroundColor: Colors.white,
                               child: Icon(Icons.bloodtype,
-                                  size: 40, color: Colors.red),
+                                  size: 40, color: AppColors.primaryRed),
                             ),
                             const SizedBox(width: 15),
                             Expanded(
@@ -165,10 +166,9 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                                     _name.text.isNotEmpty
                                         ? _name.text
                                         : l10n.bloodDonor,
-                                    style: const TextStyle(
-                                      fontSize: 20,
+                                    style: theme.textTheme.titleMedium?.copyWith(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -198,12 +198,8 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
 
                       // 🧾 Profile Form Card
                       Card(
-                        color: Colors.black,
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
                         child: Padding(
-                          padding: const EdgeInsets.all(18),
+                          padding: AppDesignConstants.edgeInsetsMedium,
                           child: Form(
                             key: _formKey,
                             child: Column(
@@ -245,25 +241,12 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20),
 
-                      ElevatedButton(
+                      ElevatedButton.icon(
                         onPressed: _saveProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 6,
-                          shadowColor: Colors.redAccent.withOpacity(0.4),
-                        ),
-                        child: Text(
-                          l10n.saveChanges,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
+                        icon: const Icon(Icons.save),
+                        label: Text(l10n.saveChanges),
                       ),
                       const SizedBox(height: 25),
                     ],
@@ -281,22 +264,11 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
     return TextFormField(
       controller: controller,
       enabled: enabled,
-      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         prefixIcon: icon != null
-            ? Icon(icon, color: Colors.redAccent)
-            : const Icon(Icons.text_fields, color: Colors.redAccent),
+            ? Icon(icon)
+            : const Icon(Icons.text_fields),
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: Colors.grey[900],
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
       ),
       validator: (v) =>
           (enabled && (v == null || v.isEmpty)) ? l10n.requiredField : null,
@@ -308,17 +280,10 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
     return TextFormField(
       controller: controller,
       readOnly: true,
-      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         prefixIcon:
-            icon != null ? Icon(icon, color: Colors.redAccent) : null,
+            icon != null ? Icon(icon) : null,
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: Colors.grey[900],
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none),
       ),
       onTap: _pickLastDonatedDate,
     );

@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 
 
@@ -90,22 +92,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(l10n.myProfile, style: const TextStyle(color: Colors.white)),
+        title: Text(l10n.myProfile),
       ),
       body: SafeArea(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : RefreshIndicator(
                 onRefresh: _refreshProfile,
-                color: Colors.red,
-                backgroundColor: Colors.black,
+                color: AppColors.primaryRed,
+                backgroundColor: AppColors.backgroundBlack,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(20),
+                  padding: AppDesignConstants.edgeInsetsMedium,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -115,9 +117,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         builder: (context, snapshot) {
                           final count = snapshot.data ?? 0;
                           return Card(
-                            color: Colors.black,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
                             child: Padding(
                               padding: const EdgeInsets.all(18),
                               child: Row(
@@ -126,17 +125,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Text(
                                     l10n.totalRequests,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
+                                    style: theme.textTheme.titleMedium,
                                   ),
                                   Text(
                                     '$count',
-                                    style: const TextStyle(
-                                      color: Colors.redAccent,
+                                    style: theme.textTheme.displayMedium?.copyWith(
+                                      color: AppColors.accentRed,
                                       fontSize: 22,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
@@ -150,7 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       // 🧾 Profile Form
                       Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -188,19 +183,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       ElevatedButton.icon(
                         onPressed: _saveProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          elevation: 4,
-                        ),
-                        icon: const Icon(Icons.save, color: Colors.white),
-                        label: Text(
-                          l10n.saveChanges,
-                          style: const TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                        icon: const Icon(Icons.save),
+                        label: Text(l10n.saveChanges),
                       ),
                     ],
                   ),
@@ -217,16 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return TextFormField(
       controller: controller,
       enabled: enabled,
-      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
-          borderRadius: BorderRadius.circular(10),
-        ),
       ),
       validator: (v) =>
           (enabled && (v == null || v.isEmpty)) ? l10n.requiredField : null,

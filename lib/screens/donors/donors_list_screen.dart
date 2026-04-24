@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'donor_detail_screen.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
@@ -80,6 +82,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     // Build explicit List<String> for cities (unique)
     final citySet = <String>{};
@@ -103,39 +106,31 @@ class _DonorListScreenState extends State<DonorListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.availableDonors),
-        backgroundColor: Colors.black,
       ),
-      backgroundColor: const Color(0xFF0F0F0F),
       body: loading
-          ? const Center(child: CircularProgressIndicator(color: Colors.red))
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 // Filter Row
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: AppDesignConstants.edgeInsetsSmall,
                   child: Row(
                     children: [
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: selectedCity,
-                          dropdownColor: Colors.black,
+                          dropdownColor: AppColors.surfaceDark,
                           decoration: InputDecoration(
                             labelText: l10n.city,
-                            labelStyle: const TextStyle(color: Colors.white70),
-                            filled: true,
-                            fillColor: const Color(0xFF161616),
                           ),
                           items: [
                             DropdownMenuItem(
                               value: 'all',
-                              child: Text(l10n.all, style: const TextStyle(color: Colors.white)),
+                              child: Text(l10n.all),
                             ),
                             ...citySet.map((city) => DropdownMenuItem(
                                   value: city,
-                                  child: Text(city,
-                                      style:
-                                          const TextStyle(color: Colors.white)),
+                                  child: Text(city),
                                 )),
                           ],
                           onChanged: (value) {
@@ -151,19 +146,14 @@ class _DonorListScreenState extends State<DonorListScreen> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: selectedBlood,
-                          dropdownColor: Colors.black,
+                          dropdownColor: AppColors.surfaceDark,
                           decoration: InputDecoration(
                             labelText: l10n.bloodGroup,
-                            labelStyle: const TextStyle(color: Colors.white70),
-                            filled: true,
-                            fillColor: const Color(0xFF161616),
                           ),
                           items: bloodGroups
                               .map((bg) => DropdownMenuItem<String>(
                                     value: bg,
-                                    child: Text(bg == 'all' ? l10n.all : bg,
-                                        style:
-                                            const TextStyle(color: Colors.white)),
+                                    child: Text(bg == 'all' ? l10n.all : bg),
                                   ))
                               .toList(),
                           onChanged: (value) {
@@ -185,7 +175,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
                       ? Center(
                           child: Text(
                             l10n.noDonorsFound,
-                            style: const TextStyle(color: Colors.white70),
+                            style: theme.textTheme.bodyMedium,
                           ),
                         )
                       : ListView.builder(
@@ -194,26 +184,21 @@ class _DonorListScreenState extends State<DonorListScreen> {
                             final donor = filteredDonors[i];
                             final blood = (donor['bloodGroup'] ?? l10n.notAvailable).toString();
                             final city = (donor['city'] ?? l10n.notAvailable).toString();
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        DonorDetailScreen(donorId: donor['id']),
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                color: const Color(0xFF161616),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
+                            return Card(
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 10),
                                 child: ListTile(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            DonorDetailScreen(donorId: donor['id']),
+                                      ),
+                                    );
+                                  },
                                   leading: CircleAvatar(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: AppColors.primaryRed,
                                     child: Text(
                                       blood,
                                       style: const TextStyle(
@@ -224,21 +209,19 @@ class _DonorListScreenState extends State<DonorListScreen> {
                                   ),
                                   title: Text(
                                     donor['name'] ?? l10n.unknown,
-                                    style:
-                                        const TextStyle(color: Colors.white),
+                                    style: theme.textTheme.titleMedium,
                                   ),
                                   subtitle: Text(
                                     '$city • $blood',
-                                    style: const TextStyle(color: Colors.grey),
+                                    style: theme.textTheme.bodyMedium,
                                   ),
                                   trailing: IconButton(
-                                    icon: const Icon(Icons.call, color: Colors.red),
+                                    icon: const Icon(Icons.call, color: AppColors.primaryRed),
                                     onPressed: () => _makePhoneCall(
                                         (donor['phone'] ?? '').toString()),
                                   ),
                                 ),
-                              ),
-                            );
+                              );
                           },
                         ),
                 ),

@@ -1,3 +1,5 @@
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/donors/donor_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,13 +93,13 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.nearbyDonors),
-        backgroundColor: Colors.black,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.red))
+          ? const Center(child: CircularProgressIndicator())
           : donors.isEmpty
           ? Center(
               child: Padding(
@@ -106,22 +108,18 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                   city == null
                       ? l10n.unableToDetectCity
                       : l10n.noDonorsFoundInCity(city!),
-                  style: const TextStyle(fontSize: 16, color: Colors.white70),
+                  style: theme.textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
               ),
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(10),
+              padding: AppDesignConstants.edgeInsetsSmall,
               itemCount: donors.length,
               itemBuilder: (context, index) {
                 final donor = donors[index];
                 return Card(
-                  color: Colors.grey[900],
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -133,31 +131,28 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                       );
                     },
                     leading: const CircleAvatar(
-                      backgroundColor: Colors.red,
+                      backgroundColor: AppColors.primaryRed,
                       child: Icon(Icons.person, color: Colors.white),
                     ),
                     title: Text(
                       donor['name'] ?? l10n.unknown,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                      style: theme.textTheme.titleMedium,
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           l10n.bloodGroupLabel(donor['bloodGroup'] ?? l10n.notAvailable),
-                          style: const TextStyle(color: Colors.white70),
+                          style: theme.textTheme.bodyMedium,
                         ),
                         Text(
                           l10n.cityLabel(donor['city'] ?? ''),
-                          style: const TextStyle(color: Colors.white70),
+                          style: theme.textTheme.bodyMedium,
                         ),
                       ],
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.phone, color: Colors.redAccent),
+                      icon: const Icon(Icons.phone, color: AppColors.primaryRed),
                       onPressed: () {
                         final phone = donor['phone'];
                         if (phone != null && phone.toString().isNotEmpty) {

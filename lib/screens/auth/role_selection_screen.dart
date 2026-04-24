@@ -1,4 +1,5 @@
-
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:sheryan/screens/auth/sign_up_screen.dart';
@@ -25,6 +26,8 @@ class RoleSelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -34,12 +37,18 @@ class RoleSelectionScreen extends ConsumerWidget {
               const SizedBox(height: 40),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(l10n.roleWhoAreYou, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                child: Text(
+                  l10n.roleWhoAreYou, 
+                  style: theme.textTheme.displayMedium,
+                ),
               ),
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(l10n.roleSelectContinue, style: const TextStyle(color: Colors.grey)),
+                child: Text(
+                  l10n.roleSelectContinue, 
+                  style: theme.textTheme.bodyMedium,
+                ),
               ),
               const SizedBox(height: 30),
               Expanded(
@@ -64,10 +73,12 @@ class RoleSelectionScreen extends ConsumerWidget {
               ),
               TextButton(
                 onPressed: () {
-                  // If user already has saved role and wants to login directly:
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
                 },
-                child: Text(l10n.alreadyHaveAccountLogin, style: const TextStyle(color: Colors.grey)),
+                child: Text(
+                  l10n.alreadyHaveAccountLogin, 
+                  style: theme.textTheme.bodyMedium,
+                ),
               ),
               const SizedBox(height: 12),
             ],
@@ -87,26 +98,33 @@ class _RoleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: AppDesignConstants.edgeInsetsMedium,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: const Color(0xFF121212),
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surfaceDark,
+          borderRadius: AppDesignConstants.borderRadiusMedium,
           border: Border.all(color: Colors.grey.shade800),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 34, color: Colors.red),
+            Icon(icon, size: 34, color: AppColors.primaryRed),
             const SizedBox(width: 14),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                title, 
+                style: theme.textTheme.titleMedium,
+              ),
               const SizedBox(height: 4),
-              Text(subtitle, style: const TextStyle(color: Colors.grey)),
+              Text(
+                subtitle, 
+                style: theme.textTheme.bodyMedium,
+              ),
             ])),
-            const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+            const Icon(Icons.arrow_forward_ios, color: AppColors.textGrey, size: 16),
           ],
         ),
       ),

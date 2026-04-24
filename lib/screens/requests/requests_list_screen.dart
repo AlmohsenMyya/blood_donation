@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
@@ -22,7 +24,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
     if (user != null) {
       _requestsStream = FirebaseFirestore.instance
           .collection('blood_requests')
-          .where('userId', isEqualTo: user.uid) // ✅ Only show logged-in user's requests
+          .where('userId', isEqualTo: user.uid)
           .orderBy('createdAt', descending: true)
           .snapshots();
     } else {
@@ -43,7 +45,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
             child: Text(l10n.cancel),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed),
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.yesDone),
           ),
@@ -62,35 +64,34 @@ class _RequestsScreenState extends State<RequestsListScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
         title: Text(l10n.myBloodRequests),
-        backgroundColor: Colors.grey[900],
-        centerTitle: true,
       ),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
           stream: _requestsStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: Colors.red));
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (snapshot.hasError) {
-              return Center(child: Text(l10n.genericError(snapshot.error.toString()), style: const TextStyle(color: Colors.white)));
+              return Center(child: Text(l10n.genericError(snapshot.error.toString())));
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return Center(
-                child: Text(l10n.noBloodRequestsFound, style: const TextStyle(color: Colors.white70)),
+                child: Text(l10n.noBloodRequestsFound, style: theme.textTheme.bodyMedium),
               );
             }
 
             final requests = snapshot.data!.docs;
 
             return ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: AppDesignConstants.edgeInsetsMedium,
               itemCount: requests.length,
               itemBuilder: (context, index) {
                 final doc = requests[index];
@@ -102,19 +103,16 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                 final formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(createdAt);
 
                 return Card(
-                  color: Colors.grey[850],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 3,
                   margin: const EdgeInsets.only(bottom: 14),
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppDesignConstants.edgeInsetsMedium,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundColor: Colors.red[600],
+                              backgroundColor: AppColors.primaryRed,
                               child: Text(
                                 (data['bloodGroup'] ?? '?'),
                                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -124,47 +122,38 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                             Expanded(
                               child: Text(
                                 data['patientName'] ?? l10n.unknownPatient,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                style: theme.textTheme.titleMedium,
                               ),
                             ),
                             Icon(
                               status == 'done' ? Icons.check_circle : Icons.pending_actions,
-                              color: status == 'done' ? Colors.green : Colors.orange,
+                              color: status == 'done' ? AppColors.success : AppColors.warning,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        Text(l10n.hospitalLabel((data['hospital'] ?? l10n.notAvailable).toString()),
-                            style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text(l10n.cityLabel((data['city'] ?? l10n.notAvailable).toString()),
-                            style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                             Text(l10n.phoneLabel((data['phone'] ?? l10n.notAvailable).toString()),
-                            style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text(l10n.unitsLabel((data['units'] ?? l10n.notAvailable).toString()),
-                            style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text(l10n.neededAtLabel((data['neededAt'] ?? l10n.notAvailable).toString()),
-                            style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                        const SizedBox(height: 10),
-                        Text(l10n.requestedOnLabel(formattedDate),
-                            style: const TextStyle(color: Colors.white54, fontSize: 13)),
-                        const SizedBox(height: 10),
-                        if (status != 'done')
+                        const Divider(height: 24),
+                        _buildInfoRow(Icons.local_hospital, l10n.hospitalName, data['hospital']),
+                        _buildInfoRow(Icons.location_on, l10n.city, data['city']),
+                        _buildInfoRow(Icons.phone, l10n.phoneNumber, data['phone']),
+                        _buildInfoRow(Icons.invert_colors, l10n.units, data['units']),
+                        _buildInfoRow(Icons.access_time, l10n.neededAtLabel("").replaceAll(":", ""), data['neededAt']),
+                        
+                        const SizedBox(height: 12),
+                        Text(
+                          l10n.requestedOnLabel(formattedDate),
+                          style: theme.textTheme.labelSmall,
+                        ),
+                        if (status != 'done') ...[
+                          const SizedBox(height: 12),
                           Align(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton.icon(
                               onPressed: () => _markAsDone(doc.id),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              ),
-                              icon: const Icon(Icons.check, color: Colors.white),
-                              label: Text(l10n.markAsDone, style: const TextStyle(color: Colors.white)),
+                              icon: const Icon(Icons.check),
+                              label: Text(l10n.markAsDone),
                             ),
                           ),
+                        ]
                       ],
                     ),
                   ),
@@ -173,6 +162,26 @@ class _RequestsScreenState extends State<RequestsListScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, dynamic value) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: AppColors.primaryRed),
+          const SizedBox(width: 8),
+          Text("$label: ", style: theme.textTheme.labelSmall),
+          Expanded(
+            child: Text(
+              value?.toString() ?? "-",
+              style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary),
+            ),
+          ),
+        ],
       ),
     );
   }

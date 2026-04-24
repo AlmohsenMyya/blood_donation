@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 
 class TipsScreen extends StatelessWidget {
@@ -7,6 +9,7 @@ class TipsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     final List<Map<String, Object>> tips = [
       {
@@ -56,15 +59,12 @@ class TipsScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(l10n.awarenessTitle, style: const TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
-        centerTitle: true,
+        title: Text(l10n.awarenessTitle),
       ),
       body: SafeArea(
         child: ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: AppDesignConstants.edgeInsetsMedium,
           itemCount: tips.length,
           itemBuilder: (context, index) {
             final tip = tips[index];
@@ -72,25 +72,19 @@ class TipsScreen extends StatelessWidget {
             final List<String> points = List<String>.from(tip['points'] as List);
 
             return Card(
-              color: const Color(0xFF161616),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               margin: const EdgeInsets.only(bottom: 16),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppDesignConstants.edgeInsetsMedium,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.bloodtype, color: Colors.red),
+                        const Icon(Icons.bloodtype, color: AppColors.primaryRed),
                         const SizedBox(width: 8),
                         Text(
                           title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: theme.textTheme.titleMedium,
                         ),
                       ],
                     ),
@@ -102,11 +96,11 @@ class TipsScreen extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("• ", style: TextStyle(color: Colors.red, fontSize: 16)),
+                            const Text("• ", style: TextStyle(color: AppColors.primaryRed, fontSize: 16)),
                             Expanded(
                               child: Text(
                                 points[i],
-                                style: const TextStyle(color: Colors.white70, fontSize: 15),
+                                style: theme.textTheme.bodyMedium,
                               ),
                             ),
                           ],

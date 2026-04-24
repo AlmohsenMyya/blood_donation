@@ -1,3 +1,5 @@
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,16 +15,15 @@ class DonorSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(l10n.settings),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        centerTitle: true,
       ),
       body: ListView(
         children: [
-          _buildSection(l10n.account, [
+          _buildSection(context, l10n.account, [
             _buildCard(
               context: context,
               icon: Icons.account_circle,
@@ -36,7 +37,7 @@ class DonorSettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.helpSupport, [
+          _buildSection(context, l10n.helpSupport, [
             _buildCard(
               context: context,
               icon: Icons.support_agent,
@@ -45,7 +46,7 @@ class DonorSettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.privacyLegal, [
+          _buildSection(context, l10n.privacyLegal, [
             _buildCard(
               context: context,
               icon: Icons.privacy_tip,
@@ -76,7 +77,7 @@ class DonorSettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.about, [
+          _buildSection(context, l10n.about, [
             _buildCard(
               context: context,
               icon: Icons.info,
@@ -95,7 +96,7 @@ class DonorSettingsScreen extends ConsumerWidget {
   }
 
   // ===== Helper: Build Section =====
-  Widget _buildSection(String title, List<Widget> children) {
+  Widget _buildSection(BuildContext context, String title, List<Widget> children) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
@@ -103,7 +104,7 @@ class DonorSettingsScreen extends ConsumerWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 10),
           ...children,
@@ -121,13 +122,11 @@ class DonorSettingsScreen extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     return Card(
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(icon, color: Colors.redAccent),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+        leading: Icon(icon, color: AppColors.primaryRed),
+        title: Text(title, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
         subtitle: subtitle != null ? Text(subtitle) : null,
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textGrey),
         onTap: onTap,
       ),
     );
@@ -174,7 +173,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).cardColor,
             title: Text(l10n.changePassword),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -265,16 +263,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                           setStateDialog(() => loading = false);
                         }
                       },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: loading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                    ? const CircularProgressIndicator()
                     : Text(l10n.statusDone),
               ),
             ],
@@ -298,7 +288,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.resetPassword),
         content: Text(
           l10n.sendResetLinkTo(email),
@@ -310,7 +299,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.signUp), // Using a general 'Send' or similar if available
           ),
         ],
@@ -337,7 +325,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.signOut),
         content: Text(l10n.confirmSignOut),
         actions: [
@@ -347,7 +334,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.signOut),
           ),
         ],
@@ -378,8 +364,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).cardColor,
-            title: const Text("Confirm Password"), // Should probably be localized
+            title: const Text("Confirm Password"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -436,16 +421,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                           setStateDialog(() => loading = false);
                         }
                       },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: loading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                    ? const CircularProgressIndicator()
                     : const Text("Confirm"),
               ),
             ],
@@ -460,7 +437,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     final confirmDelete = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.deleteAccount),
         content: Text(l10n.confirmDeleteAccount),
         actions: [
@@ -470,7 +446,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.deleteAccount),
           ),
         ],
@@ -518,16 +493,13 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.account),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
-              leading: const Icon(Icons.email, color: Colors.redAccent),
+              leading: const Icon(Icons.email, color: AppColors.primaryRed),
               title: Text(l10n.email),
               subtitle: Text(email),
             ),
@@ -535,9 +507,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           const SizedBox(height: 10),
 
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
-              leading: const Icon(Icons.lock, color: Colors.redAccent),
+              leading: const Icon(Icons.lock, color: AppColors.primaryRed),
               title: Text(l10n.changePassword),
               onTap: _changePassword,
             ),
@@ -545,11 +516,10 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           const SizedBox(height: 10),
 
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(
                 Icons.email_outlined,
-                color: Colors.redAccent,
+                color: AppColors.primaryRed,
               ),
               title: Text(l10n.forgotPassword),
               subtitle: Text(l10n.sendResetLinkTo(email)),
@@ -559,11 +529,10 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           const SizedBox(height: 10),
 
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(
                 Icons.delete_forever,
-                color: Colors.redAccent,
+                color: AppColors.primaryRed,
               ),
               title: Text(l10n.deleteAccount),
               subtitle: Text(l10n.permanentlyDeleteData),
@@ -573,9 +542,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           const SizedBox(height: 10),
 
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
-              leading: const Icon(Icons.logout, color: Colors.redAccent),
+              leading: const Icon(Icons.logout, color: AppColors.primaryRed),
               title: Text(l10n.signOut),
               onTap: _signOut,
             ),
@@ -594,6 +562,8 @@ class DonorAboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: AppBar(title: Text(l10n.about)),
       body: Padding(
@@ -603,23 +573,16 @@ class DonorAboutScreen extends StatelessWidget {
           children: [
             Text(
               l10n.appTitle,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge,
             ),
             
             const SizedBox(height: 10),
-            const Text(
-             '''  
-
-The Blood Donation App is a community-driven platform designed to bridge the gap between blood donors and those in need.  
-Our mission is to make finding and donating blood simple, fast, and reliable.
-
-Built with ❤ using Flutter and Firebase.  
-Together, we can save lives — one donation at a time.
-
-Developed by: Almohsen
-''',
-              style: TextStyle(fontSize: 16, height: 1.5),
+            Text(
+              l10n.aboutDescription,
+              style: theme.textTheme.bodyLarge,
             ),
+            const SizedBox(height: 20),
+            Text(l10n.developedBy("Almohsen"), style: theme.textTheme.bodyMedium),
           ],
         ),
       ),
@@ -635,71 +598,14 @@ class DonorPrivacyTermsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final title = isPrivacy ? l10n.privacyPolicy : l10n.termsConditions;
-    final text = isPrivacy
-        ? '''
-Privacy Policy  
+    final text = isPrivacy ? l10n.privacyPolicyContent : l10n.termsConditionsContent;
 
-Thank you for using our Blood Donation App (“we”, “our”, or “us”).
-Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.
-
-1. Information We Collect  
-• Personal Information: Name, email, phone number, city, blood group, and account type (donor or user).  
-• Usage Data: General app usage data to improve experience.  
-
-2. How We Use Your Information  
-• To display your donor or user profile.  
-• To manage blood requests and donations.  
-• To improve app functionality and communication.
-
-3. Data Security  
-Your data is securely stored using Firebase. However, we recommend keeping your login credentials private.
-
-4. Sharing of Information  
-We do not sell or share your data with third parties. Only essential info (like name, city, and blood group) may appear to connect donors and recipients.
-
-5. Your Rights  
-You can update or delete your information anytime from your profile.
-
-6. Contact Us  
-📧 almohsen@gmail.com
-        '''
-        : '''
-Terms & Conditions  
-
-Welcome to our Blood Donation App. By using this app, you agree to the following terms:
-
-1. User Responsibilities  
-• Provide accurate personal information.  
-• Donors must ensure they are medically fit to donate.  
-• Users must not post fake or misleading requests.
-
-2. App Usage  
-• The app is for humanitarian purposes only.  
-• Any commercial or abusive use is strictly prohibited.
-
-3. Data & Privacy  
-Your data is used only to connect donors and recipients. Please review our Privacy Policy for details.
-
-4. Liability  
-We serve as a platform only. We are not responsible for actions or outcomes after contact between users.
-
-5. Account Termination  
-We may suspend or remove accounts involved in fake or unethical activity.
-
-6. Updates to Terms  
-These terms may change over time. Continued use means you accept updated terms.
-
-Thank you for using our app to help save lives!
-        ''';
-
-    return Scaffold(backgroundColor: Colors.black,
+    return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Text(text, style: const TextStyle(fontSize: 16,
-                height: 1.6,
-                color: Colors.white,)),
+          child: Text(text, style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6)),
         ),
       ),
     );

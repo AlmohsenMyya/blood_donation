@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 
@@ -83,44 +85,39 @@ class _DonorDetailsState extends State<DonorDetails>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(
-          l10n.donorDetails,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 4,
+        title: Text(l10n.donorDetails),
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator(color: Colors.red))
+          ? const Center(child: CircularProgressIndicator())
           : donor == null
               ? Center(
                   child: Text(
                     l10n.donorNotFound,
-                    style: const TextStyle(color: Colors.white70),
+                    style: theme.textTheme.bodyMedium,
                   ),
                 )
               : FadeTransition(
                   opacity: _fadeIn,
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
+                    padding: AppDesignConstants.edgeInsetsMedium,
                     child: Column(
                       children: [
                         // 🔴 Profile Header
                         Container(
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Colors.redAccent, Colors.red],
+                              colors: [AppColors.accentRed, AppColors.primaryRed],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: AppDesignConstants.borderRadiusExtraLarge,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.red.withOpacity(0.3),
+                                color: AppColors.primaryRed.withOpacity(0.3),
                                 blurRadius: 10,
                                 spreadRadius: 3,
                               ),
@@ -134,16 +131,12 @@ class _DonorDetailsState extends State<DonorDetails>
                                 radius: 45,
                                 backgroundColor: Colors.white,
                                 child: Icon(Icons.person,
-                                    size: 55, color: Colors.red),
+                                    size: 55, color: AppColors.primaryRed),
                               ),
                               const SizedBox(height: 12),
                               Text(
                                 donor!['name'] ?? l10n.unknownDonor,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: theme.textTheme.titleLarge?.copyWith(color: Colors.white),
                               ),
                               const SizedBox(height: 6),
                               Text(
@@ -162,8 +155,8 @@ class _DonorDetailsState extends State<DonorDetails>
                         // 🔴 Info Card Section
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey[900],
-                            borderRadius: BorderRadius.circular(16),
+                            color: AppColors.surfaceDark,
+                            borderRadius: AppDesignConstants.borderRadiusLarge,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.3),
@@ -171,7 +164,7 @@ class _DonorDetailsState extends State<DonorDetails>
                               ),
                             ],
                           ),
-                          padding: const EdgeInsets.all(20),
+                          padding: AppDesignConstants.edgeInsetsMedium,
                           child: Column(
                             children: [
                               _infoRow(Icons.phone, l10n.phone, donor!['phone']),
@@ -195,24 +188,16 @@ class _DonorDetailsState extends State<DonorDetails>
                         // 🔴 Call Button
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 40, vertical: 14),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: AppDesignConstants.borderRadiusCircular,
                             ),
-                            elevation: 8,
                           ),
                           onPressed: () =>
                               _makePhoneCall(donor!['phone'] ?? ''),
-                          icon: const Icon(Icons.phone, color: Colors.white),
-                          label: Text(
-                            l10n.callDonor,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          icon: const Icon(Icons.phone),
+                          label: Text(l10n.callDonor),
                         ),
                       ],
                     ),
@@ -223,15 +208,15 @@ class _DonorDetailsState extends State<DonorDetails>
 
 Widget _infoRow(IconData icon, String label, String? value, {Color? color}) {
   final l10n = AppLocalizations.of(context)!;
+  final theme = Theme.of(context);
   final display = (value == null || value.trim().isEmpty) ? l10n.notAvailable : value;
 
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
+    padding:  EdgeInsets.symmetric(vertical: 10),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.redAccent
-        ),
+         Icon(icon, color: AppColors.primaryRed),
         const SizedBox(width: 14),
         Expanded(
           child: Column(
@@ -239,19 +224,13 @@ Widget _infoRow(IconData icon, String label, String? value, {Color? color}) {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 1),
               SelectableText(
                 display,
-                style: TextStyle(
-                  color: color ?? Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: color ?? AppColors.textPrimary,
                 ),
               ),
             ],

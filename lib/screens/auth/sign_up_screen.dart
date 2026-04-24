@@ -1,4 +1,6 @@
 
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:sheryan/screens/home/home_screen.dart';
@@ -150,26 +152,17 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     return TextField(
       controller: c,
       obscureText: obscure && _obscure,
-      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey),
-        prefixIcon: Icon(icon, color: Colors.grey),
+        prefixIcon: Icon(icon),
         suffixIcon: obscure
             ? IconButton(
                 icon: Icon(
                   _obscure ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey,
                 ),
                 onPressed: () => setState(() => _obscure = !_obscure),
               )
             : null,
-        filled: true,
-        fillColor: const Color(0xFF2E2E2E),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
       ),
     );
   }
@@ -177,7 +170,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final isDonor = _selectedRole == 'donor';
+    
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -189,16 +184,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 22),
                 Text(
                   l10n.createAccountTitle,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.displayMedium,
                 ),
                 const SizedBox(height: 6),
                 Text(
                   l10n.fillDetailsCreateAccount,
-                  style: const TextStyle(color: Colors.grey),
+                  style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 20),
 
@@ -215,20 +206,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2E2E2E),
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.fieldDark,
+                    borderRadius: AppDesignConstants.borderRadiusMedium,
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedRole,
-                      dropdownColor: const Color(0xFF2E2E2E),
+                      dropdownColor: AppColors.fieldDark,
                       items: _roles
                           .map(
                             (r) => DropdownMenuItem(
                               value: r,
                               child: Text(
                                 r == 'donor' ? l10n.roleDonor : l10n.roleUser,
-                                style: const TextStyle(color: Colors.white),
+                                style: theme.textTheme.bodyLarge,
                               ),
                             ),
                           )
@@ -240,7 +231,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // City text field instead of dropdown
+                // City text field
                 _buildTextField(_city, l10n.enterCityOrVillage, Icons.location_city),
                 const SizedBox(height: 12),
 
@@ -248,20 +239,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2E2E2E),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.fieldDark,
+                      borderRadius: AppDesignConstants.borderRadiusMedium,
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _selectedBlood,
-                        dropdownColor: const Color(0xFF2E2E2E),
+                        dropdownColor: AppColors.fieldDark,
                         items: _bloodTypes
                             .map(
                               (b) => DropdownMenuItem(
                                 value: b,
                                 child: Text(
                                   b,
-                                  style: const TextStyle(color: Colors.white),
+                                  style: theme.textTheme.bodyLarge,
                                 ),
                               ),
                             )
@@ -282,14 +273,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       horizontal: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2E2E2E),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.fieldDark,
+                      borderRadius: AppDesignConstants.borderRadiusMedium,
                     ),
                     child: Text(
                       _lastDonated == null
                           ? l10n.selectLastDonationDate
                           : l10n.lastDonatedOn(DateFormat('yyyy-MM-dd').format(_lastDonated!)),
-                      style: const TextStyle(color: Colors.grey),
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
                 ),
@@ -299,19 +290,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _loading ? null : _signUp,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
                     child: _loading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                            l10n.signUp,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        ? const CircularProgressIndicator(color: AppColors.textPrimary)
+                        : Text(l10n.signUp),
                   ),
                 ),
 
@@ -324,7 +305,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     child: Text(
                       l10n.alreadyHaveAccountLogin,
-                      style: const TextStyle(color: Colors.grey),
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
                 ),

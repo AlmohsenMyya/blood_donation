@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/main.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
@@ -27,8 +28,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: const Color(0xFFE53935), // blood red theme color
+      backgroundColor: AppColors.primaryRed,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,26 +46,22 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               child: Icon(
                 Icons.favorite,
-                color: Colors.redAccent.shade700,
+                color: AppColors.primaryRed,
                 size: 60,
               ),
             ),
             const SizedBox(height: 20),
             Text(
               l10n.splashSaveLives,
-              style: const TextStyle(
+              style: theme.textTheme.displayMedium?.copyWith(
                 color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.splashEveryDropCounts,
-              style: const TextStyle(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white70,
-                fontSize: 16,
                 fontStyle: FontStyle.italic,
               ),
             ),

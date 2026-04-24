@@ -1,3 +1,5 @@
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 // =================== Settings Screen ===================
 class SettingsScreen extends ConsumerWidget {
@@ -13,16 +16,15 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(l10n.settings),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        centerTitle: true,
       ),
       body: ListView(
         children: [
-          _buildSection(l10n.account, [
+          _buildSection(context, l10n.account, [
             _buildCard(
               context: context,
               icon: Icons.account_circle,
@@ -36,7 +38,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.appPreferences, [
+          _buildSection(context, l10n.appPreferences, [
             _buildCard(
               context: context,
               icon: Icons.refresh,
@@ -45,7 +47,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.helpSupport, [
+          _buildSection(context, l10n.helpSupport, [
             _buildCard(
               context: context,
               icon: Icons.support_agent,
@@ -54,7 +56,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.privacyLegal, [
+          _buildSection(context, l10n.privacyLegal, [
             _buildCard(
               context: context,
               icon: Icons.privacy_tip,
@@ -83,7 +85,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ]),
 
-          _buildSection(l10n.about, [
+          _buildSection(context, l10n.about, [
             _buildCard(
               context: context,
               icon: Icons.info,
@@ -103,7 +105,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   // ===== Helper: Build Section =====
-  Widget _buildSection(String title, List<Widget> children) {
+  Widget _buildSection(BuildContext context, String title, List<Widget> children) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
@@ -111,7 +113,7 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 10),
           ...children,
@@ -129,13 +131,11 @@ class SettingsScreen extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     return Card(
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(icon, color: Colors.redAccent),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+        leading: Icon(icon, color: AppColors.primaryRed),
+        title: Text(title, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
         subtitle: subtitle != null ? Text(subtitle) : null,
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textGrey),
         onTap: onTap,
       ),
     );
@@ -148,7 +148,6 @@ class SettingsScreen extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.resetAllRequests),
         content: Text(l10n.confirmResetRequests),
         actions: [
@@ -157,7 +156,7 @@ class SettingsScreen extends ConsumerWidget {
             child: Text(l10n.cancel),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed),
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.yesDelete),
           ),
@@ -192,7 +191,7 @@ class SettingsScreen extends ConsumerWidget {
       query: 'subject=${l10n.supportEmailSubject}',
     );
     if (await canLaunchUrl(email)) {
-      await launchUrl(email);
+      await url_launcher.launchUrl(email);
     } else {
       ScaffoldMessenger.of(
         context,
@@ -226,7 +225,6 @@ class _AccountScreenState extends State<AccountScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).cardColor,
             title: Text(l10n.changePassword),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -318,16 +316,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           setStateDialog(() => loading = false);
                         }
                       },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: loading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                    ? const CircularProgressIndicator()
                     : Text(l10n.change),
               ),
             ],
@@ -351,7 +341,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.resetPassword),
         content: Text(l10n.resetPasswordConfirm(email)),
         actions: [
@@ -361,7 +350,6 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.send),
           ),
         ],
@@ -388,7 +376,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.signOut),
         content: Text(l10n.confirmSignOut),
         actions: [
@@ -398,7 +385,6 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.signOut),
           ),
         ],
@@ -429,7 +415,6 @@ class _AccountScreenState extends State<AccountScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).cardColor,
             title: Text(l10n.confirmPassword),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -487,16 +472,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           setStateDialog(() => loading = false);
                         }
                       },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: loading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                    ? const CircularProgressIndicator()
                     : Text(l10n.confirm),
               ),
             ],
@@ -511,7 +488,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final confirmDelete = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
         title: Text(l10n.deleteAccount),
         content: Text(l10n.confirmDeleteAccount),
         actions: [
@@ -521,7 +497,6 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text(l10n.delete),
           ),
         ],
@@ -574,16 +549,13 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.account),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
-              leading: const Icon(Icons.email, color: Colors.redAccent),
+              leading: const Icon(Icons.email, color: AppColors.primaryRed),
               title: Text(l10n.email),
               subtitle: Text(email),
             ),
@@ -592,9 +564,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
           // Change password (reauth required)
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
-              leading: const Icon(Icons.lock, color: Colors.redAccent),
+              leading: const Icon(Icons.lock, color: AppColors.primaryRed),
               title: Text(l10n.changePassword),
               onTap: _changePassword,
             ),
@@ -603,11 +574,10 @@ class _AccountScreenState extends State<AccountScreen> {
 
           // Forgot password (send reset email)
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(
                 Icons.email_outlined,
-                color: Colors.redAccent,
+                color: AppColors.primaryRed,
               ),
               title: Text(l10n.forgotPassword),
               subtitle: Text(l10n.sendResetLinkTo(email)),
@@ -618,11 +588,10 @@ class _AccountScreenState extends State<AccountScreen> {
 
           // Delete account
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
               leading: const Icon(
                 Icons.delete_forever,
-                color: Colors.redAccent,
+                color: AppColors.primaryRed,
               ),
               title: Text(l10n.deleteAccount),
               subtitle: Text(l10n.permanentlyDeleteData),
@@ -633,9 +602,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
           // Sign out
           Card(
-            color: Theme.of(context).cardColor,
             child: ListTile(
-              leading: const Icon(Icons.logout, color: Colors.redAccent),
+              leading: const Icon(Icons.logout, color: AppColors.primaryRed),
               title: Text(l10n.signOut),
               onTap: _signOut,
             ),
@@ -653,6 +621,7 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.about)),
       body: Padding(
@@ -662,12 +631,12 @@ class AboutScreen extends StatelessWidget {
           children: [
             Text(
               l10n.appTitle,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 10),
-            Text(l10n.aboutDescription),
+            Text(l10n.aboutDescription, style: theme.textTheme.bodyLarge),
             const SizedBox(height: 20),
-            Text(l10n.developedBy("Almohsen Shams")),
+            Text(l10n.developedBy("Almohsen Shams"), style: theme.textTheme.bodyMedium),
           ],
         ),
       ),
@@ -682,21 +651,17 @@ class PrivacyTermsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final title = isPrivacy ? l10n.privacyPolicy : l10n.termsConditions;
     final text = isPrivacy ? l10n.privacyPolicyContent : l10n.termsConditionsContent;
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(title: Text(title)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 16,
-            height: 1.6,
-            color: Colors.white,
-          ),
+          style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
         ),
       ),
     );

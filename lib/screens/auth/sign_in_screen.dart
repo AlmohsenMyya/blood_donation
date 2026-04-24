@@ -1,4 +1,5 @@
 
+import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_up_screen.dart';
 import 'package:sheryan/screens/home/home_screen.dart';
@@ -81,8 +82,9 @@ Future<void> _login() async {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      // full modern dark screen
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -93,32 +95,20 @@ Future<void> _login() async {
                 const SizedBox(height: 50),
                 Text(
                   l10n.welcomeBack,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: theme.textTheme.displayMedium,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l10n.loginToAccount,
-                  style: TextStyle(color: Colors.grey),
+                  style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 24),
                 // email
                 TextField(
                   controller: _email,
-                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: l10n.email,
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    prefixIcon: const Icon(Icons.email, color: Colors.grey),
-                    filled: true,
-                    fillColor: const Color(0xFF2E2E2E),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
+                    prefixIcon: const Icon(Icons.email),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -126,23 +116,15 @@ Future<void> _login() async {
                 TextField(
                   controller: _password,
                   obscureText: _obscure,
-                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: l10n.password,
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    prefixIcon: const Icon(Icons.lock, color: Colors.grey),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscure ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey,
+                        color: AppColors.textGrey,
                       ),
                       onPressed: () => setState(() => _obscure = !_obscure),
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFF2E2E2E),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
@@ -151,19 +133,9 @@ Future<void> _login() async {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _loading ? null : _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
                     child: _loading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                            l10n.login,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        ? const CircularProgressIndicator(color: AppColors.textPrimary)
+                        : Text(l10n.login),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -179,7 +151,7 @@ Future<void> _login() async {
                     ),
                     child: Text(
                       l10n.dontHaveAccountSignUp,
-                      style: TextStyle(color: Colors.grey),
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
                 ),

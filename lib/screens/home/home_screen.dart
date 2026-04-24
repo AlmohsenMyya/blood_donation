@@ -1,5 +1,6 @@
 
-
+import 'package:sheryan/core/theme/app_colors.dart';
+import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/donor_dashboard/donor_settings.dart';
 import 'package:sheryan/screens/donor_dashboard/donors_list.dart';
 import 'package:sheryan/screens/donor_dashboard/donors_profile.dart';
@@ -90,9 +91,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: const Color(0xFF121212),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      backgroundColor: AppColors.surfaceDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesignConstants.radiusExtraLarge)),
       ),
       builder: (ctx) {
         return SafeArea(
@@ -104,28 +105,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 width: 44,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppColors.textGrey.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 12),
               Text(
                 l10n.changeLanguage,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
               ListTile(
                 leading: const Text('🇺🇸', style: TextStyle(fontSize: 20)),
                 title: Text(
                   l10n.languageEnglish,
-                  style: const TextStyle(color: Colors.white),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: currentCode == 'en'
-                    ? const Icon(Icons.check, color: Colors.red)
+                    ? const Icon(Icons.check, color: AppColors.primaryRed)
                     : null,
                 onTap: () async {
                   await ref.read(localeProvider.notifier).setLocale(
@@ -138,10 +135,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 leading: const Text('🇸🇦', style: TextStyle(fontSize: 20)),
                 title: Text(
                   l10n.languageArabic,
-                  style: const TextStyle(color: Colors.white),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 trailing: currentCode == 'ar'
-                    ? const Icon(Icons.check, color: Colors.red)
+                    ? const Icon(Icons.check, color: AppColors.primaryRed)
                     : null,
                 onTap: () async {
                   await ref.read(localeProvider.notifier).setLocale(
@@ -161,20 +158,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _topAppBar(String role) {
   final l10n = AppLocalizations.of(context)!;
   return AppBar(
-    backgroundColor: Colors.black,
-    elevation: 0,
     title: Text(
       role == 'donor' ? l10n.donorDashboard : l10n.appTitle,
-      style: const TextStyle(fontWeight: FontWeight.bold),
     ),
     actions: [
       IconButton(
         tooltip: l10n.changeLanguage,
-        icon: const Icon(Icons.language, color: Colors.white),
+        icon: const Icon(Icons.language),
         onPressed: _showLanguageSheet,
       ),
       PopupMenuButton<String>(
-        icon: const Icon(Icons.settings, color: Colors.white),
+        icon: const Icon(Icons.settings),
         onSelected: (v) {
           if (v == 'settings') {
             Navigator.push(
@@ -218,22 +212,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _statCard(String title, String value) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: AppDesignConstants.edgeInsetsMedium,
       decoration: BoxDecoration(
-        color: const Color(0xFF101010),
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surfaceDark,
+        borderRadius: AppDesignConstants.borderRadiusMedium,
         border: Border.all(color: Colors.grey.shade900),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(color: Colors.grey)),
+          Text(title, style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 6),
           Text(
             value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.primaryRed,
             ),
           ),
         ],
@@ -253,15 +246,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('$greeting,', style: const TextStyle(color: Colors.grey)),
+        Text('$greeting,', style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 4),
         Text(
           name,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(fontSize: 22),
         ),
       ],
     );
@@ -273,20 +262,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     VoidCallback? onTap,
   }) {
     return Card(
-      color: const Color(0xFF0F0F0F),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         title: Text(
           title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.center,
         ),
-        subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey),textAlign: TextAlign.center,),
+        subtitle: Text(
+          subtitle, 
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
         ),
     );
   }
@@ -298,26 +285,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     VoidCallback? onTap,
   }) {
     return Card(
-      color: const Color(0xFF0F0F0F),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.red.shade700,
-          child: Icon(icon, color: Colors.white),
+          backgroundColor: AppColors.primaryRed,
+          child: Icon(icon, color: AppColors.textPrimary),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey)),
+        subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
         trailing: const Icon(
           Icons.arrow_forward_ios,
-          color: Colors.grey,
+          color: AppColors.textGrey,
           size: 16,
         ),
         onTap: onTap,
@@ -334,7 +315,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onRefresh: _loadUser,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(18),
+          padding: AppDesignConstants.edgeInsetsMedium,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -363,8 +344,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               
               const SizedBox(height: 18),
               Card(
-                color: const Color(0xFF0F0F0F),
-                child: GestureDetector(
+                child: InkWell(
+                  borderRadius: AppDesignConstants.borderRadiusMedium,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -376,65 +357,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: ListTile(
                     leading: const Icon(
                       Icons.bloodtype_rounded,
-                      color: Colors.red,
+                      color: AppColors.primaryRed,
                     ),
                     title: Text(
                       l10n.usersBloodRequests,
-                      style: const TextStyle(color: Colors.white),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     subtitle: Text(
                       l10n.viewAllRequestsFromUsersAcross,
-                      style: const TextStyle(color: Colors.grey),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                 ),
               ),
-              
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NearbyRequestsScreen(),
-                    ),
-                  );
-                },
-                child: Card(
-                  color: const Color(0xFF0F0F0F),
+              const SizedBox(height: 8),
+              Card(
+                child: InkWell(
+                   borderRadius: AppDesignConstants.borderRadiusMedium,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NearbyRequestsScreen(),
+                      ),
+                    );
+                  },
                   child: ListTile(
-                    leading: const Icon(Icons.bloodtype, color: Colors.red),
+                    leading: const Icon(Icons.bloodtype, color: AppColors.primaryRed),
                     title: Text(
                       l10n.nearbyRequests,
-                      style: const TextStyle(color: Colors.white),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     subtitle: Text(
                       l10n.checkNearbyBloodRequests,
-                      style: const TextStyle(color: Colors.grey),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TipsScreen()),
-                  );
-                },
-                child: Card(
-                  color: const Color(0xFF0F0F0F),
+              const SizedBox(height: 8),
+              Card(
+                child: InkWell(
+                  borderRadius: AppDesignConstants.borderRadiusMedium,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TipsScreen()),
+                    );
+                  },
                   child: ListTile(
                     leading: const Icon(
                       Icons.tips_and_updates,
-                      color: Colors.red,
+                      color: AppColors.primaryRed,
                     ),
                     title: Text(
                       l10n.awareness,
-                      style: const TextStyle(color: Colors.white),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     subtitle: Text(
                       l10n.awarenessDonorSubtitle,
-                      style: const TextStyle(color: Colors.grey),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                 ),
@@ -448,7 +430,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onRefresh: _loadUser,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(18),
+          padding: AppDesignConstants.edgeInsetsMedium,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -557,11 +539,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       body: tabs[_selectedTab],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
         currentIndex: _selectedTab,
         onTap: (i) => setState(() => _selectedTab = i),
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
         items: items,
       ),
     );
