@@ -318,5 +318,33 @@
   "scanToVerify": "امسح هذا الرمز في المستشفى للتوثيق أو إتمام العملية",
   "requestId": "رقم الطلب",
   "donorId": "رقم المتبرع",
-  "close": "إغلاق"
+  "close": "إغلاق",
+  "hospitalAdminDashboard": "لوحة مسؤول المستشفى",
+  "verifyRequest": "توثيق حالة",
+  "registerDonation": "تسجيل تبرع ناجح",
+  "scanRequestQr": "مسح رمز الطلب",
+  "scanDonorQr": "مسح رمز المتبرع",
+  "scanSuccess": "تم المسح بنجاح",
+  "donorDetected": "تم العثور على المتبرع: {name}",
+  "@donorDetected": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "requestDetected": "تم العثور على طلب لـ: {patient}",
+  "@requestDetected": {
+    "placeholders": {
+      "patient": { "type": "String" }
+    }
+  },
+  "confirmDonationTitle": "تأكيد التبرع",
+  "confirmDonationBody": "هل أنت متأكد من ربط هذا المتبرع بهذا الطلب وإغلاقه؟",
+  "verifySuccess": "تم توثيق الطلب بنجاح!",
+  "donationSuccess": "تم تسجيل التبرع وإغلاق الطلب!",
+  "invalidQr": "رمز غير صالح",
+  "waitingForDonor": "في انتظار رمز المتبرع...",
+  "waitingForRequest": "في انتظار رمز الطلب...",
+  "next": "التالي",
+  "step1Of2": "الخطوة 1 من 2: مسح المتبرع",
+  "step2Of2": "الخطوة 2 من 2: مسح الطلب"
 }

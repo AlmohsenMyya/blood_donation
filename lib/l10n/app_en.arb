@@ -318,5 +318,33 @@
   "scanToVerify": "Scan this code at the hospital to verify or complete the process",
   "requestId": "Request ID",
   "donorId": "Donor ID",
-  "close": "Close"
+  "close": "Close",
+  "hospitalAdminDashboard": "Hospital Admin Dashboard",
+  "verifyRequest": "Verify Request",
+  "registerDonation": "Register Successful Donation",
+  "scanRequestQr": "Scan Request QR",
+  "scanDonorQr": "Scan Donor QR",
+  "scanSuccess": "Scan Successful",
+  "donorDetected": "Donor Detected: {name}",
+  "@donorDetected": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "requestDetected": "Request Detected for: {patient}",
+  "@requestDetected": {
+    "placeholders": {
+      "patient": { "type": "String" }
+    }
+  },
+  "confirmDonationTitle": "Confirm Donation",
+  "confirmDonationBody": "Are you sure you want to link this donor to this request and close it?",
+  "verifySuccess": "Request verified successfully!",
+  "donationSuccess": "Donation registered and request closed!",
+  "invalidQr": "Invalid QR Code",
+  "waitingForDonor": "Waiting for Donor QR...",
+  "waitingForRequest": "Waiting for Request QR...",
+  "next": "Next",
+  "step1Of2": "Step 1 of 2: Scan Donor",
+  "step2Of2": "Step 2 of 2: Scan Request"
 }

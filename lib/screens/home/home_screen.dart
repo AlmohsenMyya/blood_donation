@@ -1,5 +1,7 @@
 
+import 'package:sheryan/screens/hospital/hospital_dashboard.dart';
 import 'package:sheryan/core/enums/user_role.dart';
+// ...
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/donor_dashboard/donor_settings.dart';
@@ -163,10 +165,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _topAppBar(UserRole role) {
   final l10n = AppLocalizations.of(context)!;
+  String title = l10n.appTitle;
+  if (role == UserRole.donor) title = l10n.donorDashboard;
+  if (role == UserRole.hospitalAdmin) title = l10n.hospitalAdminDashboard;
+
   return AppBar(
-    title: Text(
-      role == UserRole.donor ? l10n.donorDashboard : l10n.appTitle,
-    ),
+    title: Text(title),
     actions: [
       IconButton(
         tooltip: l10n.changeLanguage,
@@ -190,6 +194,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           }
         },
         itemBuilder: (ctx) => [
+           if (role != UserRole.hospitalAdmin)
            PopupMenuItem(
             value: 'settings',
             child: Row(
@@ -504,6 +509,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                  (userData?['role'] == 'donor' ? UserRole.donor : UserRole.recipient);
     final l10n = AppLocalizations.of(context)!;
 
+    // Handle Admin Roles specifically
+    if (role == UserRole.hospitalAdmin) {
+      return Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: _topAppBar(role),
+        ),
+        body: const HospitalDashboard(),
+      );
+    }
+
+    if (role == UserRole.superAdmin) {
+      return Scaffold(
+        appBar: AppBar(title: const Text("Super Admin")),
+        body: const Center(child: Text("Super Admin Dashboard Coming Soon")),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _signOutAndGoLogin,
+          child: const Icon(Icons.logout),
+        ),
+      );
+    }
 
     // Role-based tabs
     final List<Widget> tabs = [
