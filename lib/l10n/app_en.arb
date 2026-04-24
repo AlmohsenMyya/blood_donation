@@ -196,6 +196,7 @@
   "confirmDeleteAccount": "This will permanently delete your account and data. This action cannot be undone. Are you sure?",
   "permanentlyDeleteData": "Permanently delete your account and data",
   "confirmPasswordToDelete": "Enter your current password to delete your account.",
+  "confirmPassword": "Confirm Password",
   "allRequestsDeleted": "All requests deleted successfully",
   "resetAllRequests": "Reset All Requests",
   "confirmResetRequests": "Are you sure you want to delete all your requests?",
@@ -249,5 +250,66 @@
         "type": "String"
       }
     }
-  }
+  },
+  "awarenessTitle": "Blood Donation Tips",
+  "tipBeforeTitle": "Before Donation",
+  "tipBeforePoint1": "Have a good meal at least 3 hours before donating.",
+  "tipBeforePoint2": "Drink plenty of water before and after donation.",
+  "tipBeforePoint3": "Avoid alcohol or smoking 24 hours before donating.",
+  "tipBeforePoint4": "Sleep well the night before donation.",
+  "tipDuringTitle": "During Donation",
+  "tipDuringPoint1": "Relax and take deep breaths during the process.",
+  "tipDuringPoint2": "Squeeze the stress ball gently as instructed.",
+  "tipDuringPoint3": "Inform staff immediately if you feel dizzy or uncomfortable.",
+  "tipAfterTitle": "After Donation",
+  "tipAfterPoint1": "Rest for 10–15 minutes and enjoy refreshments.",
+  "tipAfterPoint2": "Avoid heavy exercise or lifting for the rest of the day.",
+  "tipAfterPoint3": "Keep the bandage on for a few hours.",
+  "tipAfterPoint4": "If you feel dizzy, sit or lie down immediately.",
+  "tipBenefitsTitle": "Benefits of Blood Donation",
+  "tipBenefitsPoint1": "Helps save lives in emergencies and surgeries.",
+  "tipBenefitsPoint2": "Improves heart health by balancing iron levels.",
+  "tipBenefitsPoint3": "Promotes the production of new blood cells.",
+  "tipBenefitsPoint4": "Brings a sense of pride and community contribution.",
+  "tipEligibilityTitle": "Eligibility & Restrictions",
+  "tipEligibilityPoint1": "Donors must be 18–60 years old and healthy.",
+  "tipEligibilityPoint2": "Minimum weight should be at least 50 kg.",
+  "tipEligibilityPoint3": "Avoid donating if you have fever, cold, or infection.",
+  "tipEligibilityPoint4": "Wait at least 3 months between donations.",
+  "splashSaveLives": "Save Lives",
+  "splashEveryDropCounts": "Every Drop Counts ❤",
+  "totalRequests": "Total Requests",
+  "yesDelete": "Yes, Delete",
+  "supportEmailSubject": "App Support - Blood Donation App",
+  "errorEmailApp": "Could not open email app",
+  "fillBothPasswords": "Please fill both password fields",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "change": "Change",
+  "noEmailFound": "No email found for this account",
+  "resetPasswordConfirm": "A password reset email will be sent to {email}. Continue?",
+  "@resetPasswordConfirm": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "send": "Send",
+  "currentPassword": "Current password",
+  "enterPassword": "Please enter your password",
+  "passwordIncorrect": "Password is incorrect",
+  "confirm": "Confirm",
+  "delete": "Delete",
+  "reLoginRequired": "Please re-login recently and try again.",
+  "developedBy": "Developed by: {name}",
+  "@developedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutDescription": "The Blood Donation App is a community-driven platform designed to bridge the gap between blood donors and those in need.\nOur mission is to make finding and donating blood simple, fast, and reliable.\n\nBuilt with ❤ using Flutter and Firebase.\nTogether, we can save lives — one donation at a time.",
+  "privacyPolicyContent": "Privacy Policy\n\nThank you for using our Blood Donation App (“we”, “our”, or “us”).\nYour privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type (donor or user).\n• Usage Data: General app usage data to improve experience.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n• To improve app functionality and communication.\n\n3. Data Security\nYour data is securely stored using Firebase. However, we recommend keeping your login credentials private.\n\n4. Sharing of Information\nWe do not sell or share your data with third parties. Only essential info (like name, city, and blood group) may appear to connect donors and recipients.\n\n5. Your Rights\nYou can update or delete your information anytime from your profile.\n\n6. Contact Us\n📧 Almohsen@gmail.com",
+  "termsConditionsContent": "Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!"
 }

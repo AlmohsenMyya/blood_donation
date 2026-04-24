@@ -1,53 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class TipsScreen extends StatelessWidget {
   const TipsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final List<Map<String, Object>> tips = [
       {
-        'title': 'Before Donation',
+        'title': l10n.tipBeforeTitle,
         'points': <String>[
-          'Have a good meal at least 3 hours before donating.',
-          'Drink plenty of water before and after donation.',
-          'Avoid alcohol or smoking 24 hours before donating.',
-          'Sleep well the night before donation.'
+          l10n.tipBeforePoint1,
+          l10n.tipBeforePoint2,
+          l10n.tipBeforePoint3,
+          l10n.tipBeforePoint4,
         ]
       },
       {
-        'title': 'During Donation',
+        'title': l10n.tipDuringTitle,
         'points': <String>[
-          'Relax and take deep breaths during the process.',
-          'Squeeze the stress ball gently as instructed.',
-          'Inform staff immediately if you feel dizzy or uncomfortable.'
+          l10n.tipDuringPoint1,
+          l10n.tipDuringPoint2,
+          l10n.tipDuringPoint3,
         ]
       },
       {
-        'title': 'After Donation',
+        'title': l10n.tipAfterTitle,
         'points': <String>[
-          'Rest for 10–15 minutes and enjoy refreshments.',
-          'Avoid heavy exercise or lifting for the rest of the day.',
-          'Keep the bandage on for a few hours.',
-          'If you feel dizzy, sit or lie down immediately.'
+          l10n.tipAfterPoint1,
+          l10n.tipAfterPoint2,
+          l10n.tipAfterPoint3,
+          l10n.tipAfterPoint4,
         ]
       },
       {
-        'title': 'Benefits of Blood Donation',
+        'title': l10n.tipBenefitsTitle,
         'points': <String>[
-          'Helps save lives in emergencies and surgeries.',
-          'Improves heart health by balancing iron levels.',
-          'Promotes the production of new blood cells.',
-          'Brings a sense of pride and community contribution.'
+          l10n.tipBenefitsPoint1,
+          l10n.tipBenefitsPoint2,
+          l10n.tipBenefitsPoint3,
+          l10n.tipBenefitsPoint4,
         ]
       },
       {
-        'title': 'Eligibility & Restrictions',
+        'title': l10n.tipEligibilityTitle,
         'points': <String>[
-          'Donors must be 18–60 years old and healthy.',
-          'Minimum weight should be at least 50 kg.',
-          'Avoid donating if you have fever, cold, or infection.',
-          'Wait at least 3 months between donations.'
+          l10n.tipEligibilityPoint1,
+          l10n.tipEligibilityPoint2,
+          l10n.tipEligibilityPoint3,
+          l10n.tipEligibilityPoint4,
         ]
       },
     ];
@@ -55,7 +58,7 @@ class TipsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Blood Donation Tips', style: TextStyle(color: Colors.white)),
+        title: Text(l10n.awarenessTitle, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
         centerTitle: true,
       ),

@@ -770,6 +770,12 @@ abstract class AppLocalizations {
   /// **'Enter your current password to delete your account.'**
   String get confirmPasswordToDelete;
 
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
   /// No description provided for @allRequestsDeleted.
   ///
   /// In en, this message translates to:
@@ -1009,6 +1015,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No donors found in {city}'**
   String noDonorsFoundInCity(String city);
+
+  /// No description provided for @awarenessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Donation Tips'**
+  String get awarenessTitle;
+
+  /// No description provided for @tipBeforeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before Donation'**
+  String get tipBeforeTitle;
+
+  /// No description provided for @tipBeforePoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a good meal at least 3 hours before donating.'**
+  String get tipBeforePoint1;
+
+  /// No description provided for @tipBeforePoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink plenty of water before and after donation.'**
+  String get tipBeforePoint2;
+
+  /// No description provided for @tipBeforePoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid alcohol or smoking 24 hours before donating.'**
+  String get tipBeforePoint3;
+
+  /// No description provided for @tipBeforePoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep well the night before donation.'**
+  String get tipBeforePoint4;
+
+  /// No description provided for @tipDuringTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'During Donation'**
+  String get tipDuringTitle;
+
+  /// No description provided for @tipDuringPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Relax and take deep breaths during the process.'**
+  String get tipDuringPoint1;
+
+  /// No description provided for @tipDuringPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Squeeze the stress ball gently as instructed.'**
+  String get tipDuringPoint2;
+
+  /// No description provided for @tipDuringPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Inform staff immediately if you feel dizzy or uncomfortable.'**
+  String get tipDuringPoint3;
+
+  /// No description provided for @tipAfterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'After Donation'**
+  String get tipAfterTitle;
+
+  /// No description provided for @tipAfterPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest for 10–15 minutes and enjoy refreshments.'**
+  String get tipAfterPoint1;
+
+  /// No description provided for @tipAfterPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid heavy exercise or lifting for the rest of the day.'**
+  String get tipAfterPoint2;
+
+  /// No description provided for @tipAfterPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the bandage on for a few hours.'**
+  String get tipAfterPoint3;
+
+  /// No description provided for @tipAfterPoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'If you feel dizzy, sit or lie down immediately.'**
+  String get tipAfterPoint4;
+
+  /// No description provided for @tipBenefitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Benefits of Blood Donation'**
+  String get tipBenefitsTitle;
+
+  /// No description provided for @tipBenefitsPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Helps save lives in emergencies and surgeries.'**
+  String get tipBenefitsPoint1;
+
+  /// No description provided for @tipBenefitsPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Improves heart health by balancing iron levels.'**
+  String get tipBenefitsPoint2;
+
+  /// No description provided for @tipBenefitsPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotes the production of new blood cells.'**
+  String get tipBenefitsPoint3;
+
+  /// No description provided for @tipBenefitsPoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'Brings a sense of pride and community contribution.'**
+  String get tipBenefitsPoint4;
+
+  /// No description provided for @tipEligibilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility & Restrictions'**
+  String get tipEligibilityTitle;
+
+  /// No description provided for @tipEligibilityPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Donors must be 18–60 years old and healthy.'**
+  String get tipEligibilityPoint1;
+
+  /// No description provided for @tipEligibilityPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum weight should be at least 50 kg.'**
+  String get tipEligibilityPoint2;
+
+  /// No description provided for @tipEligibilityPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid donating if you have fever, cold, or infection.'**
+  String get tipEligibilityPoint3;
+
+  /// No description provided for @tipEligibilityPoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait at least 3 months between donations.'**
+  String get tipEligibilityPoint4;
+
+  /// No description provided for @splashSaveLives.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Lives'**
+  String get splashSaveLives;
+
+  /// No description provided for @splashEveryDropCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Every Drop Counts ❤'**
+  String get splashEveryDropCounts;
+
+  /// No description provided for @totalRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Requests'**
+  String get totalRequests;
+
+  /// No description provided for @yesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Delete'**
+  String get yesDelete;
+
+  /// No description provided for @supportEmailSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'App Support - Blood Donation App'**
+  String get supportEmailSubject;
+
+  /// No description provided for @errorEmailApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open email app'**
+  String get errorEmailApp;
+
+  /// No description provided for @fillBothPasswords.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill both password fields'**
+  String get fillBothPasswords;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @noEmailFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No email found for this account'**
+  String get noEmailFound;
+
+  /// No description provided for @resetPasswordConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'A password reset email will be sent to {email}. Continue?'**
+  String resetPasswordConfirm(String email);
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPassword;
+
+  /// No description provided for @enterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get enterPassword;
+
+  /// No description provided for @passwordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is incorrect'**
+  String get passwordIncorrect;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @reLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please re-login recently and try again.'**
+  String get reLoginRequired;
+
+  /// No description provided for @developedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Developed by: {name}'**
+  String developedBy(String name);
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The Blood Donation App is a community-driven platform designed to bridge the gap between blood donors and those in need.\nOur mission is to make finding and donating blood simple, fast, and reliable.\n\nBuilt with ❤ using Flutter and Firebase.\nTogether, we can save lives — one donation at a time.'**
+  String get aboutDescription;
+
+  /// No description provided for @privacyPolicyContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy\n\nThank you for using our Blood Donation App (“we”, “our”, or “us”).\nYour privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type (donor or user).\n• Usage Data: General app usage data to improve experience.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n• To improve app functionality and communication.\n\n3. Data Security\nYour data is securely stored using Firebase. However, we recommend keeping your login credentials private.\n\n4. Sharing of Information\nWe do not sell or share your data with third parties. Only essential info (like name, city, and blood group) may appear to connect donors and recipients.\n\n5. Your Rights\nYou can update or delete your information anytime from your profile.\n\n6. Contact Us\n📧 Almohsen@gmail.com'**
+  String get privacyPolicyContent;
+
+  /// No description provided for @termsConditionsContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!'**
+  String get termsConditionsContent;
 }
 
 class _AppLocalizationsDelegate

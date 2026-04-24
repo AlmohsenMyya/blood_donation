@@ -372,6 +372,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmPasswordToDelete => 'أدخل كلمة المرور الحالية لحذف حسابك.';
 
   @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
   String get allRequestsDeleted => 'تم حذف جميع الطلبات بنجاح';
 
   @override
@@ -494,4 +497,163 @@ class AppLocalizationsAr extends AppLocalizations {
   String noDonorsFoundInCity(String city) {
     return 'لم يتم العثور على متبرعين في $city';
   }
+
+  @override
+  String get awarenessTitle => 'نصائح التبرع بالدم';
+
+  @override
+  String get tipBeforeTitle => 'قبل التبرع';
+
+  @override
+  String get tipBeforePoint1 =>
+      'تناول وجبة جيدة قبل التبرع بـ 3 ساعات على الأقل.';
+
+  @override
+  String get tipBeforePoint2 => 'اشرب الكثير من الماء قبل وبعد التبرع.';
+
+  @override
+  String get tipBeforePoint3 =>
+      'تجنب الكحول أو التدخين لمدة 24 ساعة قبل التبرع.';
+
+  @override
+  String get tipBeforePoint4 => 'نَم جيداً في الليلة التي تسبق التبرع.';
+
+  @override
+  String get tipDuringTitle => 'أثناء التبرع';
+
+  @override
+  String get tipDuringPoint1 => 'استرخِ وخذ أنفاساً عميقة أثناء العملية.';
+
+  @override
+  String get tipDuringPoint2 => 'اضغط على كرة الضغط برفق كما هو مطلوب.';
+
+  @override
+  String get tipDuringPoint3 =>
+      'أبلغ الموظفين فوراً إذا شعرت بدوار أو عدم ارتياح.';
+
+  @override
+  String get tipAfterTitle => 'بعد التبرع';
+
+  @override
+  String get tipAfterPoint1 => 'استرح لمدة 10-15 دقيقة واستمتع بالمرطبات.';
+
+  @override
+  String get tipAfterPoint2 =>
+      'تجنب التمارين الشاقة أو رفع الأثقال لبقية اليوم.';
+
+  @override
+  String get tipAfterPoint3 => 'حافظ على الضمادة لبضع ساعات.';
+
+  @override
+  String get tipAfterPoint4 => 'إذا شعرت بدوار، اجلس أو استلقِ على الفور.';
+
+  @override
+  String get tipBenefitsTitle => 'فوائد التبرع بالدم';
+
+  @override
+  String get tipBenefitsPoint1 =>
+      'يساعد في إنقاذ الأرواح في حالات الطوارئ والعمليات الجراحية.';
+
+  @override
+  String get tipBenefitsPoint2 =>
+      'يحسن صحة القلب من خلال توازن مستويات الحديد.';
+
+  @override
+  String get tipBenefitsPoint3 => 'يعزز إنتاج خلايا دم جديدة.';
+
+  @override
+  String get tipBenefitsPoint4 => 'يجلب الشعور بالفخر والمساهمة المجتمعية.';
+
+  @override
+  String get tipEligibilityTitle => 'الأهلية والقيود';
+
+  @override
+  String get tipEligibilityPoint1 =>
+      'يجب أن يتراوح عمر المتبرعين بين 18-60 عاماً وبصحة جيدة.';
+
+  @override
+  String get tipEligibilityPoint2 => 'يجب ألا يقل الوزن الأدنى عن 50 كجم.';
+
+  @override
+  String get tipEligibilityPoint3 =>
+      'تجنب التبرع إذا كنت تعاني من الحمى أو البرد أو العدوى.';
+
+  @override
+  String get tipEligibilityPoint4 =>
+      'انتظر 3 أشهر على الأقل بين كل عملية تبرع.';
+
+  @override
+  String get splashSaveLives => 'إنقاذ الأرواح';
+
+  @override
+  String get splashEveryDropCounts => 'كل قطرة تهم ❤';
+
+  @override
+  String get totalRequests => 'إجمالي الطلبات';
+
+  @override
+  String get yesDelete => 'نعم، حذف';
+
+  @override
+  String get supportEmailSubject => 'دعم التطبيق - تطبيق التبرع بالدم';
+
+  @override
+  String get errorEmailApp => 'تعذر فتح تطبيق البريد الإلكتروني';
+
+  @override
+  String get fillBothPasswords => 'يرجى ملء كلا حقلي كلمة المرور';
+
+  @override
+  String get passwordMinLength =>
+      'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
+
+  @override
+  String get change => 'تغيير';
+
+  @override
+  String get noEmailFound => 'لم يتم العثور على بريد إلكتروني لهذا الحساب';
+
+  @override
+  String resetPasswordConfirm(String email) {
+    return 'سيتم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور إلى $email. هل تريد الاستمرار؟';
+  }
+
+  @override
+  String get send => 'إرسال';
+
+  @override
+  String get currentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get enterPassword => 'يرجى إدخال كلمة المرور الخاصة بك';
+
+  @override
+  String get passwordIncorrect => 'كلمة المرور غير صحيحة';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get reLoginRequired =>
+      'يرجى إعادة تسجيل الدخول مؤخرًا والمحاولة مرة أخرى.';
+
+  @override
+  String developedBy(String name) {
+    return 'تم التطوير بواسطة: $name';
+  }
+
+  @override
+  String get aboutDescription =>
+      'تطبيق التبرع بالدم هو منصة مجتمعية مصممة لسد الفجوة بين المتبرعين بالدم ومن يحتاجون إليه.\nمهمتنا هي جعل العثور على الدم والتبرع به أمرًا بسيطًا وسريعًا وموثوقًا.\n\nتم بناؤه بـ ❤ باستخدام Flutter و Firebase.\nمعًا، يمكننا إنقاذ الأرواح - تبرع واحد في كل مرة.';
+
+  @override
+  String get privacyPolicyContent =>
+      'سياسة الخصوصية\n\nشكرًا لاستخدامك تطبيق التبرع بالدم الخاص بنا (\"نحن\" أو \"نا\").\nخصوصيتك مهمة بالنسبة لنا. تشرح سياسة الخصوصية هذه كيفية جمع معلوماتك الشخصية واستخدامها وحمايتها.\n\n1. المعلومات التي نجمعها\n• المعلومات الشخصية: الاسم والبريد الإلكتروني ورقم الهاتف والمدينة وفصيلة الدم ونوع الحساب (متبرع أو مستخدم).\n• بيانات الاستخدام: بيانات استخدام التطبيق العامة لتحسين التجربة.\n\n2. كيف نستخدم معلوماتك\n• لعرض ملفك الشخصي كمتبرع أو مستخدم.\n• لإدارة طلبات التبرع بالدم والتبرعات.\n• لتحسين وظائف التطبيق والتواصل.\n\n3. أمن البيانات\nيتم تخزين بياناتك بشكل آمن باستخدام Firebase. ومع ذلك، نوصي بالحفاظ على خصوصية بيانات اعتماد تسجيل الدخول الخاصة بك.\n\n4. مشاركة المعلومات\nنحن لا نبيع أو نشارك بياناتك مع أطراف ثالثة. قد تظهر المعلومات الأساسية فقط (مثل الاسم والمدينة وفصيلة الدم) لربط المتبرعين والمتلقين.\n\n5. حقوقك\nيمكنك تحديث معلوماتك أو حذفها في أي وقت من ملفك الشخصي.\n\n6. اتصل بنا\n📧 Almohsen@gmail.com';
+
+  @override
+  String get termsConditionsContent =>
+      'الشروط والأحكام\n\nمرحبًا بك في تطبيق التبرع بالدم الخاص بنا. باستخدام هذا التطبيق، فإنك توافق على الشروط التالية:\n\n1. مسؤوليات المستخدم\n• تقديم معلومات شخصية دقيقة.\n• يجب على المتبرعين التأكد من أنهم لائقون طبيًا للتبرع.\n• يجب على المستخدمين عدم نشر طلبات وهمية أو مضللة.\n\n2. استخدام التطبيق\n• التطبيق للأغراض الإنسانية فقط.\n• يمنع منعا باتا أي استخدام تجاري أو مسيء.\n\n3. البيانات والخصوصية\nتستخدم بياناتك فقط لربط المتبرعين والمتلقين. يرجى مراجعة سياسة الخصوصية الخاصة بنا لمزيد من التفاصيل.\n\n4. المسؤولية\nنحن نعمل كمنصة فقط. نحن لسنا مسؤولين عن التصرفات أو النتائج بعد التواصل بين المستخدمين.\n\n5. إنهاء الحساب\nيجوز لنا تعليق أو إزالة الحسابات المتورطة في نشاط وهمي أو غير أخلاقي.\n\n6. تحديثات الشروط\nقد تتغير هذه الشروط بمرور الوقت. الاستخدام المستمر يعني قبولك للشروط المحدثة.\n\nشكرًا لك على استخدام تطبيقنا للمساعدة في إنقاذ الأرواح!';
 }

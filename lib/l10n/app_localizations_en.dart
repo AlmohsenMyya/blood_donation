@@ -377,6 +377,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter your current password to delete your account.';
 
   @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
   String get allRequestsDeleted => 'All requests deleted successfully';
 
   @override
@@ -500,4 +503,165 @@ class AppLocalizationsEn extends AppLocalizations {
   String noDonorsFoundInCity(String city) {
     return 'No donors found in $city';
   }
+
+  @override
+  String get awarenessTitle => 'Blood Donation Tips';
+
+  @override
+  String get tipBeforeTitle => 'Before Donation';
+
+  @override
+  String get tipBeforePoint1 =>
+      'Have a good meal at least 3 hours before donating.';
+
+  @override
+  String get tipBeforePoint2 =>
+      'Drink plenty of water before and after donation.';
+
+  @override
+  String get tipBeforePoint3 =>
+      'Avoid alcohol or smoking 24 hours before donating.';
+
+  @override
+  String get tipBeforePoint4 => 'Sleep well the night before donation.';
+
+  @override
+  String get tipDuringTitle => 'During Donation';
+
+  @override
+  String get tipDuringPoint1 =>
+      'Relax and take deep breaths during the process.';
+
+  @override
+  String get tipDuringPoint2 => 'Squeeze the stress ball gently as instructed.';
+
+  @override
+  String get tipDuringPoint3 =>
+      'Inform staff immediately if you feel dizzy or uncomfortable.';
+
+  @override
+  String get tipAfterTitle => 'After Donation';
+
+  @override
+  String get tipAfterPoint1 => 'Rest for 10–15 minutes and enjoy refreshments.';
+
+  @override
+  String get tipAfterPoint2 =>
+      'Avoid heavy exercise or lifting for the rest of the day.';
+
+  @override
+  String get tipAfterPoint3 => 'Keep the bandage on for a few hours.';
+
+  @override
+  String get tipAfterPoint4 =>
+      'If you feel dizzy, sit or lie down immediately.';
+
+  @override
+  String get tipBenefitsTitle => 'Benefits of Blood Donation';
+
+  @override
+  String get tipBenefitsPoint1 =>
+      'Helps save lives in emergencies and surgeries.';
+
+  @override
+  String get tipBenefitsPoint2 =>
+      'Improves heart health by balancing iron levels.';
+
+  @override
+  String get tipBenefitsPoint3 => 'Promotes the production of new blood cells.';
+
+  @override
+  String get tipBenefitsPoint4 =>
+      'Brings a sense of pride and community contribution.';
+
+  @override
+  String get tipEligibilityTitle => 'Eligibility & Restrictions';
+
+  @override
+  String get tipEligibilityPoint1 =>
+      'Donors must be 18–60 years old and healthy.';
+
+  @override
+  String get tipEligibilityPoint2 => 'Minimum weight should be at least 50 kg.';
+
+  @override
+  String get tipEligibilityPoint3 =>
+      'Avoid donating if you have fever, cold, or infection.';
+
+  @override
+  String get tipEligibilityPoint4 =>
+      'Wait at least 3 months between donations.';
+
+  @override
+  String get splashSaveLives => 'Save Lives';
+
+  @override
+  String get splashEveryDropCounts => 'Every Drop Counts ❤';
+
+  @override
+  String get totalRequests => 'Total Requests';
+
+  @override
+  String get yesDelete => 'Yes, Delete';
+
+  @override
+  String get supportEmailSubject => 'App Support - Blood Donation App';
+
+  @override
+  String get errorEmailApp => 'Could not open email app';
+
+  @override
+  String get fillBothPasswords => 'Please fill both password fields';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get noEmailFound => 'No email found for this account';
+
+  @override
+  String resetPasswordConfirm(String email) {
+    return 'A password reset email will be sent to $email. Continue?';
+  }
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get enterPassword => 'Please enter your password';
+
+  @override
+  String get passwordIncorrect => 'Password is incorrect';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get reLoginRequired => 'Please re-login recently and try again.';
+
+  @override
+  String developedBy(String name) {
+    return 'Developed by: $name';
+  }
+
+  @override
+  String get aboutDescription =>
+      'The Blood Donation App is a community-driven platform designed to bridge the gap between blood donors and those in need.\nOur mission is to make finding and donating blood simple, fast, and reliable.\n\nBuilt with ❤ using Flutter and Firebase.\nTogether, we can save lives — one donation at a time.';
+
+  @override
+  String get privacyPolicyContent =>
+      'Privacy Policy\n\nThank you for using our Blood Donation App (“we”, “our”, or “us”).\nYour privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type (donor or user).\n• Usage Data: General app usage data to improve experience.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n• To improve app functionality and communication.\n\n3. Data Security\nYour data is securely stored using Firebase. However, we recommend keeping your login credentials private.\n\n4. Sharing of Information\nWe do not sell or share your data with third parties. Only essential info (like name, city, and blood group) may appear to connect donors and recipients.\n\n5. Your Rights\nYou can update or delete your information anytime from your profile.\n\n6. Contact Us\n📧 Almohsen@gmail.com';
+
+  @override
+  String get termsConditionsContent =>
+      'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!';
 }

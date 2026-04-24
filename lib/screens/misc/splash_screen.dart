@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:sheryan/main.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,6 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Navigate after 3 seconds
     Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const StartupRouter()),
@@ -24,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFE53935), // blood red theme color
       body: Center(
@@ -45,9 +48,9 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Save Lives",
-              style: TextStyle(
+            Text(
+              l10n.splashSaveLives,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -55,9 +58,9 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Every Drop Counts ❤",
-              style: TextStyle(
+            Text(
+              l10n.splashEveryDropCounts,
+              style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 16,
                 fontStyle: FontStyle.italic,

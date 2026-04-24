@@ -1,8 +1,8 @@
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sheryan/l10n/app_localizations.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -37,13 +37,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final doc = await _firestore.collection('users').doc(user.uid).get();
     final data = doc.data() ?? {};
 
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+
     setState(() {
       _name.text = data['name'] ?? '';
       _phone.text = data['phone'] ?? '';
       _city.text = data['city'] ?? '';
       _lastDonated.text = data['lastDonated'] ?? '';
-      _bloodGroup = data['bloodGroup'] ?? 'N/A';
-      _accountType = data['role'] ?? 'user';
+      _bloodGroup = data['bloodGroup'] ?? l10n.notAvailable;
+      
+      final role = data['role'] ?? 'user';
+      _accountType = role == 'donor' ? l10n.roleDonor : l10n.roleUser;
+      
       _loading = false;
     });
   }
@@ -51,6 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // 💾 Save updated profile data
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
 
     await _firestore.collection('users').doc(user.uid).update({
       'name': _name.text.trim(),
@@ -61,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated successfully!')),
+      SnackBar(content: Text(l10n.profileUpdatedSuccessfully)),
     );
   }
 
@@ -82,11 +89,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('My Profile', style: TextStyle(color: Colors.white)),
+        title: Text(l10n.myProfile, style: const TextStyle(color: Colors.white)),
       ),
       body: SafeArea(
         child: _loading
@@ -116,9 +124,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Total Requests',
-                                    style: TextStyle(
+                                  Text(
+                                    l10n.totalRequests,
+                                    style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 17,
                                         fontWeight: FontWeight.w500),
@@ -142,43 +150,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       // 🧾 Profile Form
                       Container(
-                        // decoration: BoxDecoration(
-                        //   color: Colors.black,
-                        //   borderRadius: BorderRadius.circular(16),
-                        //   boxShadow: [
-                        //     BoxShadow(
-                        //       color: Colors.red.withOpacity(0.2),
-                        //       blurRadius: 6,
-                        //       spreadRadius: 1,
-                        //     ),
-                        //   ],
-                        // ),
                         padding: const EdgeInsets.all(20),
                         child: Form(
                           key: _formKey,
                           child: Column(
                             children: [
-                              _buildTextField('Name', _name),
+                              _buildTextField(l10n.name, _name),
                               const SizedBox(height: 12),
                               _buildTextField(
-                                'Email',
+                                l10n.email,
                                 TextEditingController(text: user.email),
                                 enabled: false,
                               ),
                               const SizedBox(height: 12),
-                              _buildTextField('Phone', _phone),
+                              _buildTextField(l10n.phone, _phone),
                               const SizedBox(height: 12),
-                              _buildTextField('City', _city),
+                              _buildTextField(l10n.city, _city),
                               const SizedBox(height: 12),
                               _buildTextField(
-                                'Blood Group',
+                                l10n.bloodGroup,
                                 TextEditingController(text: _bloodGroup),
                                 enabled: false,
                               ),
                              
                               const SizedBox(height: 12),
                               _buildTextField(
-                                'Account Type',
+                                l10n.accountType,
                                 TextEditingController(text: _accountType),
                                 enabled: false,
                               ),
@@ -200,9 +197,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           elevation: 4,
                         ),
                         icon: const Icon(Icons.save, color: Colors.white),
-                        label: const Text(
-                          'Save Changes',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        label: Text(
+                          l10n.saveChanges,
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ),
                     ],
@@ -216,6 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // 🧱 Reusable text field widget
   Widget _buildTextField(String label, TextEditingController controller,
       {bool enabled = true}) {
+    final l10n = AppLocalizations.of(context)!;
     return TextFormField(
       controller: controller,
       enabled: enabled,
@@ -224,7 +222,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         labelText: label,
         labelStyle: const TextStyle(color: Colors.white70),
         filled: true,
-       // fillColor: Colors.grey[850],
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
@@ -232,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       validator: (v) =>
-          (enabled && (v == null || v.isEmpty)) ? 'Required field' : null,
+          (enabled && (v == null || v.isEmpty)) ? l10n.requiredField : null,
     );
   }
 }
