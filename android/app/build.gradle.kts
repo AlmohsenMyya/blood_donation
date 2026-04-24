@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.sheryan.app"
     compileSdk = 36
-
+    ndkVersion = "29.0.14206865"
     defaultConfig {
         applicationId = "com.sheryan.app"
         minSdk = flutter.minSdkVersion

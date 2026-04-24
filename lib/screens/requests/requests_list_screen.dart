@@ -1,5 +1,7 @@
 
+import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ... rest of imports
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
@@ -145,13 +147,28 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                         ),
                         if (status != 'done') ...[
                           const SizedBox(height: 12),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: ElevatedButton.icon(
-                              onPressed: () => _markAsDone(doc.id),
-                              icon: const Icon(Icons.check),
-                              label: Text(l10n.markAsDone),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton.icon(
+                                onPressed: () {
+                                  QrDialog.show(
+                                    context,
+                                    data: doc.id,
+                                    label: data['patientName'] ?? l10n.unknownPatient,
+                                    idLabel: l10n.requestId,
+                                  );
+                                },
+                                icon: const Icon(Icons.qr_code, color: AppColors.textSecondary),
+                                label: Text(l10n.showQrCode, style: const TextStyle(color: AppColors.textSecondary)),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton.icon(
+                                onPressed: () => _markAsDone(doc.id),
+                                icon: const Icon(Icons.check),
+                                label: Text(l10n.markAsDone),
+                              ),
+                            ],
                           ),
                         ]
                       ],

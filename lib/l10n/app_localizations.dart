@@ -1297,6 +1297,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!'**
   String get termsConditionsContent;
+
+  /// No description provided for @showQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show QR Code'**
+  String get showQrCode;
+
+  /// No description provided for @donorCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Donor Card'**
+  String get donorCard;
+
+  /// No description provided for @qrCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification QR Code'**
+  String get qrCodeTitle;
+
+  /// No description provided for @scanToVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this code at the hospital to verify or complete the process'**
+  String get scanToVerify;
+
+  /// No description provided for @requestId.
+  ///
+  /// In en, this message translates to:
+  /// **'Request ID'**
+  String get requestId;
+
+  /// No description provided for @donorId.
+  ///
+  /// In en, this message translates to:
+  /// **'Donor ID'**
+  String get donorId;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

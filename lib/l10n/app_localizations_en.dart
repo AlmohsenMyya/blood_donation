@@ -664,4 +664,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get termsConditionsContent =>
       'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!';
+
+  @override
+  String get showQrCode => 'Show QR Code';
+
+  @override
+  String get donorCard => 'Donor Card';
+
+  @override
+  String get qrCodeTitle => 'Verification QR Code';
+
+  @override
+  String get scanToVerify =>
+      'Scan this code at the hospital to verify or complete the process';
+
+  @override
+  String get requestId => 'Request ID';
+
+  @override
+  String get donorId => 'Donor ID';
+
+  @override
+  String get close => 'Close';
 }

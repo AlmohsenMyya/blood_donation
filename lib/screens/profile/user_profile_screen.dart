@@ -1,5 +1,7 @@
 
+import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ...
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
@@ -185,6 +187,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onPressed: _saveProfile,
                         icon: const Icon(Icons.save),
                         label: Text(l10n.saveChanges),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          QrDialog.show(
+                            context,
+                            data: user.uid,
+                            label: _name.text,
+                            idLabel: l10n.donorId,
+                          );
+                        },
+                        icon: const Icon(Icons.qr_code),
+                        label: Text(l10n.donorCard),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.primaryRed),
+                          foregroundColor: AppColors.primaryRed,
+                        ),
                       ),
                     ],
                   ),
