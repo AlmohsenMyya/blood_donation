@@ -1,4 +1,5 @@
 
+import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/donor_dashboard/donor_settings.dart';
@@ -52,6 +53,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final doc = await _fs.collection('users').doc(firebaseUser.uid).get();
       if (doc.exists) {
         userData = doc.data();
+        // Sync role provider if needed
+        final roleStr = userData?['role'];
+        if (roleStr != null) {
+          ref.read(roleProvider.notifier).setRoleFromString(roleStr);
+        }
       }
     }
     if (mounted) {
@@ -155,11 +161,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _topAppBar(String role) {
+  Widget _topAppBar(UserRole role) {
   final l10n = AppLocalizations.of(context)!;
   return AppBar(
     title: Text(
-      role == 'donor' ? l10n.donorDashboard : l10n.appTitle,
+      role == UserRole.donor ? l10n.donorDashboard : l10n.appTitle,
     ),
     actions: [
       IconButton(
@@ -168,13 +174,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onPressed: _showLanguageSheet,
       ),
       PopupMenuButton<String>(
-        icon: const Icon(Icons.settings),
+        icon: const Icon(Icons.settings ),
         onSelected: (v) {
           if (v == 'settings') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => role == 'donor'
+                builder: (_) => role == UserRole.donor
                     ? const DonorSettingsScreen()
                     : const SettingsScreen(),
               ),
@@ -306,11 +312,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildBody(String role) {
+  Widget _buildBody(UserRole role) {
     final l10n = AppLocalizations.of(context)!;
     if (loading) return const Center(child: CircularProgressIndicator());
 
-    if (role == 'donor') {
+    if (role == UserRole.donor) {
       return RefreshIndicator(
         onRefresh: _loadUser,
         child: SingleChildScrollView(
@@ -494,38 +500,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final role = ref.watch(roleProvider) ?? userData?['role'] ?? 'user';
+    final role = ref.watch(roleProvider) ?? 
+                 (userData?['role'] == 'donor' ? UserRole.donor : UserRole.recipient);
     final l10n = AppLocalizations.of(context)!;
 
 
     // Role-based tabs
     final List<Widget> tabs = [
       _buildBody(role),
-      if (role == 'user') const DonorListScreen(),
-      if (role == 'user') const ProfileScreen(),
-      if (role == 'donor') const DonorsList(), 
-       if (role == 'donor') const DonorProfileScreen(),
+      if (role == UserRole.recipient) const DonorListScreen(),
+      if (role == UserRole.recipient) const ProfileScreen(),
+      if (role == UserRole.donor) const DonorsList(), 
+       if (role == UserRole.donor) const DonorProfileScreen(),
     ];
 
     final List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(icon: const Icon(Icons.home), label: l10n.homeTab),
-      if (role == 'user')
+      if (role == UserRole.recipient)
         BottomNavigationBarItem(
           icon: const Icon(Icons.people),
           label: l10n.donorsTab,
         ),
-      if (role == 'user')
+      if (role == UserRole.recipient)
         BottomNavigationBarItem(
           icon: const Icon(Icons.person),
           label: l10n.profileTab,
         ),
 
-      if (role == 'donor')
+      if (role == UserRole.donor)
         BottomNavigationBarItem(
           icon: const Icon(Icons.person_3),
           label: l10n.allDonorsTab,
         ),
-        if (role == 'donor')
+        if (role == UserRole.donor)
         BottomNavigationBarItem(
           icon: const Icon(Icons.person_3),
           label: l10n.profileTab,

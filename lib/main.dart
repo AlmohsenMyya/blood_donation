@@ -7,6 +7,7 @@ import 'package:sheryan/firebase_options.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/providers/locale/locale_provider.dart';
+import 'package:sheryan/providers/theme/theme_provider.dart';
 import 'package:sheryan/screens/auth/role_selection_screen.dart';
 import 'package:sheryan/screens/home/home_screen.dart';
 import 'package:sheryan/screens/misc/splash_screen.dart';
@@ -23,6 +24,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    final theme = ref.watch(themeProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -35,7 +37,7 @@ class MyApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      theme: AppTheme.darkTheme,
+      theme: theme,
       home: const SplashScreen(),
     );
   }

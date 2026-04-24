@@ -1,3 +1,4 @@
+import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
@@ -12,8 +13,8 @@ class RoleSelectionScreen extends ConsumerWidget {
   const RoleSelectionScreen({super.key});
 
 
-  void _onRoleTap(BuildContext context, WidgetRef ref, String role) {
-  // Save role using provider (no async/await needed)
+  void _onRoleTap(BuildContext context, WidgetRef ref, UserRole role) {
+  // Save role using provider
   ref.read(roleProvider.notifier).setRole(role);
 
   // Navigate to role-specific signup
@@ -59,14 +60,14 @@ class RoleSelectionScreen extends ConsumerWidget {
                       icon: Icons.bloodtype,
                       title: l10n.roleDonor,
                       subtitle: l10n.roleDonorSubtitle,
-                      onTap: () => _onRoleTap(context, ref, 'donor'),
+                      onTap: () => _onRoleTap(context, ref, UserRole.donor),
                     ),
                     const SizedBox(height: 16),
                     _RoleCard(
                       icon: Icons.person,
                       title: l10n.roleUser,
                       subtitle: l10n.roleUserSubtitle,
-                      onTap: () => _onRoleTap(context, ref, 'user'),
+                      onTap: () => _onRoleTap(context, ref, UserRole.recipient),
                     ),
                   ],
                 ),

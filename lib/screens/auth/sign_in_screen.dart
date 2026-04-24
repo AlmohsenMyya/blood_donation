@@ -63,7 +63,7 @@ Future<void> _login() async {
 
     // 5) Set role in provider so Home shows correct dashboard
     final roleValue = (doc.data()?['role'] as String?) ?? 'user';
-    ref.read(roleProvider.notifier).setRole(roleValue);
+    ref.read(roleProvider.notifier).setRoleFromString(roleValue);
 
     // 6) Navigate to Home and clear back stack
     if (!mounted) return;
@@ -145,7 +145,7 @@ Future<void> _login() async {
                       context,
                       MaterialPageRoute(
                         builder: (_) => SignupScreen(
-                          role: ref.read(roleProvider) ?? 'donor',
+                          role: ref.read(roleProvider),
                         ),
                       ),
                     ),

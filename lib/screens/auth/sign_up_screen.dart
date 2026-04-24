@@ -1,4 +1,5 @@
 
+import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
-  final String? role;
+  final UserRole? role;
   const SignupScreen({super.key, this.role});
 
   @override
@@ -29,7 +30,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final TextEditingController _city = TextEditingController();
 
   String _selectedBlood = 'A+';
-  String _selectedRole = 'donor';
+  UserRole _selectedRole = UserRole.donor;
   DateTime? _lastDonated;
   bool _loading = false;
   bool _obscure = true;
@@ -37,12 +38,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final List<String> _bloodTypes = [
     'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',
   ];
-  final List<String> _roles = ['donor', 'user'];
 
   @override
   void initState() {
     super.initState();
-    if (widget.role != null && _roles.contains(widget.role)) {
+    if (widget.role != null) {
       _selectedRole = widget.role!;
     }
   }
@@ -54,7 +54,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       initialDate: now.subtract(const Duration(days: 90)),
       firstDate: DateTime(2000),
       lastDate: now,
-      builder: (context, child) => Theme(data: ThemeData.dark(), child: child!),
+      builder: (context, child) => Theme(
+        data: ThemeData.dark().copyWith(
+          colorScheme: const ColorScheme.dark(
+            primary: AppColors.primaryRed,
+          ),
+        ),
+        child: child!,
+      ),
     );
     if (dt != null) setState(() => _lastDonated = dt);
   }
@@ -103,9 +110,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         name: _name.text.trim(),
         email: _email.text.trim(),
         password: _password.text,
-        bloodGroup: _selectedRole == 'donor' ? _selectedBlood : '',
+        bloodGroup: _selectedRole == UserRole.donor ? _selectedBlood : '',
         city: _city.text.trim(),
-        role: _selectedRole,
+        role: _selectedRole == UserRole.donor ? 'donor' : 'user',
         phone: _phone.text.trim(),
         lastDonated: lastDonatedString,
       );
@@ -171,7 +178,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final isDonor = _selectedRole == 'donor';
+    final isDonor = _selectedRole == UserRole.donor;
     
     return Scaffold(
       body: SafeArea(
@@ -210,20 +217,25 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     borderRadius: AppDesignConstants.borderRadiusMedium,
                   ),
                   child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
+                    child: DropdownButton<UserRole>(
                       value: _selectedRole,
                       dropdownColor: AppColors.fieldDark,
-                      items: _roles
-                          .map(
-                            (r) => DropdownMenuItem(
-                              value: r,
-                              child: Text(
-                                r == 'donor' ? l10n.roleDonor : l10n.roleUser,
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ),
-                          )
-                          .toList(),
+                      items: [
+                        DropdownMenuItem(
+                          value: UserRole.donor,
+                          child: Text(
+                            l10n.roleDonor,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: UserRole.recipient,
+                          child: Text(
+                            l10n.roleUser,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
                       onChanged: (v) => setState(() => _selectedRole = v!),
                       isExpanded: true,
                     ),

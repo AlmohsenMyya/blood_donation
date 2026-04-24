@@ -17,6 +17,13 @@ class AppColors {
   static const Color textSecondary = Colors.white70;
   static const Color textGrey = Colors.grey;
   
+  // Role-Specific Colors
+  static const Color donorPrimary = Color(0xFF37F450); // Deep Warm Red
+  static const Color donorAccent = Color(0xFFCFB53B);   // Old Gold / Warm Yellow
+  
+  static const Color recipientPrimary = Color(0xFFE53935); // Standard Bright Red
+  static const Color recipientAccent = Color(0xFF455A64);  // Blue Grey Accent
+  
   // Status Colors
   static const Color success = Colors.green;
   static const Color error = Colors.red;

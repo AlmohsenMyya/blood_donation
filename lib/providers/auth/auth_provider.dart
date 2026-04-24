@@ -1,11 +1,8 @@
-
-
-
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/legacy.dart';
-
 
 /// Provides a single instance of AuthService
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
@@ -15,16 +12,27 @@ final authStateProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
 
-/// Holds the selected role (e.g., 'user', 'donor', or 'hospital')
-final roleProvider = StateNotifierProvider<RoleNotifier, String?>(
+/// Holds the selected role (donor or recipient)
+final roleProvider = StateNotifierProvider<RoleNotifier, UserRole?>(
   (ref) => RoleNotifier(),
 );
 
-class RoleNotifier extends StateNotifier<String?> {
+class RoleNotifier extends StateNotifier<UserRole?> {
   RoleNotifier() : super(null);
 
   /// Set selected role
-  void setRole(String role) => state = role;
+  void setRole(UserRole role) => state = role;
+
+  /// Set role from string (useful for Firebase integration)
+  void setRoleFromString(String? roleStr) {
+    if (roleStr == 'donor') {
+      state = UserRole.donor;
+    } else if (roleStr == 'user' || roleStr == 'recipient') {
+      state = UserRole.recipient;
+    } else {
+      state = null;
+    }
+  }
 
   /// Clear selected role (used on logout)
   void clearRole() => state = null;
