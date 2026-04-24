@@ -686,4 +686,96 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get hospitalAdminDashboard => 'Hospital Admin Dashboard';
+
+  @override
+  String get verifyRequest => 'Verify Request';
+
+  @override
+  String get registerDonation => 'Register Successful Donation';
+
+  @override
+  String get scanRequestQr => 'Scan Request QR';
+
+  @override
+  String get scanDonorQr => 'Scan Donor QR';
+
+  @override
+  String get scanSuccess => 'Scan Successful';
+
+  @override
+  String donorDetected(String name) {
+    return 'Donor Detected: $name';
+  }
+
+  @override
+  String requestDetected(String patient) {
+    return 'Request Detected for: $patient';
+  }
+
+  @override
+  String get confirmDonationTitle => 'Confirm Donation';
+
+  @override
+  String get confirmDonationBody =>
+      'Are you sure you want to link this donor to this request and close it?';
+
+  @override
+  String get verifySuccess => 'Request verified successfully!';
+
+  @override
+  String get donationSuccess => 'Donation registered and request closed!';
+
+  @override
+  String get invalidQr => 'Invalid QR Code';
+
+  @override
+  String get waitingForDonor => 'Waiting for Donor QR...';
+
+  @override
+  String get waitingForRequest => 'Waiting for Request QR...';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get step1Of2 => 'Step 1 of 2: Scan Donor';
+
+  @override
+  String get step2Of2 => 'Step 2 of 2: Scan Request';
+
+  @override
+  String get adminDashboard => 'Super Admin Dashboard';
+
+  @override
+  String get manageHospitalAdmins => 'Manage Hospital Admins';
+
+  @override
+  String get manageCities => 'Manage Cities';
+
+  @override
+  String get createAdmin => 'Create Hospital Admin';
+
+  @override
+  String get hospitalId => 'Hospital ID';
+
+  @override
+  String get addCity => 'Add City';
+
+  @override
+  String get cityName => 'City Name';
+
+  @override
+  String get cityAdded => 'City added successfully!';
+
+  @override
+  String get cityDeleted => 'City deleted successfully!';
+
+  @override
+  String get adminCreated => 'Hospital Admin created successfully!';
+
+  @override
+  String get noCitiesFound => 'No cities found';
 }

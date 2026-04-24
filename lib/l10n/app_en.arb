@@ -346,5 +346,16 @@
   "waitingForRequest": "Waiting for Request QR...",
   "next": "Next",
   "step1Of2": "Step 1 of 2: Scan Donor",
-  "step2Of2": "Step 2 of 2: Scan Request"
+  "step2Of2": "Step 2 of 2: Scan Request",
+  "adminDashboard": "Super Admin Dashboard",
+  "manageHospitalAdmins": "Manage Hospital Admins",
+  "manageCities": "Manage Cities",
+  "createAdmin": "Create Hospital Admin",
+  "hospitalId": "Hospital ID",
+  "addCity": "Add City",
+  "cityName": "City Name",
+  "cityAdded": "City added successfully!",
+  "cityDeleted": "City deleted successfully!",
+  "adminCreated": "Hospital Admin created successfully!",
+  "noCitiesFound": "No cities found"
 }

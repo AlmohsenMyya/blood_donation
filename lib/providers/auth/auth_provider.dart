@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/services/auth_service.dart';
@@ -10,6 +11,18 @@ final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 /// Listens to authentication state changes from Firebase
 final authStateProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
+});
+
+/// Fetches and listens to the current user's profile document
+final userProfileProvider = StreamProvider<Map<String, dynamic>?>((ref) {
+  final user = ref.watch(authStateProvider).value;
+  if (user == null) return Stream.value(null);
+  
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .snapshots()
+      .map((snapshot) => snapshot.data());
 });
 
 /// Holds the selected role

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/providers/auth/auth_provider.dart';
 
 class HospitalDashboard extends ConsumerWidget {
   const HospitalDashboard({super.key});
@@ -12,7 +13,6 @@ class HospitalDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -75,15 +75,15 @@ class HospitalDashboard extends ConsumerWidget {
   }
 }
 
-class ScannerScreen extends StatefulWidget {
+class ScannerScreen extends ConsumerStatefulWidget {
   final bool isVerifyOnly;
   const ScannerScreen({super.key, required this.isVerifyOnly});
 
   @override
-  State<ScannerScreen> createState() => _ScannerScreenState();
+  ConsumerState<ScannerScreen> createState() => _ScannerScreenState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
+class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   String? donorId;
   String? requestId;
   bool isProcessing = false;
@@ -178,13 +178,38 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   Future<void> _completeDonation() async {
     final l10n = AppLocalizations.of(context)!;
-    // Task 4.1 logic will be expanded here, but for now:
-    await FirebaseFirestore.instance.collection('blood_requests').doc(requestId).update({'status': 'done'});
-    await FirebaseFirestore.instance.collection('users').doc(donorId).update({'lastDonated': DateTime.now().toIso8601String()});
+    final adminProfile = ref.read(userProfileProvider).value;
     
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.donationSuccess)));
-      Navigator.pop(context);
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+      
+      // 1. Update Request Status
+      final requestRef = FirebaseFirestore.instance.collection('blood_requests').doc(requestId);
+      batch.update(requestRef, {'status': 'done'});
+      
+      // 2. Update Donor's lastDonated
+      final donorRef = FirebaseFirestore.instance.collection('users').doc(donorId);
+      batch.update(donorRef, {'lastDonated': DateTime.now().toIso8601String()});
+      
+      // 3. Create Donation Record
+      final donationRef = FirebaseFirestore.instance.collection('donations').doc();
+      batch.set(donationRef, {
+        'donorId': donorId,
+        'requestId': requestId,
+        'hospitalId': adminProfile?['hospitalId'],
+        'hospitalName': adminProfile?['name'], // Using admin's name as fallback if hospital name isn't separate
+        'timestamp': FieldValue.serverTimestamp(),
+        'verifiedBy': adminProfile?['uid'],
+      });
+      
+      await batch.commit();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.donationSuccess)));
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 

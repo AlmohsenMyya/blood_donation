@@ -1,5 +1,7 @@
 
+import 'package:sheryan/screens/admin/admin_dashboard.dart';
 import 'package:sheryan/screens/hospital/hospital_dashboard.dart';
+// ...
 import 'package:sheryan/core/enums/user_role.dart';
 // ...
 import 'package:sheryan/core/theme/app_colors.dart';
@@ -522,12 +524,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (role == UserRole.superAdmin) {
       return Scaffold(
-        appBar: AppBar(title: const Text("Super Admin")),
-        body: const Center(child: Text("Super Admin Dashboard Coming Soon")),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _signOutAndGoLogin,
-          child: const Icon(Icons.logout),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: _topAppBar(role),
         ),
+        body: const AdminDashboard(),
       );
     }
 

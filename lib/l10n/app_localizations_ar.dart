@@ -678,4 +678,96 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get close => 'إغلاق';
+
+  @override
+  String get hospitalAdminDashboard => 'لوحة مسؤول المستشفى';
+
+  @override
+  String get verifyRequest => 'توثيق حالة';
+
+  @override
+  String get registerDonation => 'تسجيل تبرع ناجح';
+
+  @override
+  String get scanRequestQr => 'مسح رمز الطلب';
+
+  @override
+  String get scanDonorQr => 'مسح رمز المتبرع';
+
+  @override
+  String get scanSuccess => 'تم المسح بنجاح';
+
+  @override
+  String donorDetected(String name) {
+    return 'تم العثور على المتبرع: $name';
+  }
+
+  @override
+  String requestDetected(String patient) {
+    return 'تم العثور على طلب لـ: $patient';
+  }
+
+  @override
+  String get confirmDonationTitle => 'تأكيد التبرع';
+
+  @override
+  String get confirmDonationBody =>
+      'هل أنت متأكد من ربط هذا المتبرع بهذا الطلب وإغلاقه؟';
+
+  @override
+  String get verifySuccess => 'تم توثيق الطلب بنجاح!';
+
+  @override
+  String get donationSuccess => 'تم تسجيل التبرع وإغلاق الطلب!';
+
+  @override
+  String get invalidQr => 'رمز غير صالح';
+
+  @override
+  String get waitingForDonor => 'في انتظار رمز المتبرع...';
+
+  @override
+  String get waitingForRequest => 'في انتظار رمز الطلب...';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get step1Of2 => 'الخطوة 1 من 2: مسح المتبرع';
+
+  @override
+  String get step2Of2 => 'الخطوة 2 من 2: مسح الطلب';
+
+  @override
+  String get adminDashboard => 'لوحة السوبر أدمن';
+
+  @override
+  String get manageHospitalAdmins => 'إدارة مسؤولي المستشفيات';
+
+  @override
+  String get manageCities => 'إدارة المدن';
+
+  @override
+  String get createAdmin => 'إنشاء حساب مسؤول مستشفى';
+
+  @override
+  String get hospitalId => 'معرف المستشفى';
+
+  @override
+  String get addCity => 'إضافة مدينة';
+
+  @override
+  String get cityName => 'اسم المدينة';
+
+  @override
+  String get cityAdded => 'تم إضافة المدينة بنجاح!';
+
+  @override
+  String get cityDeleted => 'تم حذف المدينة بنجاح!';
+
+  @override
+  String get adminCreated => 'تم إنشاء حساب المسؤول بنجاح!';
+
+  @override
+  String get noCitiesFound => 'لم يتم العثور على مدن';
 }

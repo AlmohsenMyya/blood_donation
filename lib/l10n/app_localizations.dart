@@ -1339,6 +1339,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// No description provided for @hospitalAdminDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital Admin Dashboard'**
+  String get hospitalAdminDashboard;
+
+  /// No description provided for @verifyRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Request'**
+  String get verifyRequest;
+
+  /// No description provided for @registerDonation.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Successful Donation'**
+  String get registerDonation;
+
+  /// No description provided for @scanRequestQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Request QR'**
+  String get scanRequestQr;
+
+  /// No description provided for @scanDonorQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Donor QR'**
+  String get scanDonorQr;
+
+  /// No description provided for @scanSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Successful'**
+  String get scanSuccess;
+
+  /// No description provided for @donorDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Donor Detected: {name}'**
+  String donorDetected(String name);
+
+  /// No description provided for @requestDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Detected for: {patient}'**
+  String requestDetected(String patient);
+
+  /// No description provided for @confirmDonationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Donation'**
+  String get confirmDonationTitle;
+
+  /// No description provided for @confirmDonationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to link this donor to this request and close it?'**
+  String get confirmDonationBody;
+
+  /// No description provided for @verifySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request verified successfully!'**
+  String get verifySuccess;
+
+  /// No description provided for @donationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation registered and request closed!'**
+  String get donationSuccess;
+
+  /// No description provided for @invalidQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid QR Code'**
+  String get invalidQr;
+
+  /// No description provided for @waitingForDonor.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for Donor QR...'**
+  String get waitingForDonor;
+
+  /// No description provided for @waitingForRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for Request QR...'**
+  String get waitingForRequest;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @step1Of2.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1 of 2: Scan Donor'**
+  String get step1Of2;
+
+  /// No description provided for @step2Of2.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2 of 2: Scan Request'**
+  String get step2Of2;
+
+  /// No description provided for @adminDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Admin Dashboard'**
+  String get adminDashboard;
+
+  /// No description provided for @manageHospitalAdmins.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Hospital Admins'**
+  String get manageHospitalAdmins;
+
+  /// No description provided for @manageCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Cities'**
+  String get manageCities;
+
+  /// No description provided for @createAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Hospital Admin'**
+  String get createAdmin;
+
+  /// No description provided for @hospitalId.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital ID'**
+  String get hospitalId;
+
+  /// No description provided for @addCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Add City'**
+  String get addCity;
+
+  /// No description provided for @cityName.
+  ///
+  /// In en, this message translates to:
+  /// **'City Name'**
+  String get cityName;
+
+  /// No description provided for @cityAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'City added successfully!'**
+  String get cityAdded;
+
+  /// No description provided for @cityDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'City deleted successfully!'**
+  String get cityDeleted;
+
+  /// No description provided for @adminCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital Admin created successfully!'**
+  String get adminCreated;
+
+  /// No description provided for @noCitiesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No cities found'**
+  String get noCitiesFound;
 }
 
 class _AppLocalizationsDelegate

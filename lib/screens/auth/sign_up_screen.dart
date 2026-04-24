@@ -1,4 +1,4 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
@@ -27,9 +27,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _phone = TextEditingController();
-  final TextEditingController _city = TextEditingController();
 
   String _selectedBlood = 'A+';
+  String _selectedCity = ''; 
   UserRole _selectedRole = UserRole.donor;
   DateTime? _lastDonated;
   bool _loading = false;
@@ -78,7 +78,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         _email.text.trim().isEmpty ||
         _password.text.isEmpty ||
         _phone.text.trim().isEmpty ||
-        _city.text.trim().isEmpty) {
+        _selectedCity.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.signupFillAllFields)),
       );
@@ -111,7 +111,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         email: _email.text.trim(),
         password: _password.text,
         bloodGroup: _selectedRole == UserRole.donor ? _selectedBlood : '',
-        city: _city.text.trim(),
+        city: _selectedCity,
         role: _selectedRole == UserRole.donor ? 'donor' : 'user',
         phone: _phone.text.trim(),
         lastDonated: lastDonatedString,
@@ -243,8 +243,34 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // City text field
-                _buildTextField(_city, l10n.enterCityOrVillage, Icons.location_city),
+                // City dropdown (Dynamic)
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('cities').orderBy('name').snapshots(),
+                  builder: (context, snapshot) {
+                    List<String> cities = [];
+                    if (snapshot.hasData) {
+                      cities = snapshot.data!.docs.map((d) => d['name'] as String).toList();
+                    }
+
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.fieldDark,
+                        borderRadius: AppDesignConstants.borderRadiusMedium,
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: _selectedCity.isEmpty ? null : _selectedCity,
+                          hint: Text(l10n.city, style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textGrey)),
+                          dropdownColor: AppColors.fieldDark,
+                          items: cities.map((c) => DropdownMenuItem(value: c, child: Text(c, style: theme.textTheme.bodyLarge))).toList(),
+                          onChanged: (v) => setState(() => _selectedCity = v!),
+                          isExpanded: true,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 12),
 
                 if (isDonor) ...[
