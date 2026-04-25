@@ -1,7 +1,5 @@
-
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// ... rest of imports
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
@@ -98,7 +96,9 @@ class _RequestsScreenState extends State<RequestsListScreen> {
               itemBuilder: (context, index) {
                 final doc = requests[index];
                 final data = doc.data() as Map<String, dynamic>;
-                final status = data['status'] ?? 'pending';
+                final isDone = data['status'] == 'done';
+                final isVerified = data['isVerified'] ?? false;
+                
                 final createdAt = data['createdAt'] != null
                     ? (data['createdAt'] as Timestamp).toDate()
                     : DateTime.now();
@@ -127,10 +127,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                                 style: theme.textTheme.titleMedium,
                               ),
                             ),
-                            Icon(
-                              status == 'done' ? Icons.check_circle : Icons.pending_actions,
-                              color: status == 'done' ? AppColors.success : AppColors.warning,
-                            ),
+                            _buildStatusBadge(isDone, isVerified, l10n),
                           ],
                         ),
                         const Divider(height: 24),
@@ -145,7 +142,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                           l10n.requestedOnLabel(formattedDate),
                           style: theme.textTheme.labelSmall,
                         ),
-                        if (status != 'done') ...[
+                        if (!isDone) ...[
                           const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -180,6 +177,33 @@ class _RequestsScreenState extends State<RequestsListScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildStatusBadge(bool isDone, bool isVerified, AppLocalizations l10n) {
+    IconData icon;
+    Color color;
+    String label;
+
+    if (isDone) {
+      icon = Icons.check_circle;
+      color = AppColors.success;
+      label = l10n.statusCompleted;
+    } else if (isVerified) {
+      icon = Icons.verified;
+      color = Colors.blue;
+      label = l10n.statusVerified;
+    } else {
+      icon = Icons.pending;
+      color = Colors.orange;
+      label = l10n.statusUnverified;
+    }
+
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 20),
+        Text(label, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+      ],
     );
   }
 

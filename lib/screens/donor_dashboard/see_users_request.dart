@@ -77,6 +77,8 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                   itemCount: _allRequests.length,
                   itemBuilder: (context, index) {
                     final request = _allRequests[index];
+                    final isVerified = request['isVerified'] ?? false;
+
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       child: Padding(
@@ -87,9 +89,27 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  request['patientName'] ?? l10n.unknownPatient,
-                                  style: theme.textTheme.titleMedium,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        request['patientName'] ?? l10n.unknownPatient,
+                                        style: theme.textTheme.titleMedium,
+                                      ),
+                                      if (isVerified)
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.verified, color: Colors.blue, size: 14),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              l10n.statusVerified,
+                                              style: const TextStyle(color: Colors.blue, fontSize: 11, fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

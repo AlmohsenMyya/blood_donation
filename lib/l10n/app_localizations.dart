@@ -1412,6 +1412,24 @@ abstract class AppLocalizations {
   /// **'Donation registered and request closed!'**
   String get donationSuccess;
 
+  /// No description provided for @statusUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Verification'**
+  String get statusUnverified;
+
+  /// No description provided for @statusVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified & Active'**
+  String get statusVerified;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation Completed'**
+  String get statusCompleted;
+
   /// No description provided for @invalidQr.
   ///
   /// In en, this message translates to:

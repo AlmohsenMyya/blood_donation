@@ -721,6 +721,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get donationSuccess => 'تم تسجيل التبرع وإغلاق الطلب!';
 
   @override
+  String get statusUnverified => 'قيد التوثيق';
+
+  @override
+  String get statusVerified => 'موثق ونشط';
+
+  @override
+  String get statusCompleted => 'تم التبرع';
+
+  @override
   String get invalidQr => 'رمز غير صالح';
 
   @override

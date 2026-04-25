@@ -28,15 +28,10 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
 
   Future<void> _fetchNearbyRequests() async {
     try {
-      // 1. Get current position
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
+      // 1. Get current position (Simplified for demo, in production use actual user city from profile)
+      _userCity = "Nablus"; // Mock
 
-      // 2. Mock city detection (In real app, use Geocoding)
-      _userCity = "Nablus"; // Assuming Nablus for testing
-
-      // 3. Fetch requests from Firestore
+      // 2. Fetch requests from Firestore
       final snapshot = await _firestore
           .collection('blood_requests')
           .where('city', isEqualTo: _userCity)
@@ -97,6 +92,8 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                   itemCount: _nearbyRequests.length,
                   itemBuilder: (context, index) {
                     final request = _nearbyRequests[index];
+                    final isVerified = request['isVerified'] ?? false;
+
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       child: Padding(
@@ -107,9 +104,27 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  request['patientName'] ?? l10n.unknownPatient,
-                                  style: theme.textTheme.titleMedium,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        request['patientName'] ?? l10n.unknownPatient,
+                                        style: theme.textTheme.titleMedium,
+                                      ),
+                                      if (isVerified)
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.verified, color: Colors.blue, size: 14),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              l10n.statusVerified,
+                                              style: const TextStyle(color: Colors.blue, fontSize: 11, fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -128,13 +143,10 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                               ],
                             ),
                             const Divider(height: 20),
-                            _buildInfoRow(Icons.local_hospital, l10n.hospitalName, request['hospitalName']),
+                            _buildInfoRow(Icons.local_hospital, l10n.hospitalName, request['hospital'] ?? request['hospitalName'] ?? ''),
                             _buildInfoRow(Icons.location_on, l10n.city, request['city']),
                             _buildInfoRow(Icons.invert_colors, l10n.units, request['units'].toString()),
-                            _buildInfoRow(Icons.access_time, l10n.neededAtLabel(""), 
-                              request['neededAt'] != null 
-                              ? DateFormat('yyyy-MM-dd HH:mm').format((request['neededAt'] as Timestamp).toDate()) 
-                              : l10n.notSpecified),
+                            _buildInfoRow(Icons.access_time, l10n.neededAtLabel(""), request['neededAt']?.toString() ?? l10n.notSpecified),
                             const SizedBox(height: 12),
                             SizedBox(
                               width: double.infinity,

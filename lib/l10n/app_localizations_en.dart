@@ -729,6 +729,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get donationSuccess => 'Donation registered and request closed!';
 
   @override
+  String get statusUnverified => 'Pending Verification';
+
+  @override
+  String get statusVerified => 'Verified & Active';
+
+  @override
+  String get statusCompleted => 'Donation Completed';
+
+  @override
   String get invalidQr => 'Invalid QR Code';
 
   @override
