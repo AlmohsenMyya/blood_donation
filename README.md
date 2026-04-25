@@ -1,96 +1,97 @@
-# 🩸 Sheryan | Advanced Blood Donation Management System
+# 🩸 Sheryan | Intelligent Blood Donation Ecosystem
 
 [![Flutter](https://img.shields.io/badge/Framework-Flutter-02569B?logo=flutter)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Backend-Firebase-FFCA28?logo=firebase)](https://firebase.google.com)
-[![Riverpod](https://img.shields.io/badge/State-Riverpod-764ABC?logo=dart)](https://riverpod.dev)
-[![Architecture](https://img.shields.io/badge/Architecture-Clean_UI_&_Reactive_State-green)]()
+[![OneSignal](https://img.shields.io/badge/Notifications-OneSignal-E44D26?logo=onesignal)](https://onesignal.com)
+[![Architecture](https://img.shields.io/badge/Architecture-Cloud_Distributed_System-blue)]()
 
 ## 📌 Executive Overview
-**Sheryan** is a high-performance, cross-platform mobile ecosystem engineered to bridge the critical gap between voluntary blood donors and recipients in real-time. Moving beyond simple directory apps, Sheryan implements a **Reactive Data Flow** and a **Role-Based Access Control (RBAC)** system to ensure that life-saving resources are matched with urgent needs efficiently and securely.
+**Sheryan** (شريان) is a sophisticated, cloud-based medical ecosystem designed to bridge the gap between voluntary blood donors and recipients. Unlike traditional directory apps, Sheryan functions as a **Managed Verification Platform** that integrates hospitals as trusted intermediaries. By combining **Reactive Programming**, **Bi-directional Authentication via QR**, and **Smart Medical Logic**, it ensures that every life-saving act is secure, verified, and timely.
 
 ---
 
-## 🏗 System Architecture & Engineering Highlights
+## 🏛 Hybrid Architecture: Software & Networking
+This project represents a fusion of **Software Engineering** and **Advanced Cloud Networking**, making it a robust case study for distributed systems.
 
-This project was built with a focus on **Scalability**, **State Predictability**, and **Seamless User Experience**.
-
-*   **Reactive State Management:** Leveraged `Flutter Riverpod` for a robust, compile-safe state management layer, ensuring high performance and decoupling of business logic from the UI.
-*   **Backend-as-a-Service (BaaS):** Integrated a comprehensive Firebase suite (`Firestore`, `Auth`, `Messaging`, `Storage`) for real-time data synchronization and secure cloud infrastructure.
-*   **Dual-Persona Interface:** A unified codebase serving two distinct user experiences (Donor vs. Recipient) via a sophisticated conditional routing logic.
-*   **Real-time Request Lifecycle:** Implemented Firestore Streams to provide instant updates for blood requests without requiring manual refreshes.
+*   **Software Layer:** Built with `Flutter` & `Riverpod 3.0` for a high-performance, reactive UI that adapts its behavior and branding based on the user's role.
+*   **Networking Layer:** A distributed architecture leveraging `Firebase Firestore` for real-time data persistence and `OneSignal` for intelligent, tag-based push notification routing.
+*   **Security & Protocols:** Implements `HTTPS/TLS` for data in transit and a proprietary **Double-Scan Verification Protocol** to prevent fraudulent donation logging.
 
 ---
 
-## 🛠 Core Functional Modules
+## 🌟 Key Engineering Features
 
-### 🔐 Identity & Access Management (IAM)
-*   **Role-Based Onboarding:** Custom authentication flow allowing users to register as either "Donors" or "Recipients".
-*   **Secure Persistence:** Session management via `Shared Preferences` and Firebase Auth state observers.
-*   **Security Suite:** Built-in features for password entropy management, secure account deletion, and credential resets.
+### 🧠 Smart Compatibility Engine (Medical Logic)
+Integrated a specialized `BloodLogic` engine that moves beyond simple matching.
+*   **Donation Map:** Automatically calculates compatible donors (e.g., AB+ recipients see all donors, while O- donors are notified of all matching requests).
+*   **Dynamic Filtering:** Optimized Firestore queries using `whereIn` clauses to fetch medical matches in real-time.
 
-### 📍 Intelligent Matching & Filtering
-*   **Geospatial Filtering:** Users can query donors and requests based on city-level granularity.
-*   **Type-Specific Discovery:** Advanced filtering algorithms for sorting by blood groups (A+, B-, O+, etc.).
-*   **Request Orchestration:** Recipients can broadcast urgent needs, which are instantly visible to qualified donors in the vicinity.
+### 🛡 Verified Lifecycle Management
+A trust-based workflow managed by **Hospital Administrators**:
+1.  **Unverified:** Initial request by a recipient.
+2.  **Verified:** Authenticated by a hospital via QR scan (Visible to donors).
+3.  **Completed:** Finalized via a **Double-Scan Flow** (Donor QR + Request QR) supervised by medical staff.
 
-### 📱 Premium UX/UI Design
-*   **Sophisticated Dark Mode:** A high-contrast, accessibility-focused dark theme tailored for medical/emergency environments.
-*   **Atomic Design Principles:** Modular UI components built for reusability and consistent styling across the application.
-*   **Interactive Notifications:** Integration with `Flutter Local Notifications` for real-time engagement.
+### 🔔 Intelligent Notification Hub (OneSignal)
+A serverless notification system utilizing **Smart Tagging**:
+*   **Contextual Alerts:** Push notifications are filtered by `city`, `blood_group`, and `user_role`.
+*   **Automated Gratitude:** Instant "Thank You" and "Success" alerts triggered via REST API calls upon donation completion.
+
+### 🎨 Centralized Design System (CDS)
+A bespoke UI framework (`lib/core/theme/`) that provides:
+*   **Role-Based Theming:** Adaptive color palettes (Golden for Donors, Medical Blue for Hospitals, Professional Grey for Super Admins).
+*   **Full Localization:** Complete RTL/LTR support (Arabic & English) with adaptive layouts.
+
+---
+
+## 🛠 Multi-Role Ecosystem
+
+| Role | Core Responsibilities |
+| :--- | :--- |
+| **Donor** | Manage digital donor card (QR), discover verified compatible requests, track donation history. |
+| **Recipient** | Broadcast verified blood needs, track request status, automated WhatsApp outreach. |
+| **Hospital Admin** | Verify local requests, supervise and log successful donations via QR scanning. |
+| **Super Admin** | Manage system-wide infrastructure (Cities, Hospital registry, Admin account lifecycle). |
 
 ---
 
 ## 🚀 Technical Stack
 
-| Layer | Technology |
+| Category | Technology |
 | :--- | :--- |
-| **Framework** | Flutter (Dart SDK ^3.9.2) |
+| **Frontend** | Flutter (Dart SDK ^3.9.2) |
 | **State Management** | Riverpod 3.0 (Declarative & Reactive) |
-| **Database** | Cloud Firestore (NoSQL Real-time) |
-| **Authentication** | Firebase Auth (OAuth & Email/Password) |
-| **Storage** | Firebase Cloud Storage |
-| **Utilities** | URL Launcher, Permission Handler, Intl |
+| **Real-time Database** | Cloud Firestore (NoSQL Synchronization) |
+| **Push Gateway** | OneSignal (REST API & Smart Tagging) |
+| **Communication** | WhatsApp Integration, URL Launcher |
+| **Hardware Int.** | Mobile Scanner (QR/Barcode), Geolocator |
 
 ---
 
-## 📂 Project Structure (Modular Approach)
+## 📂 Project Structure (Clean Architecture)
 
 ```
 lib/
-├── providers/     # Business logic & State providers (Riverpod)
-├── services/      # API wrappers & Firebase service layers
-├── screens/       # Presentation layer (Modularized by feature)
-│   ├── auth/      # Login, Signup, Role Selection
-│   ├── home/      # Main Dashboards
-│   ├── donor/     # Exclusive Donor-side workflows
-│   └── requests/  # Blood request CRUD operations
-└── models/        # Data structures & JSON serialization
+├── core/
+│   ├── theme/        # Centralized Design System (CDS)
+│   ├── utils/        # BloodLogic, WhatsAppHelper, QR Logic
+│   └── enums/        # UserRoles, RequestStatus
+├── providers/        # State Management (Theme, Auth, Locale)
+├── services/         # Firebase & OneSignal Service layers
+├── screens/          # Presentation Layer (Modularized)
+│   ├── hospital/     # Hospital Admin Dashboard & Scanners
+│   ├── admin/        # Super Admin Infrastructure Mgmt
+│   ├── donors/       # Matching & Discovery workflows
+│   └── requests/     # Request Lifecycle UI
+└── l10n/             # Multilingual ARB files (AR/EN)
 ```
 
 ---
 
-## 👨‍💻 Engineering Philosophy
-As a software engineer, my goal with this project was to solve a real-world problem using a **Clean Code** approach. The application is designed with the **SOLID** principles in mind, ensuring that the backend services are easily swappable and the UI remains highly responsive even during complex data streams.
+## 🛡 Security & Reliability
+*   **Network Security:** All communication is secured via standard Firebase protocols (HTTPS/TLS).
+*   **Data Integrity:** Firestore Security Rules ensure that only authorized Hospital Admins can modify verification statuses.
+*   **Fault Tolerance:** Implements local persistence to ensure the app remains functional during intermittent network connectivity.
 
 ---
-
-## 🛠 Installation & Development
-
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/AlmohsenMyya/sheryan.git
-    ```
-2.  **Install Dependencies:**
-    ```bash
-    flutter pub get
-    ```
-3.  **Configure Firebase:**
-    *   Add your `google-services.json` (Android) and `GoogleService-Info.plist` (iOS).
-    *   Run `flutterfire configure`.
-4.  **Run Application:**
-    ```bash
-    flutter run
-    ```
-
----
-Developed with ❤️ for the community.
+Developed with 🩸 and Engineering Precision by **Almohsen Myya**.
