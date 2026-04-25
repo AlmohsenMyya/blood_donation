@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
+import 'package:sheryan/core/utils/whatsapp_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'donor_detail_screen.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
@@ -18,6 +20,9 @@ class _DonorListScreenState extends State<DonorListScreen> {
   List<Map<String, dynamic>> donors = [];
   List<Map<String, dynamic>> filteredDonors = [];
   bool loading = true;
+  
+  String? currentUserCity;
+  String? currentUserBlood;
 
   // Use 'all' as a programmatic constant for internal logic
   String selectedCity = 'all';
@@ -26,7 +31,25 @@ class _DonorListScreenState extends State<DonorListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadDonors();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    await _loadCurrentUserProfile();
+    await _loadDonors();
+  }
+
+  Future<void> _loadCurrentUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await _fs.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        setState(() {
+          currentUserCity = doc.data()?['city'];
+          currentUserBlood = doc.data()?['bloodGroup'];
+        });
+      }
+    }
   }
 
   Future<void> _loadDonors() async {
@@ -176,7 +199,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
                           child: Text(
                             l10n.noDonorsFound,
                             style: theme.textTheme.bodyMedium,
-                          ),
+                          )
                         )
                       : ListView.builder(
                           itemCount: filteredDonors.length,
@@ -215,10 +238,29 @@ class _DonorListScreenState extends State<DonorListScreen> {
                                     '$city • $blood',
                                     style: theme.textTheme.bodyMedium,
                                   ),
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.call, color: AppColors.primaryRed),
-                                    onPressed: () => _makePhoneCall(
-                                        (donor['phone'] ?? '').toString()),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.chat, color: Colors.green),
+                                        onPressed: () {
+                                          WhatsAppHelper.openWhatsApp(
+                                            context: context,
+                                            phone: donor['phone'] ?? '',
+                                            message: l10n.whatsappRecipientMessage(
+                                              donor['name'] ?? l10n.unknown,
+                                              currentUserBlood ?? '?',
+                                              currentUserCity ?? '?',
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.call, color: AppColors.primaryRed),
+                                        onPressed: () => _makePhoneCall(
+                                            (donor['phone'] ?? '').toString()),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );

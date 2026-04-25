@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
+import 'package:sheryan/core/utils/whatsapp_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 
@@ -17,6 +19,7 @@ class DonorDetailScreen extends StatefulWidget {
 class _DonorDetailScreenState extends State<DonorDetailScreen>
     with SingleTickerProviderStateMixin {
   Map<String, dynamic>? donor;
+  Map<String, dynamic>? currentUserData;
   bool loading = true;
   late AnimationController _controller;
   late Animation<double> _fadeIn;
@@ -27,20 +30,30 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _fetchDonor();
+    _fetchData();
   }
 
-  Future<void> _fetchDonor() async {
+  Future<void> _fetchData() async {
     try {
-      final snapshot = await FirebaseFirestore.instance
+      // 1. Fetch donor data
+      final donorSnap = await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.donorId)
           .get();
-      if (snapshot.exists) {
-        donor = snapshot.data();
+      if (donorSnap.exists) {
+        donor = donorSnap.data();
+      }
+
+      // 2. Fetch current user data for WhatsApp message
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userSnap = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+        if (userSnap.exists) {
+          currentUserData = userSnap.data();
+        }
       }
     } catch (e) {
-      debugPrint('Error fetching donor: $e');
+      debugPrint('Error fetching data: $e');
     }
     setState(() => loading = false);
     _controller.forward();
@@ -184,19 +197,49 @@ class _DonorDetailScreenState extends State<DonorDetailScreen>
 
                         const SizedBox(height: 30),
 
-                        // 🔴 Call Button
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: AppDesignConstants.borderRadiusCircular,
+                        // 🔴 Action Buttons (Call & WhatsApp)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppDesignConstants.borderRadiusCircular,
+                                  ),
+                                ),
+                                onPressed: () =>
+                                    _makePhoneCall(donor!['phone'] ?? ''),
+                                icon: const Icon(Icons.phone),
+                                label: Text(l10n.call),
+                              ),
                             ),
-                          ),
-                          onPressed: () =>
-                              _makePhoneCall(donor!['phone'] ?? ''),
-                          icon: const Icon(Icons.phone),
-                          label: Text(l10n.callDonor),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green.shade700,
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppDesignConstants.borderRadiusCircular,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  WhatsAppHelper.openWhatsApp(
+                                    context: context,
+                                    phone: donor!['phone'] ?? '',
+                                    message: l10n.whatsappRecipientMessage(
+                                      donor!['name'] ?? l10n.unknown,
+                                      currentUserData?['bloodGroup'] ?? '?',
+                                      currentUserData?['city'] ?? '?',
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.chat),
+                                label: Text(l10n.whatsapp),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -212,7 +255,7 @@ Widget _infoRow(IconData icon, String label, String? value, {Color? color}) {
   final display = (value == null || value.trim().isEmpty) ? l10n.notAvailable : value;
 
   return Padding(
-    padding:  EdgeInsets.symmetric(vertical: 10),
+    padding:  const EdgeInsets.symmetric(vertical: 10),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

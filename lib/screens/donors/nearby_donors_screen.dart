@@ -1,6 +1,7 @@
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/core/utils/blood_logic.dart';
+import 'package:sheryan/core/utils/whatsapp_helper.dart';
 import 'package:sheryan/screens/donors/donor_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,12 +68,10 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
           final compatibleTypes = BloodLogic.getCompatibleDonors(userBloodGroup!);
 
           // 3️⃣ Fetch Compatible Donors in the same city
-          // Since we use dropdowns now, case-sensitivity is less of an issue, 
-          // but we'll stick to query for performance.
           final querySnapshot = await FirebaseFirestore.instance
               .collection('users')
               .where('role', isEqualTo: 'donor')
-              .where('city', isEqualTo: city) // Now safe because of dropdowns
+              .where('city', isEqualTo: city) 
               .where('bloodGroup', whereIn: compatibleTypes)
               .get();
 
@@ -187,14 +186,33 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                         ),
                       ],
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.phone, color: AppColors.primaryRed),
-                      onPressed: () {
-                        final phone = donor['phone'];
-                        if (phone != null && phone.toString().isNotEmpty) {
-                          _makePhoneCall(phone.toString());
-                        }
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                         IconButton(
+                          icon: const Icon(Icons.chat, color: Colors.green),
+                          onPressed: () {
+                            WhatsAppHelper.openWhatsApp(
+                              context: context,
+                              phone: donor['phone'] ?? '',
+                              message: l10n.whatsappRecipientMessage(
+                                donor['name'] ?? l10n.unknown,
+                                userBloodGroup ?? '?',
+                                city ?? '?',
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.phone, color: AppColors.primaryRed),
+                          onPressed: () {
+                            final phone = donor['phone'];
+                            if (phone != null && phone.toString().isNotEmpty) {
+                              _makePhoneCall(phone.toString());
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );

@@ -1,4 +1,6 @@
+import 'package:sheryan/core/utils/whatsapp_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ... rest of imports
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
@@ -178,13 +180,36 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                             _buildInfoRow(Icons.invert_colors, l10n.units, request['units'].toString()),
                             _buildInfoRow(Icons.access_time, l10n.neededAtLabel(""), request['neededAt']?.toString() ?? l10n.notSpecified),
                             const SizedBox(height: 12),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () => _callUser(request['phone'] ?? ''),
-                                icon: const Icon(Icons.phone),
-                                label: Text(l10n.call),
-                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () => _callUser(request['phone'] ?? ''),
+                                    icon: const Icon(Icons.phone),
+                                    label: Text(l10n.call),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      WhatsAppHelper.openWhatsApp(
+                                        context: context,
+                                        phone: request['phone'] ?? '',
+                                        message: l10n.whatsappDonorMessage(
+                                          request['patientName'] ?? l10n.unknownPatient,
+                                          _userBloodGroup ?? '?',
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.chat),
+                                    label: Text(l10n.whatsapp),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green.shade700,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

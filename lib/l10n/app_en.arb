@@ -242,6 +242,23 @@
   "requiredField": "Required field",
   "noNearbyRequests": "No nearby requests",
   "call": "Call",
+  "whatsapp": "WhatsApp",
+  "whatsappDonorMessage": "Hello, I am contacting you via Sheryan app regarding the patient {patient}. My blood group is {bloodGroup} and I'm ready to help. Please provide the hospital location.",
+  "@whatsappDonorMessage": {
+    "placeholders": {
+      "patient": { "type": "String" },
+      "bloodGroup": { "type": "String" }
+    }
+  },
+  "whatsappRecipientMessage": "Hello {donor}, I saw your profile on Sheryan app. We are in urgent need of {bloodGroup} donor in {city}. Can you help us?",
+  "@whatsappRecipientMessage": {
+    "placeholders": {
+      "donor": { "type": "String" },
+      "bloodGroup": { "type": "String" },
+      "city": { "type": "String" }
+    }
+  },
+  "cannotOpenWhatsapp": "Could not open WhatsApp. Please check if it's installed.",
   "unableToDetectCity": "Unable to detect your city.",
   "noDonorsFoundInCity": "No donors found in {city}",
   "@noDonorsFoundInCity": {

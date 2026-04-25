@@ -242,6 +242,23 @@
   "requiredField": "حقل مطلوب",
   "noNearbyRequests": "لا توجد طلبات قريبة",
   "call": "اتصال",
+  "whatsapp": "واتساب",
+  "whatsappDonorMessage": "السلام عليكم، تواصلت معك عبر تطبيق شريان بخصوص حالة المريض {patient}. أنا فصيلتي {bloodGroup} وجاهز للمساعدة، يرجى تزويدي بموقع المستشفى.",
+  "@whatsappDonorMessage": {
+    "placeholders": {
+      "patient": { "type": "String" },
+      "bloodGroup": { "type": "String" }
+    }
+  },
+  "whatsappRecipientMessage": "السلام عليكم أخي {donor}، رأيت ملفك في تطبيق شريان. نحن بحاجة ماسة لمتبرع من فصيلة {bloodGroup} في مدينة {city}. هل يمكنك مساعدتنا؟",
+  "@whatsappRecipientMessage": {
+    "placeholders": {
+      "donor": { "type": "String" },
+      "bloodGroup": { "type": "String" },
+      "city": { "type": "String" }
+    }
+  },
+  "cannotOpenWhatsapp": "تعذر فتح واتساب. يرجى التأكد من تثبيته.",
   "unableToDetectCity": "تعذر تحديد مدينتك.",
   "noDonorsFoundInCity": "لم يتم العثور على متبرعين في {city}",
   "@noDonorsFoundInCity": {
