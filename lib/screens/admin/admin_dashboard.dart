@@ -18,7 +18,7 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -31,8 +31,10 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: AppColors.primaryRed,
+          isScrollable: true,
           tabs: [
             Tab(text: l10n.manageHospitalAdmins, icon: const Icon(Icons.admin_panel_settings)),
+            Tab(text: l10n.manageHospitals, icon: const Icon(Icons.local_hospital)),
             Tab(text: l10n.manageCities, icon: const Icon(Icons.location_city)),
           ],
         ),
@@ -41,6 +43,7 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
         controller: _tabController,
         children: [
           const HospitalAdminManager(),
+          const HospitalManager(),
           const CityManager(),
         ],
       ),
@@ -62,11 +65,11 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _name = TextEditingController();
-  final _hospitalId = TextEditingController();
+  String? _selectedHospitalId;
   bool _loading = false;
 
   Future<void> _createAdmin() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate() || _selectedHospitalId == null) return;
     
     setState(() => _loading = true);
     final l10n = AppLocalizations.of(context)!;
@@ -80,7 +83,7 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
         city: '',
         role: 'hospitalAdmin',
         phone: '',
-        hospitalId: _hospitalId.text.trim(),
+        hospitalId: _selectedHospitalId,
       );
 
       if (ok && mounted) {
@@ -88,7 +91,7 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
         _email.clear();
         _password.clear();
         _name.clear();
-        _hospitalId.clear();
+        setState(() => _selectedHospitalId = null);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
@@ -127,10 +130,22 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
               validator: (v) => (v == null || v.length < 6) ? l10n.passwordMinLength : null,
             ),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _hospitalId,
-              decoration: InputDecoration(labelText: l10n.hospitalId, prefixIcon: const Icon(Icons.local_hospital)),
-              validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('hospitals').orderBy('name').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const CircularProgressIndicator();
+                final hospitals = snapshot.data!.docs;
+                return DropdownButtonFormField<String>(
+                  value: _selectedHospitalId,
+                  decoration: InputDecoration(labelText: l10n.hospitalName, prefixIcon: const Icon(Icons.local_hospital)),
+                  items: hospitals.map((h) => DropdownMenuItem(
+                    value: h.id,
+                    child: Text(h['name']),
+                  )).toList(),
+                  onChanged: (v) => setState(() => _selectedHospitalId = v),
+                  validator: (v) => v == null ? l10n.requiredField : null,
+                );
+              },
             ),
             const SizedBox(height: 24),
             SizedBox(
@@ -141,10 +156,116 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
               ),
             ),
             const Divider(height: 40),
-            // Could add a list of admins here if needed
           ],
         ),
       ),
+    );
+  }
+}
+
+// --- Hospital Manager ---
+class HospitalManager extends StatefulWidget {
+  const HospitalManager({super.key});
+
+  @override
+  State<HospitalManager> createState() => _HospitalManagerState();
+}
+
+class _HospitalManagerState extends State<HospitalManager> {
+  final _hospitalName = TextEditingController();
+  String? _selectedCity;
+  final FirebaseFirestore _fs = FirebaseFirestore.instance;
+
+  Future<void> _addHospital() async {
+    final name = _hospitalName.text.trim();
+    if (name.isEmpty || _selectedCity == null) return;
+    
+    final l10n = AppLocalizations.of(context)!;
+    await _fs.collection('hospitals').add({
+      'name': name,
+      'city': _selectedCity,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    _hospitalName.clear();
+    setState(() => _selectedCity = null);
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.hospitalAdded)));
+  }
+
+  Future<void> _deleteHospital(String id) async {
+    final l10n = AppLocalizations.of(context)!;
+    await _fs.collection('hospitals').doc(id).delete();
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.hospitalDeleted)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      children: [
+        Padding(
+          padding: AppDesignConstants.edgeInsetsMedium,
+          child: Column(
+            children: [
+              TextField(
+                controller: _hospitalName,
+                decoration: InputDecoration(hintText: l10n.hospitalName),
+              ),
+              const SizedBox(height: 12),
+              StreamBuilder<QuerySnapshot>(
+                stream: _fs.collection('cities').orderBy('name').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const LinearProgressIndicator();
+                  final cities = snapshot.data!.docs;
+                  return DropdownButtonFormField<String>(
+                    value: _selectedCity,
+                    hint: Text(l10n.selectCity),
+                    items: cities.map((c) => DropdownMenuItem(
+                      value: c['name'] as String,
+                      child: Text(c['name']),
+                    )).toList(),
+                    onChanged: (v) => setState(() => _selectedCity = v),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _addHospital,
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.addHospital),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Divider(),
+        Expanded(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: _fs.collection('hospitals').orderBy('name').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+              final docs = snapshot.data!.docs;
+              if (docs.isEmpty) return Center(child: Text(l10n.noHospitalsFound));
+
+              return ListView.builder(
+                itemCount: docs.length,
+                itemBuilder: (context, i) {
+                  final hospital = docs[i];
+                  return ListTile(
+                    title: Text(hospital['name']),
+                    subtitle: Text(hospital['city']),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: AppColors.error),
+                      onPressed: () => _deleteHospital(hospital.id),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
