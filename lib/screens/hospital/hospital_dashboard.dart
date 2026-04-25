@@ -1,4 +1,6 @@
+import 'package:sheryan/services/notification_service.dart';
 import 'package:flutter/material.dart';
+// ...
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -195,6 +197,14 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
       await doc.reference.update({'isVerified': true});
       
+      // Trigger Smart Emergency Notification (Phase 2)
+      final requestData = doc.data() as Map<String, dynamic>;
+      NotificationService().sendEmergencyNotification(
+        city: requestData['city'] ?? '',
+        bloodGroup: requestData['bloodGroup'] ?? '',
+        requestId: id,
+      );
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.verifySuccess)));
         Navigator.pop(context);
