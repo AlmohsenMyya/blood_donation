@@ -497,6 +497,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get call => 'Call';
 
   @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String whatsappDonorMessage(String patient, String bloodGroup) {
+    return 'Hello, I am contacting you via Sheryan app regarding the patient $patient. My blood group is $bloodGroup and I\'m ready to help. Please provide the hospital location.';
+  }
+
+  @override
+  String whatsappRecipientMessage(
+    String donor,
+    String bloodGroup,
+    String city,
+  ) {
+    return 'Hello $donor, I saw your profile on Sheryan app. We are in urgent need of $bloodGroup donor in $city. Can you help us?';
+  }
+
+  @override
+  String get cannotOpenWhatsapp =>
+      'Could not open WhatsApp. Please check if it\'s installed.';
+
+  @override
   String get unableToDetectCity => 'Unable to detect your city.';
 
   @override

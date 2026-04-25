@@ -491,6 +491,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get call => 'اتصال';
 
   @override
+  String get whatsapp => 'واتساب';
+
+  @override
+  String whatsappDonorMessage(String patient, String bloodGroup) {
+    return 'السلام عليكم، تواصلت معك عبر تطبيق شريان بخصوص حالة المريض $patient. أنا فصيلتي $bloodGroup وجاهز للمساعدة، يرجى تزويدي بموقع المستشفى.';
+  }
+
+  @override
+  String whatsappRecipientMessage(
+    String donor,
+    String bloodGroup,
+    String city,
+  ) {
+    return 'السلام عليكم أخي $donor، رأيت ملفك في تطبيق شريان. نحن بحاجة ماسة لمتبرع من فصيلة $bloodGroup في مدينة $city. هل يمكنك مساعدتنا؟';
+  }
+
+  @override
+  String get cannotOpenWhatsapp => 'تعذر فتح واتساب. يرجى التأكد من تثبيته.';
+
+  @override
   String get unableToDetectCity => 'تعذر تحديد مدينتك.';
 
   @override

@@ -1004,6 +1004,30 @@ abstract class AppLocalizations {
   /// **'Call'**
   String get call;
 
+  /// No description provided for @whatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get whatsapp;
+
+  /// No description provided for @whatsappDonorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, I am contacting you via Sheryan app regarding the patient {patient}. My blood group is {bloodGroup} and I\'m ready to help. Please provide the hospital location.'**
+  String whatsappDonorMessage(String patient, String bloodGroup);
+
+  /// No description provided for @whatsappRecipientMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {donor}, I saw your profile on Sheryan app. We are in urgent need of {bloodGroup} donor in {city}. Can you help us?'**
+  String whatsappRecipientMessage(String donor, String bloodGroup, String city);
+
+  /// No description provided for @cannotOpenWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open WhatsApp. Please check if it\'s installed.'**
+  String get cannotOpenWhatsapp;
+
   /// No description provided for @unableToDetectCity.
   ///
   /// In en, this message translates to:
