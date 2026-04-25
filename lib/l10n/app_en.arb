@@ -363,5 +363,9 @@
   "cityAdded": "City added successfully!",
   "cityDeleted": "City deleted successfully!",
   "adminCreated": "Hospital Admin created successfully!",
+  "adminDeleted": "Hospital Admin deleted successfully!",
+  "adminUpdated": "Hospital Admin updated successfully!",
+  "editAdmin": "Edit Admin",
+  "noAdminsFound": "No hospital admins found",
   "noCitiesFound": "No cities found"
 }

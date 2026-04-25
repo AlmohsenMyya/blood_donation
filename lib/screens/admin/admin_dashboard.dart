@@ -100,64 +100,172 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
     }
   }
 
+  Future<void> _deleteAdmin(String uid) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.adminDeleted)));
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  Future<void> _editAdmin(DocumentSnapshot admin) async {
+    final l10n = AppLocalizations.of(context)!;
+    final nameCtrl = TextEditingController(text: admin['name']);
+    String? hospitalId = admin['hospitalId'];
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(l10n.editAdmin),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameCtrl,
+                decoration: InputDecoration(labelText: l10n.fullName),
+              ),
+              const SizedBox(height: 12),
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('hospitals').orderBy('name').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const LinearProgressIndicator();
+                  final hospitals = snapshot.data!.docs;
+                  return DropdownButtonFormField<String>(
+                    value: hospitalId,
+                    decoration: InputDecoration(labelText: l10n.hospitalName),
+                    items: hospitals.map((h) => DropdownMenuItem(
+                      value: h.id,
+                      child: Text(h['name']),
+                    )).toList(),
+                    onChanged: (v) => setDialogState(() => hospitalId = v),
+                  );
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
+            ElevatedButton(
+              onPressed: () async {
+                await FirebaseFirestore.instance.collection('users').doc(admin.id).update({
+                  'name': nameCtrl.text.trim(),
+                  'hospitalId': hospitalId,
+                });
+                if (mounted) {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.adminUpdated)));
+                }
+              },
+              child: Text(l10n.save),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: AppDesignConstants.edgeInsetsMedium,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Text(l10n.createAdmin, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _name,
-              decoration: InputDecoration(labelText: l10n.fullName, prefixIcon: const Icon(Icons.person)),
-              validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+      child: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Text(l10n.createAdmin, style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _name,
+                  decoration: InputDecoration(labelText: l10n.fullName, prefixIcon: const Icon(Icons.person)),
+                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _email,
+                  decoration: InputDecoration(labelText: l10n.email, prefixIcon: const Icon(Icons.email)),
+                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: l10n.password, prefixIcon: const Icon(Icons.lock)),
+                  validator: (v) => (v == null || v.length < 6) ? l10n.passwordMinLength : null,
+                ),
+                const SizedBox(height: 12),
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('hospitals').orderBy('name').snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return const CircularProgressIndicator();
+                    final hospitals = snapshot.data!.docs;
+                    return DropdownButtonFormField<String>(
+                      value: _selectedHospitalId,
+                      decoration: InputDecoration(labelText: l10n.hospitalName, prefixIcon: const Icon(Icons.local_hospital)),
+                      items: hospitals.map((h) => DropdownMenuItem(
+                        value: h.id,
+                        child: Text(h['name']),
+                      )).toList(),
+                      onChanged: (v) => setState(() => _selectedHospitalId = v),
+                      validator: (v) => v == null ? l10n.requiredField : null,
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _loading ? null : _createAdmin,
+                    child: _loading ? const CircularProgressIndicator() : Text(l10n.createAdmin),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _email,
-              decoration: InputDecoration(labelText: l10n.email, prefixIcon: const Icon(Icons.email)),
-              validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _password,
-              obscureText: true,
-              decoration: InputDecoration(labelText: l10n.password, prefixIcon: const Icon(Icons.lock)),
-              validator: (v) => (v == null || v.length < 6) ? l10n.passwordMinLength : null,
-            ),
-            const SizedBox(height: 12),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('hospitals').orderBy('name').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return const CircularProgressIndicator();
-                final hospitals = snapshot.data!.docs;
-                return DropdownButtonFormField<String>(
-                  value: _selectedHospitalId,
-                  decoration: InputDecoration(labelText: l10n.hospitalName, prefixIcon: const Icon(Icons.local_hospital)),
-                  items: hospitals.map((h) => DropdownMenuItem(
-                    value: h.id,
-                    child: Text(h['name']),
-                  )).toList(),
-                  onChanged: (v) => setState(() => _selectedHospitalId = v),
-                  validator: (v) => v == null ? l10n.requiredField : null,
-                );
-              },
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _loading ? null : _createAdmin,
-                child: _loading ? const CircularProgressIndicator() : Text(l10n.createAdmin),
-              ),
-            ),
-            const Divider(height: 40),
-          ],
-        ),
+          ),
+          const Divider(height: 40),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .where('role', isEqualTo: 'hospitalAdmin')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const CircularProgressIndicator();
+              final docs = snapshot.data!.docs;
+              if (docs.isEmpty) return Text(l10n.noAdminsFound);
+
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: docs.length,
+                itemBuilder: (context, i) {
+                  final admin = docs[i];
+                  return ListTile(
+                    title: Text(admin['name']),
+                    subtitle: Text(admin['email']),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => _editAdmin(admin),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: AppColors.error),
+                          onPressed: () => _deleteAdmin(admin.id),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
     );
   }
