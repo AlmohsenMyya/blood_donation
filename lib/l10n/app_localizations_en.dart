@@ -789,6 +789,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noHospitalsFound => 'No hospitals found';
 
   @override
+  String get notificationPermissionTitle => 'Enable Notifications';
+
+  @override
+  String get notificationPermissionBody =>
+      'Enable notifications to receive urgent blood request alerts in your city and track your donation status.';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get later => 'Later';
+
+  @override
   String get selectCity => 'Select City';
 
   @override

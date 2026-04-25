@@ -1532,6 +1532,30 @@ abstract class AppLocalizations {
   /// **'No hospitals found'**
   String get noHospitalsFound;
 
+  /// No description provided for @notificationPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get notificationPermissionTitle;
+
+  /// No description provided for @notificationPermissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications to receive urgent blood request alerts in your city and track your donation status.'**
+  String get notificationPermissionBody;
+
+  /// No description provided for @allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get allow;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
+
   /// No description provided for @selectCity.
   ///
   /// In en, this message translates to:

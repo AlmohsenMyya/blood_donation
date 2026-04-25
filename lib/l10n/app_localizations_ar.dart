@@ -781,6 +781,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noHospitalsFound => 'لم يتم العثور على مستشفيات';
 
   @override
+  String get notificationPermissionTitle => 'تفعيل التنبيهات';
+
+  @override
+  String get notificationPermissionBody =>
+      'قم بتفعيل التنبيهات لتصلك نداءات الاستغاثة العاجلة في مدينتك وتتابع حالة تبرعك.';
+
+  @override
+  String get allow => 'سماح';
+
+  @override
+  String get later => 'لاحقاً';
+
+  @override
   String get selectCity => 'اختر المدينة';
 
   @override

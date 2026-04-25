@@ -64,6 +64,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final doc = await _fs.collection('users').doc(firebaseUser.uid).get();
       if (doc.exists) {
         userData = doc.data();
+        
+        // Smart Tagging for OneSignal (Phase 1)
+        NotificationService().sendUserTags(
+          uid: firebaseUser.uid,
+          city: userData?['city'] ?? 'unknown',
+          bloodGroup: userData?['bloodGroup'] ?? 'unknown',
+          role: userData?['role'] ?? 'user',
+        );
+
         // Sync role provider if needed
         final roleStr = userData?['role'];
         if (roleStr != null) {
@@ -89,6 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _signOutAndGoLogin() async {
     try {
+      await NotificationService().logout(); // Logout from OneSignal
       await ref.read(authServiceProvider).logoutUser();
     } catch (_) {
       await AuthService().logoutUser();
