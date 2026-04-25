@@ -1,5 +1,6 @@
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
+import 'package:sheryan/core/utils/blood_logic.dart';
 import 'package:sheryan/screens/donors/donor_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,7 @@ class NearbyDonorsScreen extends StatefulWidget {
 
 class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
   String? city;
+  String? userBloodGroup;
   bool isLoading = true;
   List<Map<String, dynamic>> donors = [];
 
@@ -56,31 +58,40 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
           .get();
 
       if (userDoc.exists) {
-        city = userDoc.data()?['city'];
+        final userData = userDoc.data();
+        city = userData?['city'];
+        userBloodGroup = userData?['bloodGroup'];
 
-        if (city != null && city!.isNotEmpty) {
-          // 2️⃣ Fetch ALL donors (since Firestore queries are case-sensitive)
+        if (city != null && city!.isNotEmpty && userBloodGroup != null) {
+          // 2️⃣ Get Compatible Blood Types
+          final compatibleTypes = BloodLogic.getCompatibleDonors(userBloodGroup!);
+
+          // 3️⃣ Fetch Compatible Donors in the same city
+          // Since we use dropdowns now, case-sensitivity is less of an issue, 
+          // but we'll stick to query for performance.
           final querySnapshot = await FirebaseFirestore.instance
               .collection('users')
               .where('role', isEqualTo: 'donor')
+              .where('city', isEqualTo: city) // Now safe because of dropdowns
+              .where('bloodGroup', whereIn: compatibleTypes)
               .get();
 
-          // 3️⃣ Filter manually in Dart (case-insensitive)
           donors = querySnapshot.docs
               .map((doc) {
                 final data = doc.data();
                 data['id'] = doc.id;
                 return data;
               })
-              .where((donor) {
-                final donorCity = (donor['city'] ?? '')
-                    .toString()
-                    .toLowerCase()
-                    .trim();
-                final userCity = city!.toLowerCase().trim();
-                return donorCity == userCity;
-              })
               .toList();
+          
+          // Sort: Perfect matches first
+          donors.sort((a, b) {
+            bool aMatch = a['bloodGroup'] == userBloodGroup;
+            bool bMatch = b['bloodGroup'] == userBloodGroup;
+            if (aMatch && !bMatch) return -1;
+            if (!aMatch && bMatch) return 1;
+            return 0;
+          });
         }
       }
     } catch (e) {
@@ -118,6 +129,8 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
               itemCount: donors.length,
               itemBuilder: (context, index) {
                 final donor = donors[index];
+                final bool isPerfect = donor['bloodGroup'] == userBloodGroup;
+
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
@@ -130,20 +143,43 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                         ),
                       );
                     },
-                    leading: const CircleAvatar(
-                      backgroundColor: AppColors.primaryRed,
-                      child: Icon(Icons.person, color: Colors.white),
+                    leading: CircleAvatar(
+                      backgroundColor: isPerfect ? AppColors.primaryRed : Colors.orange,
+                      child: Icon(
+                        isPerfect ? Icons.check_circle : Icons.person, 
+                        color: Colors.white
+                      ),
                     ),
-                    title: Text(
-                      donor['name'] ?? l10n.unknown,
-                      style: theme.textTheme.titleMedium,
+                    title: Row(
+                      children: [
+                        Text(
+                          donor['name'] ?? l10n.unknown,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        if (isPerfect) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.success.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              "MATCH",
+                              style: TextStyle(color: AppColors.success, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ]
+                      ],
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           l10n.bloodGroupLabel(donor['bloodGroup'] ?? l10n.notAvailable),
-                          style: theme.textTheme.bodyMedium,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: isPerfect ? FontWeight.bold : FontWeight.normal,
+                          ),
                         ),
                         Text(
                           l10n.cityLabel(donor['city'] ?? ''),
