@@ -244,6 +244,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 12),
 
                 // City dropdown (Dynamic)
+                // داخل ملف SignupScreen في مكان حقل المدينة
                 StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection('cities').orderBy('name').snapshots(),
                   builder: (context, snapshot) {
@@ -252,6 +253,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       cities = snapshot.data!.docs.map((d) => d['name'] as String).toList();
                     }
 
+                    // الحالة الاحترافية: إذا كانت القائمة فارغة، اظهر حقل نصي (للتهيئة لأول مرة)
+                    if (cities.isEmpty) {
+                      return TextFormField(
+                        onChanged: (v) => setState(() => _selectedCity = v),
+                        decoration: InputDecoration(
+                          labelText: l10n.city,
+                          hintText: "Enter your city (Initial Setup)",
+                          prefixIcon: const Icon(Icons.location_city),
+                        ),
+                      );
+                    }
+
+                    // الحالة العادية: اظهر قائمة الاختيار
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(

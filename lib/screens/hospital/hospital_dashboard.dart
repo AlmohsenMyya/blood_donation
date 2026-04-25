@@ -96,7 +96,7 @@ class HospitalDashboard extends ConsumerWidget {
                                   else
                                     const Icon(Icons.pending, color: Colors.orange),
                                   Text(
-                                    isDone ? l10n.done : (isVerified ? "Verified" : l10n.pending),
+                                    isDone ? l10n.statusDone : (isVerified ? "Verified" : l10n.statusPending),
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: isDone ? AppColors.success : (isVerified ? Colors.blue : Colors.orange),

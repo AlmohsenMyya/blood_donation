@@ -1448,6 +1448,24 @@ abstract class AppLocalizations {
   /// **'Step 2 of 2: Scan Request'**
   String get step2Of2;
 
+  /// No description provided for @incomingRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming Blood Requests'**
+  String get incomingRequests;
+
+  /// No description provided for @noRequestsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests found for your hospital'**
+  String get noRequestsFound;
+
+  /// No description provided for @invalidHospital.
+  ///
+  /// In en, this message translates to:
+  /// **'This request is for another hospital!'**
+  String get invalidHospital;
+
   /// No description provided for @adminDashboard.
   ///
   /// In en, this message translates to:
@@ -1465,6 +1483,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage Cities'**
   String get manageCities;
+
+  /// No description provided for @manageHospitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Hospitals'**
+  String get manageHospitals;
+
+  /// No description provided for @addHospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Hospital'**
+  String get addHospital;
+
+  /// No description provided for @hospitalAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital added successfully!'**
+  String get hospitalAdded;
+
+  /// No description provided for @hospitalDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital deleted successfully!'**
+  String get hospitalDeleted;
+
+  /// No description provided for @noHospitalsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No hospitals found'**
+  String get noHospitalsFound;
+
+  /// No description provided for @selectCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Select City'**
+  String get selectCity;
 
   /// No description provided for @createAdmin.
   ///
@@ -1507,6 +1561,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hospital Admin created successfully!'**
   String get adminCreated;
+
+  /// No description provided for @adminDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital Admin deleted successfully!'**
+  String get adminDeleted;
+
+  /// No description provided for @adminUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital Admin updated successfully!'**
+  String get adminUpdated;
+
+  /// No description provided for @editAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Admin'**
+  String get editAdmin;
+
+  /// No description provided for @noAdminsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No hospital admins found'**
+  String get noAdminsFound;
 
   /// No description provided for @noCitiesFound.
   ///

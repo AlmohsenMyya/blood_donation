@@ -159,7 +159,7 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.adminUpdated)));
                 }
               },
-              child: Text(l10n.save),
+              child: Text(l10n.saveChanges),
             ),
           ],
         ),

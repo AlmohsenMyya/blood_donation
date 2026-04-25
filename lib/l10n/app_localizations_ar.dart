@@ -739,6 +739,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get step2Of2 => 'الخطوة 2 من 2: مسح الطلب';
 
   @override
+  String get incomingRequests => 'طلبات الدم الواردة';
+
+  @override
+  String get noRequestsFound => 'لا توجد طلبات واردة لمستشفاكم حالياً';
+
+  @override
+  String get invalidHospital => 'هذا الطلب تابع لمستشفى آخر!';
+
+  @override
   String get adminDashboard => 'لوحة السوبر أدمن';
 
   @override
@@ -746,6 +755,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get manageCities => 'إدارة المدن';
+
+  @override
+  String get manageHospitals => 'إدارة المستشفيات';
+
+  @override
+  String get addHospital => 'إضافة مستشفى';
+
+  @override
+  String get hospitalAdded => 'تم إضافة المستشفى بنجاح!';
+
+  @override
+  String get hospitalDeleted => 'تم حذف المستشفى بنجاح!';
+
+  @override
+  String get noHospitalsFound => 'لم يتم العثور على مستشفيات';
+
+  @override
+  String get selectCity => 'اختر المدينة';
 
   @override
   String get createAdmin => 'إنشاء حساب مسؤول مستشفى';
@@ -767,6 +794,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminCreated => 'تم إنشاء حساب المسؤول بنجاح!';
+
+  @override
+  String get adminDeleted => 'تم حذف حساب المسؤول بنجاح!';
+
+  @override
+  String get adminUpdated => 'تم تحديث حساب المسؤول بنجاح!';
+
+  @override
+  String get editAdmin => 'تعديل حساب المسؤول';
+
+  @override
+  String get noAdminsFound => 'لم يتم العثور على مسؤولين';
 
   @override
   String get noCitiesFound => 'لم يتم العثور على مدن';

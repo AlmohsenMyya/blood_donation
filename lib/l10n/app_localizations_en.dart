@@ -747,6 +747,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get step2Of2 => 'Step 2 of 2: Scan Request';
 
   @override
+  String get incomingRequests => 'Incoming Blood Requests';
+
+  @override
+  String get noRequestsFound => 'No requests found for your hospital';
+
+  @override
+  String get invalidHospital => 'This request is for another hospital!';
+
+  @override
   String get adminDashboard => 'Super Admin Dashboard';
 
   @override
@@ -754,6 +763,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manageCities => 'Manage Cities';
+
+  @override
+  String get manageHospitals => 'Manage Hospitals';
+
+  @override
+  String get addHospital => 'Add Hospital';
+
+  @override
+  String get hospitalAdded => 'Hospital added successfully!';
+
+  @override
+  String get hospitalDeleted => 'Hospital deleted successfully!';
+
+  @override
+  String get noHospitalsFound => 'No hospitals found';
+
+  @override
+  String get selectCity => 'Select City';
 
   @override
   String get createAdmin => 'Create Hospital Admin';
@@ -775,6 +802,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminCreated => 'Hospital Admin created successfully!';
+
+  @override
+  String get adminDeleted => 'Hospital Admin deleted successfully!';
+
+  @override
+  String get adminUpdated => 'Hospital Admin updated successfully!';
+
+  @override
+  String get editAdmin => 'Edit Admin';
+
+  @override
+  String get noAdminsFound => 'No hospital admins found';
 
   @override
   String get noCitiesFound => 'No cities found';
