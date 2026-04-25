@@ -1,5 +1,7 @@
 
+import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/screens/admin/admin_dashboard.dart';
+// ...
 import 'package:sheryan/screens/hospital/hospital_dashboard.dart';
 // ...
 import 'package:sheryan/core/enums/user_role.dart';
@@ -54,6 +56,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     setState(() => loading = true);
     User? firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
+      // Initialize Notifications (Phase 1)
+      if (mounted) {
+        NotificationService().init(context);
+      }
+
       final doc = await _fs.collection('users').doc(firebaseUser.uid).get();
       if (doc.exists) {
         userData = doc.data();
