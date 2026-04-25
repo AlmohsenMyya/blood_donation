@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
+import 'package:sheryan/core/utils/blood_logic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
@@ -19,6 +20,7 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
   bool _loading = true;
   List<Map<String, dynamic>> _nearbyRequests = [];
   String? _userCity;
+  String? _userBloodGroup;
 
   @override
   void initState() {
@@ -28,21 +30,39 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
 
   Future<void> _fetchNearbyRequests() async {
     try {
-      // 1. Get current position (Simplified for demo, in production use actual user city from profile)
-      _userCity = "Nablus"; // Mock
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
 
-      // 2. Fetch requests from Firestore
-      final snapshot = await _firestore
-          .collection('blood_requests')
-          .where('city', isEqualTo: _userCity)
-          .where('status', isEqualTo: 'pending')
-          .get();
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        _userCity = userDoc.data()?['city'];
+        _userBloodGroup = userDoc.data()?['bloodGroup'];
 
-      _nearbyRequests = snapshot.docs.map((doc) => {
-        'id': doc.id,
-        ...doc.data()
-      }).toList();
+        if (_userCity != null && _userBloodGroup != null) {
+          final compatibleRecipientTypes = BloodLogic.getCompatibleRecipients(_userBloodGroup!);
 
+          final snapshot = await _firestore
+              .collection('blood_requests')
+              .where('city', isEqualTo: _userCity)
+              .where('status', isEqualTo: 'pending')
+              .where('bloodGroup', whereIn: compatibleRecipientTypes)
+              .get();
+
+          _nearbyRequests = snapshot.docs.map((doc) => {
+            'id': doc.id,
+            ...doc.data()
+          }).toList();
+
+          // Sort: Perfect matches first
+          _nearbyRequests.sort((a, b) {
+            bool aMatch = a['bloodGroup'] == _userBloodGroup;
+            bool bMatch = b['bloodGroup'] == _userBloodGroup;
+            if (aMatch && !bMatch) return -1;
+            if (!aMatch && bMatch) return 1;
+            return 0;
+          });
+        }
+      }
     } catch (e) {
       debugPrint("Error fetching nearby requests: $e");
     } finally {
@@ -93,6 +113,7 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                   itemBuilder: (context, index) {
                     final request = _nearbyRequests[index];
                     final isVerified = request['isVerified'] ?? false;
+                    final bool isPerfect = request['bloodGroup'] == _userBloodGroup;
 
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
@@ -126,19 +147,28 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryRed.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    request['bloodGroup'] ?? '?',
-                                    style: const TextStyle(
-                                      color: AppColors.primaryRed,
-                                      fontWeight: FontWeight.bold,
+                                Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: isPerfect ? AppColors.primaryRed : Colors.orange.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        request['bloodGroup'] ?? '?',
+                                        style: TextStyle(
+                                          color: isPerfect ? Colors.white : Colors.orange,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    if (isPerfect)
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 2),
+                                        child: Text("MATCH", style: TextStyle(color: AppColors.success, fontSize: 8, fontWeight: FontWeight.bold)),
+                                      ),
+                                  ],
                                 ),
                               ],
                             ),
