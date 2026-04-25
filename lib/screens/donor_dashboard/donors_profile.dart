@@ -1,6 +1,5 @@
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// ...
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
@@ -21,9 +20,9 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
 
   final TextEditingController _name = TextEditingController();
   final TextEditingController _phone = TextEditingController();
-  final TextEditingController _city = TextEditingController();
   final TextEditingController _lastDonated = TextEditingController();
 
+  String? _selectedCity;
   String _bloodGroup = '';
   String _accountType = '';
   bool _loading = true;
@@ -45,7 +44,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
     setState(() {
       _name.text = data['name'] ?? '';
       _phone.text = data['phone'] ?? '';
-      _city.text = data['city'] ?? '';
+      _selectedCity = data['city'];
       _lastDonated.text = data['lastDonated'] ?? '';
       _bloodGroup = data['bloodGroup'] ?? l10n.notAvailable;
       _accountType = data['role'] ?? 'user';
@@ -91,7 +90,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
     await _firestore.collection('users').doc(user.uid).update({
       'name': _name.text.trim(),
       'phone': _phone.text.trim(),
-      'city': _city.text.trim(),
+      'city': _selectedCity,
       'lastDonated': _lastDonated.text.trim(),
     });
 
@@ -183,9 +182,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                                     ),
                                   ),
                                   Text(
-                                    _city.text.isNotEmpty
-                                        ? _city.text
-                                        : l10n.unknownCity,
+                                    _selectedCity ?? l10n.unknownCity,
                                     style: const TextStyle(
                                         color: Colors.white70, fontSize: 14),
                                   ),
@@ -217,8 +214,29 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                                 _buildTextField(l10n.phone, _phone,
                                     icon: Icons.phone),
                                 const SizedBox(height: 12),
-                                _buildTextField(l10n.city, _city,
-                                    icon: Icons.location_city),
+                                
+                                // City Dropdown
+                                StreamBuilder<QuerySnapshot>(
+                                  stream: _firestore.collection('cities').orderBy('name').snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) return const LinearProgressIndicator();
+                                    final cities = snapshot.data!.docs;
+                                    return DropdownButtonFormField<String>(
+                                      value: _selectedCity,
+                                      decoration: InputDecoration(
+                                        labelText: l10n.city,
+                                        prefixIcon: const Icon(Icons.location_city),
+                                      ),
+                                      items: cities.map((c) => DropdownMenuItem(
+                                        value: c['name'] as String,
+                                        child: Text(c['name']),
+                                      )).toList(),
+                                      onChanged: (v) => setState(() => _selectedCity = v),
+                                      validator: (v) => v == null ? l10n.requiredField : null,
+                                    );
+                                  },
+                                ),
+
                                 const SizedBox(height: 12),
                                 _buildTextField(
                                   l10n.bloodGroup,
