@@ -13,55 +13,120 @@ class HospitalDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final adminProfile = ref.watch(userProfileProvider).value;
+    final hospitalId = adminProfile?['hospitalId'];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.hospitalAdminDashboard),
       ),
-      body: Padding(
-        padding: AppDesignConstants.edgeInsetsMedium,
-        child: Column(
-          children: [
-            _buildActionCard(
-              context,
-              icon: Icons.verified_user,
-              title: l10n.verifyRequest,
-              color: AppColors.hospitalPrimary,
-              onTap: () => _openScanner(context, isVerifyOnly: true),
+      body: Column(
+        children: [
+          Padding(
+            padding: AppDesignConstants.edgeInsetsMedium,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildActionBtn(
+                    context,
+                    icon: Icons.verified_user,
+                    title: l10n.verifyRequest,
+                    color: AppColors.hospitalPrimary,
+                    onTap: () => _openScanner(context, isVerifyOnly: true),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildActionBtn(
+                    context,
+                    icon: Icons.handshake,
+                    title: l10n.registerDonation,
+                    color: AppColors.success,
+                    onTap: () => _openScanner(context, isVerifyOnly: false),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            _buildActionCard(
-              context,
-              icon: Icons.handshake,
-              title: l10n.registerDonation,
-              color: AppColors.success,
-              onTap: () => _openScanner(context, isVerifyOnly: false),
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                const Icon(Icons.list_alt, color: AppColors.hospitalPrimary),
+                const SizedBox(width: 8),
+                Text(l10n.incomingRequests, style: Theme.of(context).textTheme.titleMedium),
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: hospitalId == null
+                ? const Center(child: CircularProgressIndicator())
+                : StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('blood_requests')
+                        .where('hospitalId', isEqualTo: hospitalId)
+                        .orderBy('createdAt', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+                      final docs = snapshot.data!.docs;
+                      if (docs.isEmpty) return Center(child: Text(l10n.noRequestsFound));
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: docs.length,
+                        itemBuilder: (context, i) {
+                          final data = docs[i].data() as Map<String, dynamic>;
+                          final isDone = data['status'] == 'done';
+                          final isVerified = data['isVerified'] ?? false;
+
+                          return Card(
+                            child: ListTile(
+                              title: Text(data['patientName'] ?? ''),
+                              subtitle: Text("${data['bloodGroup']} • ${data['units']} units"),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (isDone)
+                                    const Icon(Icons.check_circle, color: AppColors.success)
+                                  else if (isVerified)
+                                    const Icon(Icons.verified, color: Colors.blue)
+                                  else
+                                    const Icon(Icons.pending, color: Colors.orange),
+                                  Text(
+                                    isDone ? l10n.done : (isVerified ? "Verified" : l10n.pending),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: isDone ? AppColors.success : (isVerified ? Colors.blue : Colors.orange),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildActionCard(BuildContext context,
+  Widget _buildActionBtn(BuildContext context,
       {required IconData icon, required String title, required Color color, required VoidCallback onTap}) {
-    final theme = Theme.of(context);
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppDesignConstants.borderRadiusMedium,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-          child: Column(
-            children: [
-              Icon(icon, size: 60, color: color),
-              const SizedBox(height: 16),
-              Text(title, style: theme.textTheme.titleLarge),
-            ],
-          ),
-        ),
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        shape: RoundedRectangleBorder(borderRadius: AppDesignConstants.borderRadiusMedium),
       ),
+      icon: Icon(icon, color: Colors.white),
+      label: Text(title, style: const TextStyle(color: Colors.white, fontSize: 13)),
     );
   }
 
@@ -114,9 +179,17 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
   Future<void> _handleVerifyRequest(String id) async {
     final l10n = AppLocalizations.of(context)!;
+    final adminProfile = ref.read(userProfileProvider).value;
+    final myHospitalId = adminProfile?['hospitalId'];
+
     try {
       final doc = await FirebaseFirestore.instance.collection('blood_requests').doc(id).get();
       if (!doc.exists) throw Exception(l10n.invalidQr);
+
+      // Security check (Task 7)
+      if (doc.data()?['hospitalId'] != myHospitalId) {
+        throw Exception(l10n.invalidHospital);
+      }
 
       await doc.reference.update({'isVerified': true});
       
@@ -125,7 +198,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
         Navigator.pop(context);
       }
     } catch (e) {
-      _showError(e.toString());
+      _showError(e.toString().replaceAll("Exception: ", ""));
     }
   }
 
@@ -148,9 +221,17 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
   Future<void> _handleRequestScan(String id) async {
     final l10n = AppLocalizations.of(context)!;
+    final adminProfile = ref.read(userProfileProvider).value;
+    final myHospitalId = adminProfile?['hospitalId'];
+
     try {
       final doc = await FirebaseFirestore.instance.collection('blood_requests').doc(id).get();
       if (!doc.exists) throw Exception(l10n.invalidQr);
+
+      // Security check (Task 7)
+      if (doc.data()?['hospitalId'] != myHospitalId) {
+        throw Exception(l10n.invalidHospital);
+      }
 
       setState(() => requestId = id);
       
@@ -172,7 +253,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
         setState(() => requestId = null);
       }
     } catch (e) {
-      _showError(e.toString());
+      _showError(e.toString().replaceAll("Exception: ", ""));
     }
   }
 
@@ -197,7 +278,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
         'donorId': donorId,
         'requestId': requestId,
         'hospitalId': adminProfile?['hospitalId'],
-        'hospitalName': adminProfile?['name'], // Using admin's name as fallback if hospital name isn't separate
+        'hospitalName': adminProfile?['name'],
         'timestamp': FieldValue.serverTimestamp(),
         'verifiedBy': adminProfile?['uid'],
       });
