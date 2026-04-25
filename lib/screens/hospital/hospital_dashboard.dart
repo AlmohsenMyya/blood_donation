@@ -297,6 +297,30 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
       
       await batch.commit();
 
+      // Trigger Gratitude Notifications (Phase 3)
+      final requestDoc = await FirebaseFirestore.instance.collection('blood_requests').doc(requestId).get();
+      final recipientUid = requestDoc.data()?['userId'];
+
+      if (donorId != null) {
+        NotificationService().sendDirectNotification(
+          targetUid: donorId!,
+          titleEn: "Donation Successful!",
+          titleAr: "تم التبرع بنجاح!",
+          bodyEn: "Thank you for your generous donation. You saved a life today! 🩸",
+          bodyAr: "شكراً لعطائك. لقد ساهمت في إنقاذ حياة اليوم! 🩸",
+        );
+      }
+
+      if (recipientUid != null) {
+        NotificationService().sendDirectNotification(
+          targetUid: recipientUid,
+          titleEn: "Request Fulfilled!",
+          titleAr: "تم تلبية طلبك!",
+          bodyEn: "Good news! A successful donation has been registered for your request.",
+          bodyAr: "بشرى سارة! تم تسجيل عملية تبرع ناجحة لطلبك.",
+        );
+      }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.donationSuccess)));
         Navigator.pop(context);

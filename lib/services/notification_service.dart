@@ -143,6 +143,43 @@ class NotificationService {
     }
   }
 
+  /// Sends a direct notification to a specific user by their UID
+  Future<void> sendDirectNotification({
+    required String targetUid,
+    required String titleEn,
+    required String titleAr,
+    required String bodyEn,
+    required String bodyAr,
+  }) async {
+    if (_restApiKey == "YOUR_REST_API_KEY") return;
+
+    final Map<String, dynamic> payload = {
+      "app_id": _oneSignalAppId,
+      "include_external_user_ids": [targetUid],
+      "contents": {
+        "en": bodyEn,
+        "ar": bodyAr
+      },
+      "headings": {
+        "en": titleEn,
+        "ar": titleAr
+      },
+    };
+
+    try {
+      await http.post(
+        Uri.parse("https://onesignal.com/api/v1/notifications"),
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "Basic $_restApiKey"
+        },
+        body: jsonEncode(payload),
+      );
+    } catch (e) {
+      debugPrint("OneSignal Direct Request failed: $e");
+    }
+  }
+
   /// Clean tags on logout
   Future<void> logout() async {
     OneSignal.logout();
