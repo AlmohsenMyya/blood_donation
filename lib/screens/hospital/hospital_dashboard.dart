@@ -197,9 +197,21 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
 
       await doc.reference.update({'isVerified': true});
       
-      // Trigger Smart Emergency Notification (Phase 2)
       final requestData = doc.data() as Map<String, dynamic>;
-      print("83735672 ---- ${requestData['city']}  ${requestData['bloodGroup']}  id : $id");
+      final requesterId = requestData['userId'];
+
+      // 1. Notify the Requester
+      if (requesterId != null) {
+        NotificationService().sendDirectNotification(
+          targetUid: requesterId,
+          titleEn: "Request Verified!",
+          titleAr: "تم توثيق طلبك!",
+          bodyEn: "Your blood request has been verified and broadcasted to donors. 🏥",
+          bodyAr: "تم توثيق طلب الدم الخاص بك وتعميمه على المتبرعين. 🏥",
+        );
+      }
+
+      // 2. Broadcast to Compatible Donors
       NotificationService().sendEmergencyNotification(
         city: requestData['city'] ?? '',
         bloodGroup: requestData['bloodGroup'] ?? '',
