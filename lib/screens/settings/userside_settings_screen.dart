@@ -1,3 +1,4 @@
+import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 // =================== Settings Screen ===================
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -39,6 +40,7 @@ class SettingsScreen extends ConsumerWidget {
           ]),
 
           _buildSection(context, l10n.appPreferences, [
+            _NotificationToggle(),
             _buildCard(
               context: context,
               icon: Icons.refresh,
@@ -197,6 +199,47 @@ class SettingsScreen extends ConsumerWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.errorEmailApp)));
     }
+  }
+}
+
+class _NotificationToggle extends StatefulWidget {
+  @override
+  State<_NotificationToggle> createState() => _NotificationToggleState();
+}
+
+class _NotificationToggleState extends State<_NotificationToggle> {
+  bool _isEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStatus();
+  }
+
+  void _loadStatus() async {
+    final status = await NotificationService().isNotificationEnabled();
+    setState(() => _isEnabled = status);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Card(
+      child: SwitchListTile(
+        secondary: Icon(
+          _isEnabled ? Icons.notifications_active : Icons.notifications_off,
+          color: AppColors.primaryRed,
+        ),
+        title: Text(l10n.notifications),
+        subtitle: Text(l10n.receiveAlerts),
+        value: _isEnabled,
+        activeColor: AppColors.primaryRed,
+        onChanged: (v) async {
+          setState(() => _isEnabled = v);
+          await NotificationService().setNotificationEnabled(v);
+        },
+      ),
+    );
   }
 }
 

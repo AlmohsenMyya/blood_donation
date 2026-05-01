@@ -199,6 +199,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
       
       // Trigger Smart Emergency Notification (Phase 2)
       final requestData = doc.data() as Map<String, dynamic>;
+      print("83735672 ---- ${requestData['city']}  ${requestData['bloodGroup']}  id : $id");
       NotificationService().sendEmergencyNotification(
         city: requestData['city'] ?? '',
         bloodGroup: requestData['bloodGroup'] ?? '',

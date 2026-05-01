@@ -394,5 +394,25 @@
   "adminUpdated": "Hospital Admin updated successfully!",
   "editAdmin": "Edit Admin",
   "noAdminsFound": "No hospital admins found",
-  "noCitiesFound": "No cities found"
+  "noCitiesFound": "No cities found",
+  "notifications": "Notifications",
+  "enableNotifications": "Enable Notifications",
+  "receiveAlerts": "Receive alerts for emergency requests",
+  "testNotifications": "Test Notifications",
+  "sendTestPush": "Send Test Push to Me",
+  "checkingStatus": "Checking OneSignal Status...",
+  "statusSubscribed": "Subscribed",
+  "statusNotSubscribed": "Not Subscribed",
+  "userId": "User ID (External): {id}",
+  "@userId": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "pushToken": "Push Token: {token}",
+  "@pushToken": {
+    "placeholders": {
+      "token": { "type": "String" }
+    }
+  }
 }

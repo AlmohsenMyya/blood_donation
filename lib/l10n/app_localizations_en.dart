@@ -860,4 +860,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noCitiesFound => 'No cities found';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get enableNotifications => 'Enable Notifications';
+
+  @override
+  String get receiveAlerts => 'Receive alerts for emergency requests';
+
+  @override
+  String get testNotifications => 'Test Notifications';
+
+  @override
+  String get sendTestPush => 'Send Test Push to Me';
+
+  @override
+  String get checkingStatus => 'Checking OneSignal Status...';
+
+  @override
+  String get statusSubscribed => 'Subscribed';
+
+  @override
+  String get statusNotSubscribed => 'Not Subscribed';
+
+  @override
+  String userId(String id) {
+    return 'User ID (External): $id';
+  }
+
+  @override
+  String pushToken(String token) {
+    return 'Push Token: $token';
+  }
 }

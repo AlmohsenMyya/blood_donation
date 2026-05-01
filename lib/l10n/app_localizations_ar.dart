@@ -851,4 +851,38 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noCitiesFound => 'لم يتم العثور على مدن';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get enableNotifications => 'تفعيل الإشعارات';
+
+  @override
+  String get receiveAlerts => 'استقبال تنبيهات لطلبات الاستغاثة العاجلة';
+
+  @override
+  String get testNotifications => 'اختبار الإشعارات';
+
+  @override
+  String get sendTestPush => 'إرسال إشعار تجريبي لنفسي';
+
+  @override
+  String get checkingStatus => 'جاري التحقق من حالة OneSignal...';
+
+  @override
+  String get statusSubscribed => 'مشترك';
+
+  @override
+  String get statusNotSubscribed => 'غير مشترك';
+
+  @override
+  String userId(String id) {
+    return 'معرف المستخدم (الخارجي): $id';
+  }
+
+  @override
+  String pushToken(String token) {
+    return 'رمز الدفع (Push Token): $token';
+  }
 }

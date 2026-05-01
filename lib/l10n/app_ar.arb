@@ -394,5 +394,25 @@
   "adminUpdated": "تم تحديث حساب المسؤول بنجاح!",
   "editAdmin": "تعديل حساب المسؤول",
   "noAdminsFound": "لم يتم العثور على مسؤولين",
-  "noCitiesFound": "لم يتم العثور على مدن"
+  "noCitiesFound": "لم يتم العثور على مدن",
+  "notifications": "الإشعارات",
+  "enableNotifications": "تفعيل الإشعارات",
+  "receiveAlerts": "استقبال تنبيهات لطلبات الاستغاثة العاجلة",
+  "testNotifications": "اختبار الإشعارات",
+  "sendTestPush": "إرسال إشعار تجريبي لنفسي",
+  "checkingStatus": "جاري التحقق من حالة OneSignal...",
+  "statusSubscribed": "مشترك",
+  "statusNotSubscribed": "غير مشترك",
+  "userId": "معرف المستخدم (الخارجي): {id}",
+  "@userId": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "pushToken": "رمز الدفع (Push Token): {token}",
+  "@pushToken": {
+    "placeholders": {
+      "token": { "type": "String" }
+    }
+  }
 }

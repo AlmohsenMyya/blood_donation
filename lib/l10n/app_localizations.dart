@@ -1657,6 +1657,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No cities found'**
   String get noCitiesFound;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @enableNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get enableNotifications;
+
+  /// No description provided for @receiveAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive alerts for emergency requests'**
+  String get receiveAlerts;
+
+  /// No description provided for @testNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Notifications'**
+  String get testNotifications;
+
+  /// No description provided for @sendTestPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Test Push to Me'**
+  String get sendTestPush;
+
+  /// No description provided for @checkingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking OneSignal Status...'**
+  String get checkingStatus;
+
+  /// No description provided for @statusSubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribed'**
+  String get statusSubscribed;
+
+  /// No description provided for @statusNotSubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Subscribed'**
+  String get statusNotSubscribed;
+
+  /// No description provided for @userId.
+  ///
+  /// In en, this message translates to:
+  /// **'User ID (External): {id}'**
+  String userId(String id);
+
+  /// No description provided for @pushToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Token: {token}'**
+  String pushToken(String token);
 }
 
 class _AppLocalizationsDelegate
