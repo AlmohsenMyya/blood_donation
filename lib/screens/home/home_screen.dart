@@ -1,4 +1,5 @@
 
+import 'package:sheryan/screens/misc/notifications_screen.dart';
 import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/screens/admin/admin_dashboard.dart';
 // ...
@@ -183,19 +184,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _topAppBar(UserRole role) {
-  final l10n = AppLocalizations.of(context)!;
-  String title = l10n.appTitle;
-  if (role == UserRole.donor) title = l10n.donorDashboard;
-  if (role == UserRole.hospitalAdmin) title = l10n.hospitalAdminDashboard;
+    final l10n = AppLocalizations.of(context)!;
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    String title = l10n.appTitle;
+    if (role == UserRole.donor) title = l10n.donorDashboard;
+    if (role == UserRole.hospitalAdmin) title = l10n.hospitalAdminDashboard;
 
-  return AppBar(
-    title: Text(title),
-    actions: [
-      IconButton(
-        tooltip: l10n.changeLanguage,
-        icon: const Icon(Icons.language),
-        onPressed: _showLanguageSheet,
-      ),
+    return AppBar(
+      title: Text(title),
+      actions: [
+        if (userId != null)
+          StreamBuilder<int>(
+            stream: NotificationService().getUnreadCountStream(userId),
+            builder: (context, snapshot) {
+              final count = snapshot.data ?? 0;
+              return Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_none),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                      );
+                    },
+                  ),
+                  if (count > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryRed,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                        child: Text(
+                          '$count',
+                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        IconButton(
+          tooltip: l10n.changeLanguage,
+          icon: const Icon(Icons.language),
+          onPressed: _showLanguageSheet,
+        ),
       PopupMenuButton<String>(
         icon: const Icon(Icons.settings ),
         onSelected: (v) {

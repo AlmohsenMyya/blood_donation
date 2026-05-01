@@ -396,6 +396,7 @@
   "noAdminsFound": "لم يتم العثور على مسؤولين",
   "noCitiesFound": "لم يتم العثور على مدن",
   "notifications": "الإشعارات",
+  "noNotificationsFound": "لا توجد إشعارات حالياً",
   "enableNotifications": "تفعيل الإشعارات",
   "receiveAlerts": "استقبال تنبيهات لطلبات الاستغاثة العاجلة",
   "testNotifications": "اختبار الإشعارات",

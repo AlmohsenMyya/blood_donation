@@ -1664,6 +1664,12 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notifications;
 
+  /// No description provided for @noNotificationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotificationsFound;
+
   /// No description provided for @enableNotifications.
   ///
   /// In en, this message translates to:

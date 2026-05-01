@@ -25,6 +25,7 @@ dependencies:
 
   # 🔔 Notifications
   flutter_local_notifications: ^21.0.0
+  googleapis_auth: ^1.6.0
 
   # 🧠 State Management
   flutter_riverpod: ^3.0.3
@@ -38,7 +39,6 @@ dependencies:
   # 📷 Scanner (مستقر بدون كسر المشروع)
   mobile_scanner: ^5.2.3
   qr_flutter: ^4.1.0
-  onesignal_flutter: ^5.5.1
   http: ^1.6.0
 
 dev_dependencies:

@@ -396,6 +396,7 @@
   "noAdminsFound": "No hospital admins found",
   "noCitiesFound": "No cities found",
   "notifications": "Notifications",
+  "noNotificationsFound": "No notifications yet",
   "enableNotifications": "Enable Notifications",
   "receiveAlerts": "Receive alerts for emergency requests",
   "testNotifications": "Test Notifications",

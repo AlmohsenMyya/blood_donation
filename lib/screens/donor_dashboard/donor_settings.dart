@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 // =================== Settings Screen ===================
 class DonorSettingsScreen extends ConsumerWidget {
   const DonorSettingsScreen({super.key});
