@@ -434,5 +434,18 @@
   "bloodGroupVerificationTitle": "Blood Group Verification",
   "confirmBloodGroupVerification": "Confirm Verification",
   "bloodGroupVerifiedSuccess": "Blood group verified successfully!",
-  "bloodGroupAlreadyVerified": "Blood group already verified"
+  "bloodGroupAlreadyVerified": "Blood group already verified",
+
+  "donationHistory": "Donation History",
+  "donationHistoryInfo": "Populated automatically when a hospital admin registers your donation via QR scan",
+  "noDonationsYet": "No donations recorded yet",
+  "noDonationsYetSubtitle": "Once a hospital registers your donation, it will appear here automatically",
+  "donationSingular": "Donation",
+  "donationPlural": "Donations",
+  "totalBloodDonated": "Total blood donated",
+  "donation": "Donation",
+  "completed": "Completed",
+  "unknownHospital": "Unknown Hospital",
+  "viewDonationHistory": "View Donation History",
+  "errorLoadingData": "Failed to load data. Please try again."
 }

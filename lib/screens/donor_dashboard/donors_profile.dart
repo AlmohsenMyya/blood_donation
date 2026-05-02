@@ -6,6 +6,7 @@ import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/core/utils/profile_completion.dart';
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/screens/donor_dashboard/donation_history_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/emergency_contact_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/health_info_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/medical_history_screen.dart';
@@ -123,6 +124,10 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
               }),
 
               const SizedBox(height: 16),
+
+              _buildDonationHistoryCard(l10n, theme),
+
+              const SizedBox(height: 4),
 
               Padding(
                 padding: AppDesignConstants.edgeInsetsMedium,
@@ -389,6 +394,68 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                         color: AppColors.textGrey, size: 18),
                 ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDonationHistoryCard(AppLocalizations l10n, ThemeData theme) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => const DonationHistoryScreen()),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primaryRed.withOpacity(0.18),
+              AppColors.accentRed.withOpacity(0.10),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+              color: AppColors.primaryRed.withOpacity(0.3), width: 1.2),
+        ),
+        child: Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryRed.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(Icons.favorite,
+                    color: AppColors.primaryRed, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.donationHistory,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 2),
+                    Text(l10n.viewDonationHistory,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: AppColors.textGrey)),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right,
+                  color: AppColors.primaryRed, size: 20),
             ],
           ),
         ),

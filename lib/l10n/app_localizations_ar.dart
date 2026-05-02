@@ -1027,4 +1027,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get bloodGroupAlreadyVerified => 'زمرة الدم موثقة مسبقاً';
+
+  @override
+  String get donationHistory => 'سجل التبرعات';
+
+  @override
+  String get donationHistoryInfo =>
+      'يُملأ تلقائياً عندما يسجل مسؤول المستشفى تبرعك عبر مسح الرمز';
+
+  @override
+  String get noDonationsYet => 'لا يوجد سجل تبرعات بعد';
+
+  @override
+  String get noDonationsYetSubtitle =>
+      'بمجرد أن يسجل المستشفى تبرعك، سيظهر هنا تلقائياً';
+
+  @override
+  String get donationSingular => 'تبرع';
+
+  @override
+  String get donationPlural => 'تبرعات';
+
+  @override
+  String get totalBloodDonated => 'إجمالي الدم المتبرع به';
+
+  @override
+  String get donation => 'تبرع';
+
+  @override
+  String get completed => 'مكتمل';
+
+  @override
+  String get unknownHospital => 'مستشفى غير معروف';
+
+  @override
+  String get viewDonationHistory => 'عرض سجل التبرعات';
+
+  @override
+  String get errorLoadingData => 'فشل تحميل البيانات. يرجى المحاولة مرة أخرى.';
 }

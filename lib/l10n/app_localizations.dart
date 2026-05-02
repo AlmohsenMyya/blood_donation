@@ -1993,6 +1993,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Blood group already verified'**
   String get bloodGroupAlreadyVerified;
+
+  /// No description provided for @donationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation History'**
+  String get donationHistory;
+
+  /// No description provided for @donationHistoryInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Populated automatically when a hospital admin registers your donation via QR scan'**
+  String get donationHistoryInfo;
+
+  /// No description provided for @noDonationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No donations recorded yet'**
+  String get noDonationsYet;
+
+  /// No description provided for @noDonationsYetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a hospital registers your donation, it will appear here automatically'**
+  String get noDonationsYetSubtitle;
+
+  /// No description provided for @donationSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation'**
+  String get donationSingular;
+
+  /// No description provided for @donationPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Donations'**
+  String get donationPlural;
+
+  /// No description provided for @totalBloodDonated.
+  ///
+  /// In en, this message translates to:
+  /// **'Total blood donated'**
+  String get totalBloodDonated;
+
+  /// No description provided for @donation.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation'**
+  String get donation;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @unknownHospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Hospital'**
+  String get unknownHospital;
+
+  /// No description provided for @viewDonationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View Donation History'**
+  String get viewDonationHistory;
+
+  /// No description provided for @errorLoadingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load data. Please try again.'**
+  String get errorLoadingData;
 }
 
 class _AppLocalizationsDelegate
