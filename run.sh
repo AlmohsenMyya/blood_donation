@@ -53,5 +53,5 @@ echo "Generated .env successfully"
 echo "Building Flutter web app..."
 flutter build web --release
 
-echo "Serving Flutter web app on port 5000..."
-npx serve build/web -p 5000 -s --no-clipboard
+echo "Serving Flutter web app on port 5000 (with /__mockup proxy to :23636)..."
+node proxy-server.js

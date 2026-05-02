@@ -1,0 +1,37 @@
+uploads = []
+
+[[generated]]
+id = "hQNP1bpNS2soQ8DGrO9QO"
+uri = "file://artifacts/mockup-sandbox/public/images/avatar-crimson.png"
+type = "image"
+title = "Dark crimson male avatar"
+
+[[generated]]
+id = "S1ElaQJMhcXaF2qBvHNDf"
+uri = "file://artifacts/mockup-sandbox/public/images/ahmed-avatar.png"
+type = "image"
+title = "Arabic male user avatar"
+
+[[outputs]]
+id = "SfA3Y6SkpEoZ-Fm0PKoZb"
+uri = "file://artifacts/mockup-sandbox/public/images/avatar_1.jpg"
+type = "image"
+title = "smiling young middle eastern person portrait profile picture headshot"
+
+[[outputs]]
+id = "swQR0QJj-l2lobiGg1KI9"
+uri = "file://artifacts/mockup-sandbox/public/images/avatar_2.jpg"
+type = "image"
+title = "smiling young middle eastern person portrait profile picture headshot"
+
+[[outputs]]
+id = "Bb9clFOFnp6Dp3t-TlUC_"
+uri = "file://artifacts/mockup-sandbox/public/images/avatar_3.jpg"
+type = "image"
+title = "smiling young middle eastern person portrait profile picture headshot"
+
+[[outputs]]
+id = "m1ByNr_QQS-aZC1kXRV5P"
+uri = "file://artifacts/mockup-sandbox/public/images/avatar_4.jpg"
+type = "image"
+title = "smiling young middle eastern person portrait profile picture headshot"
