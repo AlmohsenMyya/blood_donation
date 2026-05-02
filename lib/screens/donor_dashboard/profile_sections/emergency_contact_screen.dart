@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
+import 'package:sheryan/core/utils/points_ui_utils.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/services/points_service.dart';
 
 class EmergencyContactScreen extends StatefulWidget {
   final Map<String, dynamic> existingData;
@@ -44,7 +46,16 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
         'emergencyContactName': _nameCtrl.text.trim(),
         'emergencyContactPhone': _phoneCtrl.text.trim(),
       });
-      if (mounted) Navigator.pop(context, true);
+
+      // Award points for completed milestones
+      final snap = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final profile = snap.data() ?? {};
+      final pts = await PointsService().checkAndAwardProfileMilestones(uid, profile);
+
+      if (mounted) {
+        if (pts > 0) showPointsGainedSnack(context, pts);
+        Navigator.pop(context, true);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)

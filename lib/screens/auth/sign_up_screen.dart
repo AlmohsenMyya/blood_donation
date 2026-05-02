@@ -6,6 +6,7 @@ import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
 import 'package:sheryan/screens/home/home_screen.dart';
 import 'package:sheryan/services/auth_service.dart';
+import 'package:sheryan/services/points_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
@@ -120,6 +121,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       setState(() => _loading = false);
 
       if (ok) {
+        // Award account creation points (donor only)
+        if (_selectedRole == UserRole.donor) {
+          final uid = FirebaseAuth.instance.currentUser?.uid;
+          if (uid != null) {
+            await PointsService().awardPoints(
+              uid: uid,
+              event: PointsEvent.accountCreated,
+              points: PointsValue.accountCreated,
+              descriptionAr: 'مرحباً بك في شريان!',
+              descriptionEn: 'Welcome to Sheryan!',
+            );
+          }
+        }
         ref.read(roleProvider.notifier).setRole(_selectedRole);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.accountCreated)));

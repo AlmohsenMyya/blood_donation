@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class PointsEvent {
   static const String accountCreated = 'account_created';
@@ -11,6 +10,8 @@ class PointsEvent {
   static const String profileComplete = 'profile_100_bonus';
   static const String donationRegistered = 'donation_registered';
   static const String consecutiveDonation = 'consecutive_donation_bonus';
+  static const String bloodRarityBonus = 'blood_rarity_bonus';
+  static const String emergencyDonationBonus = 'emergency_donation_bonus';
 }
 
 class PointsValue {
@@ -23,7 +24,11 @@ class PointsValue {
   static const int profileComplete = 50;
   static const int donationRegistered = 200;
   static const int consecutiveDonation = 50;
+  static const int bloodRarityBonus = 100;
+  static const int emergencyDonationBonus = 200;
 }
+
+const List<String> _rareBloodTypes = ['O-', 'AB-', 'B-', 'A-'];
 
 class PointsService {
   final FirebaseFirestore _fs = FirebaseFirestore.instance;
@@ -56,11 +61,7 @@ class PointsService {
       final newTotal = current + points;
       final tier = tierForPoints(newTotal);
 
-      tx.update(userRef, {
-        'points': newTotal,
-        'tier': tier,
-      });
-
+      tx.update(userRef, {'points': newTotal, 'tier': tier});
       tx.set(historyRef, {
         'event': event,
         'points': points,
@@ -83,8 +84,22 @@ class PointsService {
     return snap.docs.isNotEmpty;
   }
 
-  Future<void> checkAndAwardProfileMilestones(
+  Future<bool> _hasPreviousDonation(String uid) async {
+    final snap = await _fs
+        .collection('users')
+        .doc(uid)
+        .collection('pointsHistory')
+        .where('event', isEqualTo: PointsEvent.donationRegistered)
+        .limit(1)
+        .get();
+    return snap.docs.isNotEmpty;
+  }
+
+  /// Awards profile milestone points and returns total points awarded this call.
+  Future<int> checkAndAwardProfileMilestones(
       String uid, Map<String, dynamic> profile) async {
+    int totalAwarded = 0;
+
     final bool basic = _basicComplete(profile);
     final bool health = _healthComplete(profile);
     final bool medical = _medicalComplete(profile);
@@ -99,7 +114,9 @@ class PointsService {
         descriptionAr: 'اكتمال المعلومات الأساسية',
         descriptionEn: 'Basic info completed',
       );
+      totalAwarded += PointsValue.basicInfoComplete;
     }
+
     if (health && !await hasEarnedEvent(uid, PointsEvent.healthInfoComplete)) {
       await awardPoints(
         uid: uid,
@@ -108,7 +125,9 @@ class PointsService {
         descriptionAr: 'اكتمال البيانات الصحية',
         descriptionEn: 'Health info completed',
       );
+      totalAwarded += PointsValue.healthInfoComplete;
     }
+
     if (medical &&
         !await hasEarnedEvent(uid, PointsEvent.medicalHistoryComplete)) {
       await awardPoints(
@@ -118,7 +137,9 @@ class PointsService {
         descriptionAr: 'اكتمال السجل الطبي',
         descriptionEn: 'Medical history completed',
       );
+      totalAwarded += PointsValue.medicalHistoryComplete;
     }
+
     if (emergency &&
         !await hasEarnedEvent(uid, PointsEvent.emergencyContactComplete)) {
       await awardPoints(
@@ -128,7 +149,9 @@ class PointsService {
         descriptionAr: 'اكتمال جهة الاتصال الطارئة',
         descriptionEn: 'Emergency contact completed',
       );
+      totalAwarded += PointsValue.emergencyContactComplete;
     }
+
     if (verified &&
         !await hasEarnedEvent(uid, PointsEvent.bloodGroupVerified)) {
       await awardPoints(
@@ -138,7 +161,9 @@ class PointsService {
         descriptionAr: 'توثيق زمرة الدم',
         descriptionEn: 'Blood group verified',
       );
+      totalAwarded += PointsValue.bloodGroupVerified;
     }
+
     if (basic &&
         health &&
         medical &&
@@ -152,17 +177,61 @@ class PointsService {
         descriptionAr: 'مكافأة إكمال الملف 100%',
         descriptionEn: '100% profile completion bonus',
       );
+      totalAwarded += PointsValue.profileComplete;
     }
+
+    return totalAwarded;
   }
 
-  Future<void> awardDonationPoints(String uid, String hospitalName) async {
+  /// Awards points for a verified donation.
+  /// Phase 2: includes emergency ×2 multiplier, rare blood type +100, streak +50.
+  Future<int> awardDonationPoints(
+    String uid,
+    String hospitalName, {
+    bool isEmergency = false,
+    String donorBloodGroup = '',
+  }) async {
+    int pts = PointsValue.donationRegistered;
+
+    final bool isRare = _rareBloodTypes.contains(donorBloodGroup);
+
+    // Emergency multiplier ×2
+    if (isEmergency) pts *= 2;
+
+    // Rare blood type bonus +100
+    if (isRare) pts += PointsValue.bloodRarityBonus;
+
+    final rareSuffix = isRare ? ' (زمرة نادرة)' : '';
+    final rareSuffixEn = isRare ? ' (rare blood type)' : '';
+
     await awardPoints(
       uid: uid,
       event: PointsEvent.donationRegistered,
-      points: PointsValue.donationRegistered,
-      descriptionAr: 'تبرع موثق - $hospitalName',
-      descriptionEn: 'Verified donation - $hospitalName',
+      points: pts,
+      descriptionAr: isEmergency
+          ? 'تبرع طارئ موثق - $hospitalName$rareSuffix'
+          : 'تبرع موثق - $hospitalName$rareSuffix',
+      descriptionEn: isEmergency
+          ? 'Emergency donation - $hospitalName$rareSuffixEn'
+          : 'Verified donation - $hospitalName$rareSuffixEn',
     );
+
+    int total = pts;
+
+    // Consecutive donation streak bonus +50
+    final hasPrev = await _hasPreviousDonation(uid);
+    if (hasPrev) {
+      await awardPoints(
+        uid: uid,
+        event: PointsEvent.consecutiveDonation,
+        points: PointsValue.consecutiveDonation,
+        descriptionAr: 'مكافأة الاستمرارية في التبرع',
+        descriptionEn: 'Consecutive donation bonus',
+      );
+      total += PointsValue.consecutiveDonation;
+    }
+
+    return total;
   }
 
   Future<bool> deductPoints({
