@@ -447,5 +447,17 @@
   "completed": "Completed",
   "unknownHospital": "Unknown Hospital",
   "viewDonationHistory": "View Donation History",
-  "errorLoadingData": "Failed to load data. Please try again."
+  "errorLoadingData": "Failed to load data. Please try again.",
+
+  "bloodCompatibilityTitle": "Blood Compatibility Guide",
+  "compatCanDonateTo": "Can Donate To",
+  "compatCanReceiveFrom": "Can Receive From",
+  "yourBloodGroup": "Your Blood Group",
+  "universalDonor": "Universal Donor",
+  "universalRecipient": "Universal Recipient",
+  "canDonateTo": "Donate To",
+  "canReceiveFrom": "Receive From",
+  "compatSummary": "Compatibility Summary",
+  "compatNone": "None",
+  "viewCompatibilityGuide": "Blood Compatibility Guide"
 }

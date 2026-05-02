@@ -6,6 +6,7 @@ import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/core/utils/profile_completion.dart';
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/screens/donor_dashboard/blood_compatibility_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/donation_history_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/emergency_contact_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/health_info_screen.dart';
@@ -126,6 +127,10 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
               const SizedBox(height: 16),
 
               _buildDonationHistoryCard(l10n, theme),
+
+              const SizedBox(height: 5),
+
+              _buildCompatibilityCard(bloodGroup, l10n, theme),
 
               const SizedBox(height: 4),
 
@@ -394,6 +399,71 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                         color: AppColors.textGrey, size: 18),
                 ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompatibilityCard(
+      String bloodGroup, AppLocalizations l10n, ThemeData theme) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              BloodCompatibilityScreen(donorBloodGroup: bloodGroup),
+        ),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.deepPurple.withOpacity(0.18),
+              Colors.deepPurple.withOpacity(0.08),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+              color: Colors.deepPurple.withOpacity(0.3), width: 1.2),
+        ),
+        child: Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(Icons.bloodtype_outlined,
+                    color: Colors.deepPurple, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.bloodCompatibilityTitle,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 2),
+                    Text(l10n.viewCompatibilityGuide,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: AppColors.textGrey)),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right,
+                  color: Colors.deepPurple, size: 20),
             ],
           ),
         ),
