@@ -2,61 +2,68 @@ import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/providers/auth/auth_provider.dart';
 
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _firestore = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser!;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final TextEditingController _name = TextEditingController();
-  final TextEditingController _phone = TextEditingController();
-  final TextEditingController _lastDonated = TextEditingController();
+  final _name = TextEditingController();
+  final _phone = TextEditingController();
+  final _lastDonated = TextEditingController();
 
   String? _selectedCity;
   String _bloodGroup = '';
   String _accountType = '';
-  bool _loading = true;
+  bool _formInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    // Populate form as soon as profile data arrives from the stream.
+    // Using listenManual with fireImmediately so we don't miss already-loaded data.
+    ref.listenManual(
+      userProfileProvider,
+      (_, next) {
+        final profile = next.asData?.value;
+        if (profile == null || _formInitialized || !mounted) return;
+        _formInitialized = true;
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _name.text = profile['name'] as String? ?? '';
+          _phone.text = profile['phone'] as String? ?? '';
+          _selectedCity = profile['city'] as String?;
+          _lastDonated.text = profile['lastDonated'] as String? ?? '';
+          _bloodGroup = profile['bloodGroup'] as String? ?? l10n.notAvailable;
+          final role = profile['role'] as String? ?? 'user';
+          _accountType = role == 'donor' ? l10n.roleDonor : l10n.roleUser;
+        });
+      },
+      fireImmediately: true,
+    );
   }
 
-  // 🔁 Load user profile from Firestore
-  Future<void> _loadProfile() async {
-    final doc = await _firestore.collection('users').doc(user.uid).get();
-    final data = doc.data() ?? {};
-
-    if (!mounted) return;
-    final l10n = AppLocalizations.of(context)!;
-
-    setState(() {
-      _name.text = data['name'] ?? '';
-      _phone.text = data['phone'] ?? '';
-      _selectedCity = data['city'];
-      _lastDonated.text = data['lastDonated'] ?? '';
-      _bloodGroup = data['bloodGroup'] ?? l10n.notAvailable;
-      
-      final role = data['role'] ?? 'user';
-      _accountType = role == 'donor' ? l10n.roleDonor : l10n.roleUser;
-      
-      _loading = false;
-    });
+  @override
+  void dispose() {
+    _name.dispose();
+    _phone.dispose();
+    _lastDonated.dispose();
+    super.dispose();
   }
 
-  // 💾 Save updated profile data
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
     final l10n = AppLocalizations.of(context)!;
@@ -68,13 +75,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'lastDonated': _lastDonated.text.trim(),
     });
 
+    // Invalidate provider so HomeScreen and other screens reflect the update.
+    ref.invalidate(userProfileProvider);
+
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.profileUpdatedSuccessfully)),
     );
   }
 
-  // 🔢 Stream to track total user requests in real-time
   Stream<int> _getRequestCount() {
     return _firestore
         .collection('blood_requests')
@@ -83,27 +92,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .map((snapshot) => snapshot.docs.length);
   }
 
-  // 🔄 Manual refresh
-  Future<void> _refreshProfile() async {
-    await _loadProfile();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final profileAsync = ref.watch(userProfileProvider);
+    final isLoading = !_formInitialized && profileAsync.isLoading;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.myProfile),
       ),
       body: SafeArea(
-        child: _loading
+        child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : RefreshIndicator(
-                onRefresh: _refreshProfile,
+                onRefresh: () async {
+                  _formInitialized = false;
+                  ref.invalidate(userProfileProvider);
+                },
                 color: AppColors.primaryRed,
                 backgroundColor: colorScheme.surface,
                 child: SingleChildScrollView(
@@ -112,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // 🩸 Total Requests Card
+                      // Total Requests Card
                       StreamBuilder<int>(
                         stream: _getRequestCount(),
                         builder: (context, snapshot) {
@@ -130,7 +139,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   Text(
                                     '$count',
-                                    style: theme.textTheme.displayMedium?.copyWith(
+                                    style: theme.textTheme.displayMedium
+                                        ?.copyWith(
                                       color: AppColors.accentRed,
                                       fontSize: 22,
                                     ),
@@ -144,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       const SizedBox(height: 25),
 
-                      // 🧾 Profile Form
+                      // Profile Form
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Form(
@@ -161,23 +171,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               const SizedBox(height: 12),
                               _buildTextField(l10n.phone, _phone),
                               const SizedBox(height: 12),
-                              
+
                               // City Dropdown
                               StreamBuilder<QuerySnapshot>(
-                                stream: _firestore.collection('cities').orderBy('name').snapshots(),
+                                stream: _firestore
+                                    .collection('cities')
+                                    .orderBy('name')
+                                    .snapshots(),
                                 builder: (context, snapshot) {
-                                  if (!snapshot.hasData) return const LinearProgressIndicator();
+                                  if (!snapshot.hasData) {
+                                    return const LinearProgressIndicator();
+                                  }
                                   final cities = snapshot.data!.docs;
                                   return DropdownButtonFormField<String>(
                                     value: _selectedCity,
                                     dropdownColor: colorScheme.surface,
-                                    decoration: InputDecoration(labelText: l10n.city),
-                                    items: cities.map((c) => DropdownMenuItem(
-                                      value: c['name'] as String,
-                                      child: Text(c['name']),
-                                    )).toList(),
-                                    onChanged: (v) => setState(() => _selectedCity = v),
-                                    validator: (v) => v == null ? l10n.requiredField : null,
+                                    decoration: InputDecoration(
+                                        labelText: l10n.city),
+                                    items: cities
+                                        .map((c) => DropdownMenuItem(
+                                              value: c['name'] as String,
+                                              child: Text(c['name']),
+                                            ))
+                                        .toList(),
+                                    onChanged: (v) =>
+                                        setState(() => _selectedCity = v),
+                                    validator: (v) => v == null
+                                        ? l10n.requiredField
+                                        : null,
                                   );
                                 },
                               ),
@@ -188,7 +209,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 TextEditingController(text: _bloodGroup),
                                 enabled: false,
                               ),
-                             
                               const SizedBox(height: 12),
                               _buildTextField(
                                 l10n.accountType,
@@ -232,16 +252,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🧱 Reusable text field widget
   Widget _buildTextField(String label, TextEditingController controller,
       {bool enabled = true}) {
     final l10n = AppLocalizations.of(context)!;
     return TextFormField(
       controller: controller,
       enabled: enabled,
-      decoration: InputDecoration(
-        labelText: label,
-      ),
+      decoration: InputDecoration(labelText: label),
       validator: (v) =>
           (enabled && (v == null || v.isEmpty)) ? l10n.requiredField : null,
     );

@@ -1,127 +1,72 @@
-import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/core/utils/profile_completion.dart';
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/screens/donor_dashboard/blood_compatibility_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/donation_history_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/emergency_contact_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/health_info_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/medical_history_screen.dart';
 
-class DonorProfileScreen extends ConsumerStatefulWidget {
+class DonorProfileScreen extends ConsumerWidget {
   const DonorProfileScreen({super.key});
 
   @override
-  ConsumerState<DonorProfileScreen> createState() => _DonorProfileScreenState();
-}
-
-class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
-  // UID-specific cache key prevents cross-user data leakage
-  String get _kProfileCacheKey => 'sheryan_donor_profile_cache_${user.uid}';
-
-  final user = FirebaseAuth.instance.currentUser!;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Map<String, dynamic> _userData = {};
-  bool _loading = true;
-  bool _fromCache = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _saveProfileToCache(Map<String, dynamic> data) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kProfileCacheKey, jsonEncode(data));
-  }
-
-  Future<Map<String, dynamic>?> _loadProfileFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_kProfileCacheKey);
-    if (raw == null) return null;
-    return Map<String, dynamic>.from(jsonDecode(raw) as Map);
-  }
-
-  Future<void> _loadProfile() async {
-    if (!mounted) return;
-    setState(() => _loading = true);
-
-    try {
-      final doc = await _firestore.collection('users').doc(user.uid).get();
-      if (!mounted) return;
-      final data = doc.data() ?? {};
-      await _saveProfileToCache(data);
-      if (!mounted) return;
-      setState(() {
-        _userData = data;
-        _fromCache = false;
-        _loading = false;
-      });
-    } catch (e) {
-      debugPrint('DonorProfileScreen._loadProfile: Firestore error: $e');
-      final cached = await _loadProfileFromCache();
-      if (!mounted) return;
-      setState(() {
-        _userData = cached ?? {};
-        _fromCache = cached != null;
-        _loading = false;
-      });
-    }
-  }
-
-  Future<void> _navigateToSection(Widget screen) async {
-    final result = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(builder: (_) => screen),
-    );
-    if (result == true) await _loadProfile();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-    if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+    final profileAsync = ref.watch(userProfileProvider);
+
+    if (profileAsync.isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final data = profileAsync.asData?.value ?? {};
+
+    if (data.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.myProfile)),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    final completion = ProfileCompletion.calculate(_userData);
-    final sections = ProfileCompletion.getSections(_userData);
-    final isVerified = ProfileCompletion.bloodVerified(_userData);
-    final name = _userData['name'] ?? l10n.bloodDonor;
-    final bloodGroup = _userData['bloodGroup'] ?? l10n.notAvailable;
-    final city = _userData['city'] ?? l10n.unknownCity;
+    final completion = ProfileCompletion.calculate(data);
+    final sections = ProfileCompletion.getSections(data);
+    final isVerified = ProfileCompletion.bloodVerified(data);
+    final name = data['name'] as String? ?? l10n.bloodDonor;
+    final bloodGroup = data['bloodGroup'] as String? ?? l10n.notAvailable;
+    final city = data['city'] as String? ?? l10n.unknownCity;
+
+    Future<void> navigateToSection(Widget screen) async {
+      final result = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(builder: (_) => screen),
+      );
+      // Stream auto-updates when Firestore doc changes;
+      // invalidate forces an immediate re-subscribe if needed.
+      if (result == true) ref.invalidate(userProfileProvider);
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.myProfile),
         actions: [
-          if (_fromCache)
-            const Padding(
-              padding: EdgeInsets.only(right: 4),
-              child: Icon(Icons.wifi_off, color: Colors.orange, size: 18),
-            ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _loadProfile,
+            onPressed: () => ref.invalidate(userProfileProvider),
           ),
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: _loadProfile,
+        onRefresh: () async => ref.invalidate(userProfileProvider),
         color: AppColors.primaryRed,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -129,7 +74,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildProfileHeader(
-                  name, bloodGroup, city, isVerified, completion, l10n, theme),
+                  context, name, bloodGroup, city, isVerified, completion, l10n, theme),
 
               const SizedBox(height: 8),
 
@@ -137,8 +82,8 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   l10n.profileSections,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5)),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.5)),
                 ),
               ),
               const SizedBox(height: 8),
@@ -160,20 +105,14 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                   theme: theme,
                   onTap: s.requiresHospital || i == 0
                       ? null
-                      : () => _navigateToSection(
-                            _screenForIndex(i, _userData),
-                          ),
+                      : () => navigateToSection(_screenForIndex(i, data)),
                 );
               }),
 
               const SizedBox(height: 16),
-
-              _buildDonationHistoryCard(l10n, theme),
-
+              _buildDonationHistoryCard(context, l10n, theme),
               const SizedBox(height: 5),
-
-              _buildCompatibilityCard(bloodGroup, l10n, theme),
-
+              _buildCompatibilityCard(context, bloodGroup, l10n, theme),
               const SizedBox(height: 4),
 
               Padding(
@@ -181,7 +120,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () => QrDialog.show(
                     context,
-                    data: user.uid,
+                    data: uid,
                     label: name,
                     idLabel: l10n.donorId,
                   ),
@@ -203,6 +142,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
   }
 
   Widget _buildProfileHeader(
+    BuildContext context,
     String name,
     String bloodGroup,
     String city,
@@ -238,8 +178,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                 const CircleAvatar(
                   radius: 32,
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.bloodtype,
-                      size: 36, color: AppColors.primaryRed),
+                  child: Icon(Icons.bloodtype, size: 36, color: AppColors.primaryRed),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -328,8 +267,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
             const SizedBox(height: 6),
             Text(
               _completionMessage(completion, l10n),
-              style:
-                  const TextStyle(color: Colors.white60, fontSize: 11),
+              style: const TextStyle(color: Colors.white60, fontSize: 11),
             ),
           ],
         ),
@@ -359,9 +297,8 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
     final iconData = _iconForIndex(index);
     final Color statusColor =
         isComplete ? AppColors.success : theme.colorScheme.onSurface.withOpacity(0.5);
-    final Color borderColor = isComplete
-        ? AppColors.success.withOpacity(0.4)
-        : Colors.transparent;
+    final Color borderColor =
+        isComplete ? AppColors.success.withOpacity(0.4) : Colors.transparent;
 
     return GestureDetector(
       onTap: onTap,
@@ -400,8 +337,8 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                         )),
                     const SizedBox(height: 2),
                     Text(subtitle,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5))),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
@@ -410,8 +347,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: isComplete
                           ? AppColors.success.withOpacity(0.12)
@@ -431,8 +367,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                   ),
                   const SizedBox(height: 4),
                   if (isComplete)
-                    const Icon(Icons.check_circle,
-                        color: AppColors.success, size: 18)
+                    const Icon(Icons.check_circle, color: AppColors.success, size: 18)
                   else if (requiresHospital)
                     const Icon(Icons.local_hospital_outlined,
                         color: Colors.blue, size: 18)
@@ -449,13 +384,12 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
   }
 
   Widget _buildCompatibilityCard(
-      String bloodGroup, AppLocalizations l10n, ThemeData theme) {
+      BuildContext context, String bloodGroup, AppLocalizations l10n, ThemeData theme) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              BloodCompatibilityScreen(donorBloodGroup: bloodGroup),
+          builder: (_) => BloodCompatibilityScreen(donorBloodGroup: bloodGroup),
         ),
       ),
       child: Container(
@@ -470,12 +404,11 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-              color: Colors.deepPurple.withOpacity(0.3), width: 1.2),
+          border:
+              Border.all(color: Colors.deepPurple.withOpacity(0.3), width: 1.2),
         ),
         child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
               Container(
@@ -499,8 +432,8 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 2),
                     Text(l10n.viewCompatibilityGuide,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5))),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
@@ -513,12 +446,12 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
     );
   }
 
-  Widget _buildDonationHistoryCard(AppLocalizations l10n, ThemeData theme) {
+  Widget _buildDonationHistoryCard(
+      BuildContext context, AppLocalizations l10n, ThemeData theme) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (_) => const DonationHistoryScreen()),
+        MaterialPageRoute(builder: (_) => const DonationHistoryScreen()),
       ),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
@@ -536,8 +469,7 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
               color: AppColors.primaryRed.withOpacity(0.3), width: 1.2),
         ),
         child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
               Container(
@@ -561,8 +493,8 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 2),
                     Text(l10n.viewDonationHistory,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5))),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
