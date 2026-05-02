@@ -3,4 +3,5 @@ enum UserRole {
   recipient,
   hospitalAdmin,
   superAdmin,
+  sponsorOrg,
 }

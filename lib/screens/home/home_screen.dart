@@ -6,6 +6,7 @@ import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/providers/theme/theme_provider.dart';
 import 'package:sheryan/screens/admin/admin_dashboard.dart';
 import 'package:sheryan/screens/hospital/hospital_dashboard.dart';
+import 'package:sheryan/screens/sponsor/sponsor_dashboard.dart';
 import 'package:sheryan/core/enums/user_role.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
@@ -559,6 +560,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       role = UserRole.hospitalAdmin;
     } else if (roleStr == 'superAdmin') {
       role = UserRole.superAdmin;
+    } else if (roleStr == 'sponsorOrg') {
+      role = UserRole.sponsorOrg;
     } else if (roleStr == 'donor') {
       role = UserRole.donor;
     } else {
@@ -598,6 +601,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: const [
             OfflineBanner(),
             Expanded(child: AdminDashboard()),
+          ],
+        ),
+      );
+    }
+
+    if (role == UserRole.sponsorOrg) {
+      return Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: _topAppBar(role),
+        ),
+        body: Column(
+          children: const [
+            OfflineBanner(),
+            Expanded(child: SponsorDashboard()),
           ],
         ),
       );

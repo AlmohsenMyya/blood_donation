@@ -612,7 +612,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get totalRequests => 'إجمالي الطلبات';
 
   @override
-  String get yesDelete => 'نعم، حذف';
+  String get yesDelete => 'نعم، احذف';
 
   @override
   String get supportEmailSubject => 'دعم التطبيق - تطبيق التبرع بالدم';
@@ -750,7 +750,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statusCompleted => 'تم التبرع';
 
   @override
-  String get invalidQr => 'رمز غير صالح';
+  String get invalidQr => 'رمز QR غير صحيح';
 
   @override
   String get waitingForDonor => 'في انتظار رمز المتبرع...';
@@ -1135,4 +1135,140 @@ class AppLocalizationsAr extends AppLocalizations {
   String cachedDonorsLabel(int count) {
     return 'عرض $count متبرع محفوظ';
   }
+
+  @override
+  String get basicInfoTitle => 'المعلومات الأساسية';
+
+  @override
+  String get basicInfoSubtitle =>
+      'الاسم، الهاتف، المدينة، زمرة الدم، تاريخ الميلاد';
+
+  @override
+  String get dateOfBirth => 'تاريخ الميلاد';
+
+  @override
+  String get myPoints => 'نقاطي';
+
+  @override
+  String get pointsBalance => 'نقطة';
+
+  @override
+  String get donorTier => 'المستوى';
+
+  @override
+  String get tierBronze => 'برونزي';
+
+  @override
+  String get tierSilver => 'فضي';
+
+  @override
+  String get tierGold => 'ذهبي';
+
+  @override
+  String get tierPlatinum => 'بلاتيني';
+
+  @override
+  String get pointsHistory => 'سجل النقاط';
+
+  @override
+  String get noPointsYet => 'لا توجد نقاط بعد';
+
+  @override
+  String get rewardsTab => 'اكسب نقاطك واستبدلها بمكافآت من الجهات الراعية';
+
+  @override
+  String get availableRewards => 'المكافآت المتاحة';
+
+  @override
+  String get noRewardsFound => 'لا توجد مكافآت في هذه المدينة';
+
+  @override
+  String get rewardTitle => 'اسم المكافأة';
+
+  @override
+  String get rewardDescription => 'وصف المكافأة';
+
+  @override
+  String get pointsRequired => 'النقاط المطلوبة';
+
+  @override
+  String get redeemReward => 'استبدال';
+
+  @override
+  String get notEnoughPoints => 'نقاطك غير كافية';
+
+  @override
+  String get showMyQr => 'عرض QR الخاص بي';
+
+  @override
+  String get sponsorDashboard => 'لوحة الجهة الراعية';
+
+  @override
+  String get myRewards => 'مكافآتي';
+
+  @override
+  String get addReward => 'إضافة مكافأة';
+
+  @override
+  String get editReward => 'تعديل المكافأة';
+
+  @override
+  String get deleteReward => 'حذف المكافأة';
+
+  @override
+  String get confirmDeleteReward => 'هل أنت متأكد من حذف هذه المكافأة؟';
+
+  @override
+  String get rewardSaved => 'تم حفظ المكافأة بنجاح';
+
+  @override
+  String get rewardDeleted => 'تم حذف المكافأة';
+
+  @override
+  String get noRewardsAdded => 'لم تضف أي مكافآت بعد';
+
+  @override
+  String get scanDonorQrRedeem => 'مسح QR المتبرع للاستبدال';
+
+  @override
+  String get redeemSuccess => 'تم الاستبدال بنجاح';
+
+  @override
+  String get insufficientPoints => 'نقاط المتبرع غير كافية';
+
+  @override
+  String get sponsorOrgName => 'اسم الجهة / المحل';
+
+  @override
+  String get sponsorPhone => 'رقم الهاتف';
+
+  @override
+  String get sponsorAddress => 'العنوان / الموقع';
+
+  @override
+  String get manageSponsorOrgs => 'إدارة الجهات الراعية';
+
+  @override
+  String get createSponsor => 'إنشاء جهة راعية';
+
+  @override
+  String get sponsorCreated => 'تم إنشاء الجهة الراعية بنجاح';
+
+  @override
+  String get sponsorDeleted => 'تم حذف الجهة الراعية';
+
+  @override
+  String get noSponsorsFound => 'لا توجد جهات راعية';
+
+  @override
+  String get totalRedeemed => 'إجمالي الاستبدالات';
+
+  @override
+  String get activeRewards => 'مكافآت نشطة';
+
+  @override
+  String get filterByCity => 'تصفية حسب المدينة';
+
+  @override
+  String get allCities => 'جميع المدن';
 }

@@ -1457,7 +1457,7 @@ abstract class AppLocalizations {
   /// No description provided for @invalidQr.
   ///
   /// In en, this message translates to:
-  /// **'Invalid QR Code'**
+  /// **'Invalid QR code'**
   String get invalidQr;
 
   /// No description provided for @waitingForDonor.
@@ -2191,6 +2191,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Showing {count} cached donors'**
   String cachedDonorsLabel(int count);
+
+  /// No description provided for @basicInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basicInfoTitle;
+
+  /// No description provided for @basicInfoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, phone, city, blood group, date of birth'**
+  String get basicInfoSubtitle;
+
+  /// No description provided for @dateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get dateOfBirth;
+
+  /// No description provided for @myPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'My Points'**
+  String get myPoints;
+
+  /// No description provided for @pointsBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get pointsBalance;
+
+  /// No description provided for @donorTier.
+  ///
+  /// In en, this message translates to:
+  /// **'Tier'**
+  String get donorTier;
+
+  /// No description provided for @tierBronze.
+  ///
+  /// In en, this message translates to:
+  /// **'Bronze'**
+  String get tierBronze;
+
+  /// No description provided for @tierSilver.
+  ///
+  /// In en, this message translates to:
+  /// **'Silver'**
+  String get tierSilver;
+
+  /// No description provided for @tierGold.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get tierGold;
+
+  /// No description provided for @tierPlatinum.
+  ///
+  /// In en, this message translates to:
+  /// **'Platinum'**
+  String get tierPlatinum;
+
+  /// No description provided for @pointsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Points History'**
+  String get pointsHistory;
+
+  /// No description provided for @noPointsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No points yet'**
+  String get noPointsYet;
+
+  /// No description provided for @rewardsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn points and redeem rewards from sponsor organizations'**
+  String get rewardsTab;
+
+  /// No description provided for @availableRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Rewards'**
+  String get availableRewards;
+
+  /// No description provided for @noRewardsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No rewards found in this city'**
+  String get noRewardsFound;
+
+  /// No description provided for @rewardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward Title'**
+  String get rewardTitle;
+
+  /// No description provided for @rewardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward Description'**
+  String get rewardDescription;
+
+  /// No description provided for @pointsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Points Required'**
+  String get pointsRequired;
+
+  /// No description provided for @redeemReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem'**
+  String get redeemReward;
+
+  /// No description provided for @notEnoughPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough points'**
+  String get notEnoughPoints;
+
+  /// No description provided for @showMyQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Show My QR'**
+  String get showMyQr;
+
+  /// No description provided for @sponsorDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsor Dashboard'**
+  String get sponsorDashboard;
+
+  /// No description provided for @myRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'My Rewards'**
+  String get myRewards;
+
+  /// No description provided for @addReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Reward'**
+  String get addReward;
+
+  /// No description provided for @editReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Reward'**
+  String get editReward;
+
+  /// No description provided for @deleteReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Reward'**
+  String get deleteReward;
+
+  /// No description provided for @confirmDeleteReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this reward?'**
+  String get confirmDeleteReward;
+
+  /// No description provided for @rewardSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward saved successfully'**
+  String get rewardSaved;
+
+  /// No description provided for @rewardDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward deleted'**
+  String get rewardDeleted;
+
+  /// No description provided for @noRewardsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'No rewards added yet'**
+  String get noRewardsAdded;
+
+  /// No description provided for @scanDonorQrRedeem.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Donor QR to Redeem'**
+  String get scanDonorQrRedeem;
+
+  /// No description provided for @redeemSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed successfully'**
+  String get redeemSuccess;
+
+  /// No description provided for @insufficientPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Donor has insufficient points'**
+  String get insufficientPoints;
+
+  /// No description provided for @sponsorOrgName.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization / Shop Name'**
+  String get sponsorOrgName;
+
+  /// No description provided for @sponsorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get sponsorPhone;
+
+  /// No description provided for @sponsorAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address / Location'**
+  String get sponsorAddress;
+
+  /// No description provided for @manageSponsorOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Sponsor Organizations'**
+  String get manageSponsorOrgs;
+
+  /// No description provided for @createSponsor.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Sponsor'**
+  String get createSponsor;
+
+  /// No description provided for @sponsorCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsor organization created successfully'**
+  String get sponsorCreated;
+
+  /// No description provided for @sponsorDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sponsor deleted'**
+  String get sponsorDeleted;
+
+  /// No description provided for @noSponsorsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No sponsor organizations found'**
+  String get noSponsorsFound;
+
+  /// No description provided for @totalRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Redeemed'**
+  String get totalRedeemed;
+
+  /// No description provided for @activeRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Rewards'**
+  String get activeRewards;
+
+  /// No description provided for @filterByCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by City'**
+  String get filterByCity;
+
+  /// No description provided for @allCities.
+  ///
+  /// In en, this message translates to:
+  /// **'All Cities'**
+  String get allCities;
 }
 
 class _AppLocalizationsDelegate

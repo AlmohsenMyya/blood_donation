@@ -12,13 +12,20 @@ class AdminDashboard extends StatefulWidget {
   State<AdminDashboard> createState() => _AdminDashboardState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProviderStateMixin {
+class _AdminDashboardState extends State<AdminDashboard>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,15 +43,17 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
             Tab(text: l10n.manageHospitalAdmins, icon: const Icon(Icons.admin_panel_settings)),
             Tab(text: l10n.manageHospitals, icon: const Icon(Icons.local_hospital)),
             Tab(text: l10n.manageCities, icon: const Icon(Icons.location_city)),
+            Tab(text: l10n.manageSponsorOrgs, icon: const Icon(Icons.store)),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          const HospitalAdminManager(),
-          const HospitalManager(),
-          const CityManager(),
+        children: const [
+          HospitalAdminManager(),
+          HospitalManager(),
+          CityManager(),
+          SponsorOrgManager(),
         ],
       ),
     );
@@ -70,7 +79,6 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
 
   Future<void> _createAdmin() async {
     if (!_formKey.currentState!.validate() || _selectedHospitalId == null) return;
-    
     setState(() => _loading = true);
     final l10n = AppLocalizations.of(context)!;
 
@@ -87,14 +95,16 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
       );
 
       if (ok && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.adminCreated)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.adminCreated)));
         _email.clear();
         _password.clear();
         _name.clear();
         setState(() => _selectedHospitalId = null);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -104,9 +114,13 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
     final l10n = AppLocalizations.of(context)!;
     try {
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.adminDeleted)));
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.adminDeleted)));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -119,29 +133,30 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(l10n.editAdmin, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+          title: Text(l10n.editAdmin),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameCtrl,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 decoration: InputDecoration(labelText: l10n.fullName),
               ),
               const SizedBox(height: 12),
               StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('hospitals').orderBy('name').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('hospitals')
+                    .orderBy('name')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const LinearProgressIndicator();
                   final hospitals = snapshot.data!.docs;
                   return DropdownButtonFormField<String>(
                     value: hospitalId,
-                    dropdownColor: Theme.of(context).colorScheme.surface,
                     decoration: InputDecoration(labelText: l10n.hospitalName),
-                    items: hospitals.map((h) => DropdownMenuItem(
-                      value: h.id,
-                      child: Text(h['name']),
-                    )).toList(),
+                    items: hospitals
+                        .map((h) => DropdownMenuItem(
+                            value: h.id, child: Text(h['name'])))
+                        .toList(),
                     onChanged: (v) => setDialogState(() => hospitalId = v),
                   );
                 },
@@ -149,16 +164,21 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
+            TextButton(
+                onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
             ElevatedButton(
               onPressed: () async {
-                await FirebaseFirestore.instance.collection('users').doc(admin.id).update({
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(admin.id)
+                    .update({
                   'name': nameCtrl.text.trim(),
                   'hospitalId': hospitalId,
                 });
                 if (mounted) {
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.adminUpdated)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.adminUpdated)));
                 }
               },
               child: Text(l10n.saveChanges),
@@ -180,43 +200,54 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
             key: _formKey,
             child: Column(
               children: [
-                Text(l10n.createAdmin, style: Theme.of(context).textTheme.titleLarge),
+                Text(l10n.createAdmin,
+                    style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _name,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                  decoration: InputDecoration(labelText: l10n.fullName, prefixIcon: const Icon(Icons.person)),
-                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  decoration: InputDecoration(
+                      labelText: l10n.fullName,
+                      prefixIcon: const Icon(Icons.person)),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _email,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                  decoration: InputDecoration(labelText: l10n.email, prefixIcon: const Icon(Icons.email)),
-                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  decoration: InputDecoration(
+                      labelText: l10n.email,
+                      prefixIcon: const Icon(Icons.email)),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _password,
                   obscureText: true,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                  decoration: InputDecoration(labelText: l10n.password, prefixIcon: const Icon(Icons.lock)),
-                  validator: (v) => (v == null || v.length < 6) ? l10n.passwordMinLength : null,
+                  decoration: InputDecoration(
+                      labelText: l10n.password,
+                      prefixIcon: const Icon(Icons.lock)),
+                  validator: (v) =>
+                      (v == null || v.length < 6) ? l10n.passwordMinLength : null,
                 ),
                 const SizedBox(height: 12),
                 StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('hospitals').orderBy('name').snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection('hospitals')
+                      .orderBy('name')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return const CircularProgressIndicator();
                     final hospitals = snapshot.data!.docs;
                     return DropdownButtonFormField<String>(
                       value: _selectedHospitalId,
-                      dropdownColor: Theme.of(context).colorScheme.surface,
-                      decoration: InputDecoration(labelText: l10n.hospitalName, prefixIcon: const Icon(Icons.local_hospital)),
-                      items: hospitals.map((h) => DropdownMenuItem(
-                        value: h.id,
-                        child: Text(h['name']),
-                      )).toList(),
+                      decoration: InputDecoration(
+                          labelText: l10n.hospitalName,
+                          prefixIcon: const Icon(Icons.local_hospital)),
+                      items: hospitals
+                          .map((h) => DropdownMenuItem(
+                              value: h.id, child: Text(h['name'])))
+                          .toList(),
                       onChanged: (v) => setState(() => _selectedHospitalId = v),
                       validator: (v) => v == null ? l10n.requiredField : null,
                     );
@@ -227,7 +258,9 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _loading ? null : _createAdmin,
-                    child: _loading ? const CircularProgressIndicator() : Text(l10n.createAdmin),
+                    child: _loading
+                        ? const CircularProgressIndicator()
+                        : Text(l10n.createAdmin),
                   ),
                 ),
               ],
@@ -243,7 +276,6 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
               if (!snapshot.hasData) return const CircularProgressIndicator();
               final docs = snapshot.data!.docs;
               if (docs.isEmpty) return Text(l10n.noAdminsFound);
-
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -293,7 +325,6 @@ class _HospitalManagerState extends State<HospitalManager> {
   Future<void> _addHospital() async {
     final name = _hospitalName.text.trim();
     if (name.isEmpty || _selectedCity == null) return;
-    
     final l10n = AppLocalizations.of(context)!;
     await _fs.collection('hospitals').add({
       'name': name,
@@ -302,13 +333,17 @@ class _HospitalManagerState extends State<HospitalManager> {
     });
     _hospitalName.clear();
     setState(() => _selectedCity = null);
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.hospitalAdded)));
+    if (mounted)
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.hospitalAdded)));
   }
 
   Future<void> _deleteHospital(String id) async {
     final l10n = AppLocalizations.of(context)!;
     await _fs.collection('hospitals').doc(id).delete();
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.hospitalDeleted)));
+    if (mounted)
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.hospitalDeleted)));
   }
 
   @override
@@ -322,23 +357,23 @@ class _HospitalManagerState extends State<HospitalManager> {
             children: [
               TextField(
                 controller: _hospitalName,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 decoration: InputDecoration(hintText: l10n.hospitalName),
               ),
               const SizedBox(height: 12),
               StreamBuilder<QuerySnapshot>(
-                stream: _fs.collection('cities').orderBy('name').snapshots(),
+                stream:
+                    _fs.collection('cities').orderBy('name').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const LinearProgressIndicator();
                   final cities = snapshot.data!.docs;
                   return DropdownButtonFormField<String>(
                     value: _selectedCity,
-                    dropdownColor: Theme.of(context).colorScheme.surface,
                     hint: Text(l10n.selectCity),
-                    items: cities.map((c) => DropdownMenuItem(
-                      value: c['name'] as String,
-                      child: Text(c['name']),
-                    )).toList(),
+                    items: cities
+                        .map((c) => DropdownMenuItem(
+                            value: c['name'] as String,
+                            child: Text(c['name'])))
+                        .toList(),
                     onChanged: (v) => setState(() => _selectedCity = v),
                   );
                 },
@@ -360,10 +395,11 @@ class _HospitalManagerState extends State<HospitalManager> {
           child: StreamBuilder<QuerySnapshot>(
             stream: _fs.collection('hospitals').orderBy('name').snapshots(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+              if (!snapshot.hasData)
+                return const Center(child: CircularProgressIndicator());
               final docs = snapshot.data!.docs;
-              if (docs.isEmpty) return Center(child: Text(l10n.noHospitalsFound));
-
+              if (docs.isEmpty)
+                return Center(child: Text(l10n.noHospitalsFound));
               return ListView.builder(
                 itemCount: docs.length,
                 itemBuilder: (context, i) {
@@ -401,17 +437,20 @@ class _CityManagerState extends State<CityManager> {
   Future<void> _addCity() async {
     final name = _cityName.text.trim();
     if (name.isEmpty) return;
-    
     final l10n = AppLocalizations.of(context)!;
     await _fs.collection('cities').add({'name': name});
     _cityName.clear();
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.cityAdded)));
+    if (mounted)
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.cityAdded)));
   }
 
   Future<void> _deleteCity(String id) async {
     final l10n = AppLocalizations.of(context)!;
     await _fs.collection('cities').doc(id).delete();
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.cityDeleted)));
+    if (mounted)
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.cityDeleted)));
   }
 
   @override
@@ -426,7 +465,6 @@ class _CityManagerState extends State<CityManager> {
               Expanded(
                 child: TextField(
                   controller: _cityName,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(hintText: l10n.cityName),
                 ),
               ),
@@ -439,10 +477,11 @@ class _CityManagerState extends State<CityManager> {
           child: StreamBuilder<QuerySnapshot>(
             stream: _fs.collection('cities').orderBy('name').snapshots(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+              if (!snapshot.hasData)
+                return const Center(child: CircularProgressIndicator());
               final docs = snapshot.data!.docs;
-              if (docs.isEmpty) return Center(child: Text(l10n.noCitiesFound));
-
+              if (docs.isEmpty)
+                return Center(child: Text(l10n.noCitiesFound));
               return ListView.builder(
                 itemCount: docs.length,
                 itemBuilder: (context, i) {
@@ -460,6 +499,202 @@ class _CityManagerState extends State<CityManager> {
           ),
         ),
       ],
+    );
+  }
+}
+
+// --- Sponsor Org Manager ---
+class SponsorOrgManager extends StatefulWidget {
+  const SponsorOrgManager({super.key});
+
+  @override
+  State<SponsorOrgManager> createState() => _SponsorOrgManagerState();
+}
+
+class _SponsorOrgManagerState extends State<SponsorOrgManager> {
+  final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  String? _selectedCity;
+  bool _loading = false;
+
+  Future<void> _createSponsor() async {
+    if (!_formKey.currentState!.validate() || _selectedCity == null) return;
+    setState(() => _loading = true);
+    final l10n = AppLocalizations.of(context)!;
+
+    try {
+      final ok = await _auth.registerUser(
+        name: _nameCtrl.text.trim(),
+        email: _emailCtrl.text.trim(),
+        password: _passCtrl.text,
+        bloodGroup: '',
+        city: _selectedCity!,
+        role: 'sponsorOrg',
+        phone: _phoneCtrl.text.trim(),
+      );
+
+      if (ok && mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.sponsorCreated)));
+        _emailCtrl.clear();
+        _passCtrl.clear();
+        _nameCtrl.clear();
+        _phoneCtrl.clear();
+        setState(() => _selectedCity = null);
+      }
+    } catch (e) {
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _deleteSponsor(String uid) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.sponsorDeleted)));
+    } catch (e) {
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return SingleChildScrollView(
+      padding: AppDesignConstants.edgeInsetsMedium,
+      child: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.createSponsor,
+                    style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _nameCtrl,
+                  decoration: InputDecoration(
+                      labelText: l10n.sponsorOrgName,
+                      prefixIcon: const Icon(Icons.store)),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _emailCtrl,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                      labelText: l10n.email,
+                      prefixIcon: const Icon(Icons.email)),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _passCtrl,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      labelText: l10n.password,
+                      prefixIcon: const Icon(Icons.lock)),
+                  validator: (v) =>
+                      (v == null || v.length < 6) ? l10n.passwordMinLength : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                      labelText: l10n.sponsorPhone,
+                      prefixIcon: const Icon(Icons.phone_outlined)),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
+                ),
+                const SizedBox(height: 12),
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('cities')
+                      .orderBy('name')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return const CircularProgressIndicator();
+                    final cities = snapshot.data!.docs;
+                    return DropdownButtonFormField<String>(
+                      value: _selectedCity,
+                      decoration: InputDecoration(
+                          labelText: l10n.city,
+                          prefixIcon: const Icon(Icons.location_city)),
+                      items: cities
+                          .map((c) => DropdownMenuItem(
+                              value: c['name'] as String,
+                              child: Text(c['name'])))
+                          .toList(),
+                      onChanged: (v) => setState(() => _selectedCity = v),
+                      validator: (v) => v == null ? l10n.requiredField : null,
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: _loading ? null : _createSponsor,
+                  icon: _loading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.add_business),
+                  label: Text(l10n.createSponsor),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 40),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .where('role', isEqualTo: 'sponsorOrg')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const CircularProgressIndicator();
+              final docs = snapshot.data!.docs;
+              if (docs.isEmpty) return Text(l10n.noSponsorsFound);
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: docs.length,
+                itemBuilder: (context, i) {
+                  final s = docs[i];
+                  final d = s.data() as Map<String, dynamic>;
+                  return ListTile(
+                    leading: const Icon(Icons.store,
+                        color: AppColors.primaryRed),
+                    title: Text(d['name'] as String? ?? ''),
+                    subtitle: Text(
+                        '${d['email']}  •  ${d['city'] ?? ''}'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: AppColors.error),
+                      onPressed: () => _deleteSponsor(s.id),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
