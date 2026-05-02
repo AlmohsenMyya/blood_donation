@@ -869,7 +869,7 @@ abstract class AppLocalizations {
   /// No description provided for @quote5.
   ///
   /// In en, this message translates to:
-  /// **'Heroes don’t wear capes, they donate blood.'**
+  /// **'Heroes don\'t wear capes, they donate blood.'**
   String get quote5;
 
   /// No description provided for @quote6.
@@ -1313,13 +1313,13 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyContent.
   ///
   /// In en, this message translates to:
-  /// **'Privacy Policy\n\nThank you for using our Blood Donation App (“we”, “our”, or “us”).\nYour privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type (donor or user).\n• Usage Data: General app usage data to improve experience.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n• To improve app functionality and communication.\n\n3. Data Security\nYour data is securely stored using Firebase. However, we recommend keeping your login credentials private.\n\n4. Sharing of Information\nWe do not sell or share your data with third parties. Only essential info (like name, city, and blood group) may appear to connect donors and recipients.\n\n5. Your Rights\nYou can update or delete your information anytime from your profile.\n\n6. Contact Us\n📧 Almohsen@gmail.com'**
+  /// **'Privacy Policy\n\nThank you for using our Blood Donation App.\nYour privacy is important to us.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n\n3. Data Security\nYour data is securely stored using Firebase.\n\n4. Contact Us\n📧 Almohsen@gmail.com'**
   String get privacyPolicyContent;
 
   /// No description provided for @termsConditionsContent.
   ///
   /// In en, this message translates to:
-  /// **'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!'**
+  /// **'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n\n3. Liability\nWe serve as a platform only.\n\nThank you for using our app to help save lives!'**
   String get termsConditionsContent;
 
   /// No description provided for @showQrCode.
@@ -1723,6 +1723,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Push Token: {token}'**
   String pushToken(String token);
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @notifToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get notifToday;
+
+  /// No description provided for @notifYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get notifYesterday;
+
+  /// No description provided for @notifEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get notifEarlier;
+
+  /// No description provided for @notifTabEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get notifTabEmergency;
+
+  /// No description provided for @notifTabVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get notifTabVerification;
+
+  /// No description provided for @notifTabDonation.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation'**
+  String get notifTabDonation;
+
+  /// No description provided for @notifTabSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get notifTabSystem;
+
+  /// No description provided for @noNotificationsInTab.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications in this category'**
+  String get noNotificationsInTab;
 }
 
 class _AppLocalizationsDelegate

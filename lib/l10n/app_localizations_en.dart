@@ -426,7 +426,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quote4 => 'Giving blood is giving hope.';
 
   @override
-  String get quote5 => 'Heroes don’t wear capes, they donate blood.';
+  String get quote5 => 'Heroes don\'t wear capes, they donate blood.';
 
   @override
   String get quote6 => 'You can make a difference today.';
@@ -680,11 +680,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyContent =>
-      'Privacy Policy\n\nThank you for using our Blood Donation App (“we”, “our”, or “us”).\nYour privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type (donor or user).\n• Usage Data: General app usage data to improve experience.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n• To improve app functionality and communication.\n\n3. Data Security\nYour data is securely stored using Firebase. However, we recommend keeping your login credentials private.\n\n4. Sharing of Information\nWe do not sell or share your data with third parties. Only essential info (like name, city, and blood group) may appear to connect donors and recipients.\n\n5. Your Rights\nYou can update or delete your information anytime from your profile.\n\n6. Contact Us\n📧 Almohsen@gmail.com';
+      'Privacy Policy\n\nThank you for using our Blood Donation App.\nYour privacy is important to us.\n\n1. Information We Collect\n• Personal Information: Name, email, phone number, city, blood group, and account type.\n\n2. How We Use Your Information\n• To display your donor or user profile.\n• To manage blood requests and donations.\n\n3. Data Security\nYour data is securely stored using Firebase.\n\n4. Contact Us\n📧 Almohsen@gmail.com';
 
   @override
   String get termsConditionsContent =>
-      'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n• Users must not post fake or misleading requests.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n• Any commercial or abusive use is strictly prohibited.\n\n3. Data & Privacy\nYour data is used only to connect donors and recipients. Please review our Privacy Policy for details.\n\n4. Liability\nWe serve as a platform only. We are not responsible for actions or outcomes after contact between users.\n\n5. Account Termination\nWe may suspend or remove accounts involved in fake or unethical activity.\n\n6. Updates to Terms\nThese terms may change over time. Continued use means you accept updated terms.\n\nThank you for using our app to help save lives!';
+      'Terms & Conditions\n\nWelcome to our Blood Donation App. By using this app, you agree to the following terms:\n\n1. User Responsibilities\n• Provide accurate personal information.\n• Donors must ensure they are medically fit to donate.\n\n2. App Usage\n• The app is for humanitarian purposes only.\n\n3. Liability\nWe serve as a platform only.\n\nThank you for using our app to help save lives!';
 
   @override
   String get showQrCode => 'Show QR Code';
@@ -897,4 +897,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String pushToken(String token) {
     return 'Push Token: $token';
   }
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get notifToday => 'Today';
+
+  @override
+  String get notifYesterday => 'Yesterday';
+
+  @override
+  String get notifEarlier => 'Earlier';
+
+  @override
+  String get notifTabEmergency => 'Emergency';
+
+  @override
+  String get notifTabVerification => 'Verification';
+
+  @override
+  String get notifTabDonation => 'Donation';
+
+  @override
+  String get notifTabSystem => 'System';
+
+  @override
+  String get noNotificationsInTab => 'No notifications in this category';
 }

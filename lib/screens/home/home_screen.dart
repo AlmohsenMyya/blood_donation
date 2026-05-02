@@ -1,12 +1,8 @@
-
 import 'package:sheryan/screens/misc/notifications_screen.dart';
 import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/screens/admin/admin_dashboard.dart';
-// ...
 import 'package:sheryan/screens/hospital/hospital_dashboard.dart';
-// ...
 import 'package:sheryan/core/enums/user_role.dart';
-// ...
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/screens/donor_dashboard/donor_settings.dart';
@@ -57,7 +53,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     setState(() => loading = true);
     User? firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
-      // Initialize Notifications (Phase 1)
       if (mounted) {
         NotificationService().init(context);
       }
@@ -66,7 +61,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (doc.exists) {
         userData = doc.data();
         
-        // Smart Tagging for OneSignal (Phase 1)
         NotificationService().sendUserTags(
           uid: firebaseUser.uid,
           city: userData?['city'] ?? 'unknown',
@@ -74,7 +68,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           role: userData?['role'] ?? 'user',
         );
 
-        // Sync role provider if needed
         final roleStr = userData?['role'];
         if (roleStr != null) {
           ref.read(roleProvider.notifier).setRoleFromString(roleStr);
@@ -99,7 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _signOutAndGoLogin() async {
     try {
-      await NotificationService().logout(); // Logout from OneSignal
+      await NotificationService().logout();
       await ref.read(authServiceProvider).logoutUser();
     } catch (_) {
       await AuthService().logoutUser();
@@ -236,49 +229,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           icon: const Icon(Icons.language),
           onPressed: _showLanguageSheet,
         ),
-      PopupMenuButton<String>(
-        icon: const Icon(Icons.settings ),
-        onSelected: (v) {
-          if (v == 'settings') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => role == UserRole.donor
-                    ? const DonorSettingsScreen()
-                    : const SettingsScreen(),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.settings),
+          onSelected: (v) {
+            if (v == 'settings') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => role == UserRole.donor
+                      ? const DonorSettingsScreen()
+                      : const SettingsScreen(),
+                ),
+              );
+            } else if (v == 'logout') {
+              _signOutAndGoLogin();
+            }
+          },
+          itemBuilder: (ctx) => [
+            if (role != UserRole.hospitalAdmin)
+              PopupMenuItem(
+                value: 'settings',
+                child: Row(
+                  children: [
+                    const Icon(Icons.settings, color: Colors.black54),
+                    const SizedBox(width: 8),
+                    Text(l10n.settings),
+                  ],
+                ),
               ),
-            );
-          } else if (v == 'logout') {
-            _signOutAndGoLogin();
-          }
-        },
-        itemBuilder: (ctx) => [
-           if (role != UserRole.hospitalAdmin)
-           PopupMenuItem(
-            value: 'settings',
-            child: Row(
-              children: [
-                const Icon(Icons.settings, color: Colors.black54),
-                const SizedBox(width: 8),
-                Text(l10n.settings),
-              ],
+            PopupMenuItem(
+              value: 'logout',
+              child: Row(
+                children: [
+                  const Icon(Icons.logout, color: Colors.black54),
+                  const SizedBox(width: 8),
+                  Text(l10n.logout),
+                ],
+              ),
             ),
-          ),
-           PopupMenuItem(
-            value: 'logout',
-            child: Row(
-              children: [
-                const Icon(Icons.logout, color: Colors.black54),
-                const SizedBox(width: 8),
-                Text(l10n.logout),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _statCard(String title, String value) {
     return Container(
@@ -325,12 +318,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ],
     );
   }
-  Widget _buildmotivationalCard(
-    IconData icon,
-    String title,
-    String subtitle, {
-    VoidCallback? onTap,
-  }) {
+
+  Widget _buildMotivationalCard(String title, String subtitle) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
@@ -344,7 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           style: Theme.of(context).textTheme.bodyMedium,
           textAlign: TextAlign.center,
         ),
-        ),
+      ),
     );
   }
 
@@ -389,29 +378,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               _greeting(),
-
-              const SizedBox(height: 10,),
-              _buildmotivationalCard(
-                Icons.emoji_events,
-                l10n.motivationTitle,
-                _currentQuote,
-              ),
+              const SizedBox(height: 10),
+              _buildMotivationalCard(l10n.motivationTitle, _currentQuote),
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(
-                    child: _statCard(
-                      l10n.bloodGroup,
-                      userData?['bloodGroup'] ?? '-',
-                    ),
-                  ),
+                  Expanded(child: _statCard(l10n.bloodGroup, userData?['bloodGroup'] ?? '-')),
                   const SizedBox(width: 12),
                   Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
                 ],
               ),
-              
               const SizedBox(height: 18),
               Card(
                 child: InkWell(
@@ -419,49 +396,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const UsersRequestsScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const UsersRequestsScreen()),
                     );
                   },
                   child: ListTile(
-                    leading: const Icon(
-                      Icons.bloodtype_rounded,
-                      color: AppColors.primaryRed,
-                    ),
-                    title: Text(
-                      l10n.usersBloodRequests,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    subtitle: Text(
-                      l10n.viewAllRequestsFromUsersAcross,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    leading: const Icon(Icons.bloodtype_rounded, color: AppColors.primaryRed),
+                    title: Text(l10n.usersBloodRequests, style: Theme.of(context).textTheme.bodyLarge),
+                    subtitle: Text(l10n.viewAllRequestsFromUsersAcross, style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ),
               ),
               const SizedBox(height: 8),
               Card(
                 child: InkWell(
-                   borderRadius: AppDesignConstants.borderRadiusMedium,
+                  borderRadius: AppDesignConstants.borderRadiusMedium,
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const NearbyRequestsScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const NearbyRequestsScreen()),
                     );
                   },
                   child: ListTile(
                     leading: const Icon(Icons.bloodtype, color: AppColors.primaryRed),
-                    title: Text(
-                      l10n.nearbyRequests,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    subtitle: Text(
-                      l10n.checkNearbyBloodRequests,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    title: Text(l10n.nearbyRequests, style: Theme.of(context).textTheme.bodyLarge),
+                    subtitle: Text(l10n.checkNearbyBloodRequests, style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ),
               ),
@@ -476,18 +434,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     );
                   },
                   child: ListTile(
-                    leading: const Icon(
-                      Icons.tips_and_updates,
-                      color: AppColors.primaryRed,
-                    ),
-                    title: Text(
-                      l10n.awareness,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    subtitle: Text(
-                      l10n.awarenessDonorSubtitle,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    leading: const Icon(Icons.tips_and_updates, color: AppColors.primaryRed),
+                    title: Text(l10n.awareness, style: Theme.of(context).textTheme.bodyLarge),
+                    subtitle: Text(l10n.awarenessDonorSubtitle, style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ),
               ),
@@ -508,12 +457,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(
-                    child: _statCard(
-                      l10n.bloodGroup,
-                      userData?['bloodGroup'] ?? '-',
-                    ),
-                  ),
+                  Expanded(child: _statCard(l10n.bloodGroup, userData?['bloodGroup'] ?? '-')),
                   const SizedBox(width: 12),
                   Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
                 ],
@@ -568,7 +512,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                  (userData?['role'] == 'donor' ? UserRole.donor : UserRole.recipient);
     final l10n = AppLocalizations.of(context)!;
 
-    // Handle Admin Roles specifically
     if (role == UserRole.hospitalAdmin) {
       return Scaffold(
         appBar: PreferredSize(
@@ -589,38 +532,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     }
 
-    // Role-based tabs
     final List<Widget> tabs = [
       _buildBody(role),
       if (role == UserRole.recipient) const DonorListScreen(),
       if (role == UserRole.recipient) const ProfileScreen(),
       if (role == UserRole.donor) const DonorsList(), 
-       if (role == UserRole.donor) const DonorProfileScreen(),
+      if (role == UserRole.donor) const DonorProfileScreen(),
     ];
 
     final List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(icon: const Icon(Icons.home), label: l10n.homeTab),
       if (role == UserRole.recipient)
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.people),
-          label: l10n.donorsTab,
-        ),
+        BottomNavigationBarItem(icon: const Icon(Icons.people), label: l10n.donorsTab),
       if (role == UserRole.recipient)
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.person),
-          label: l10n.profileTab,
-        ),
-
+        BottomNavigationBarItem(icon: const Icon(Icons.person), label: l10n.profileTab),
       if (role == UserRole.donor)
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.person_3),
-          label: l10n.allDonorsTab,
-        ),
-        if (role == UserRole.donor)
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.person_3),
-          label: l10n.profileTab,
-        ),
+        BottomNavigationBarItem(icon: const Icon(Icons.person_3), label: l10n.allDonorsTab),
+      if (role == UserRole.donor)
+        BottomNavigationBarItem(icon: const Icon(Icons.person_3), label: l10n.profileTab),
     ];
 
     return Scaffold(

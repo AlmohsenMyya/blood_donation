@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/services/notification_service.dart';
 import 'package:intl/intl.dart';
 
 class RequestBloodScreen extends StatefulWidget {
@@ -19,93 +20,123 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
   final TextEditingController _units = TextEditingController();
   final TextEditingController _phone = TextEditingController();
 
-  final List<String> _bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+  final List<String> _bloodGroups = [
+    'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'
+  ];
   String _selectedGroup = 'A+';
   String? _selectedCity;
   String? _selectedHospitalId;
+  String? _selectedHospitalName;
   DateTime? _neededAt;
   bool _loading = false;
+
+  @override
+  void dispose() {
+    _patientName.dispose();
+    _units.dispose();
+    _phone.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickNeededDateTime() async {
     final now = DateTime.now();
     final date = await showDatePicker(
       context: context,
       initialDate: _neededAt ?? now,
-      firstDate: now.subtract(const Duration(days: 0)),
+      firstDate: now,
       lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: AppColors.primaryRed,
-              onPrimary: AppColors.textPrimary,
-              surface: AppColors.backgroundDark,
-              onSurface: AppColors.textPrimary,
-            ),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.dark(
+            primary: AppColors.primaryRed,
+            onPrimary: AppColors.textPrimary,
+            surface: AppColors.backgroundDark,
+            onSurface: AppColors.textPrimary,
           ),
-          child: child!,
-        );
-      },
+        ),
+        child: child!,
+      ),
     );
     if (date == null) return;
 
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_neededAt ?? now),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: AppColors.primaryRed,
-              onPrimary: AppColors.textPrimary,
-              surface: AppColors.backgroundDark,
-              onSurface: AppColors.textPrimary,
-            ),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.dark(
+            primary: AppColors.primaryRed,
+            onPrimary: AppColors.textPrimary,
+            surface: AppColors.backgroundDark,
+            onSurface: AppColors.textPrimary,
           ),
-          child: child!,
-        );
-      },
+        ),
+        child: child!,
+      ),
     );
     if (time == null) return;
 
-    final dt = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-    setState(() => _neededAt = dt);
+    setState(() {
+      _neededAt = DateTime(
+          date.year, date.month, date.day, time.hour, time.minute);
+    });
   }
 
   Future<void> _submitRequest() async {
-    if (!_formKey.currentState!.validate() || _selectedCity == null || _selectedHospitalId == null) {
+    if (!_formKey.currentState!.validate() ||
+        _selectedCity == null ||
+        _selectedHospitalId == null) {
       return;
     }
-    
+
     final l10n = AppLocalizations.of(context)!;
     setState(() => _loading = true);
 
     try {
-      // Fetch hospital name for convenience
-      final hospDoc = await FirebaseFirestore.instance.collection('hospitals').doc(_selectedHospitalId).get();
-      final hospitalName = hospDoc.data()?['name'] ?? 'Unknown Hospital';
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final neededAtFormatted = _neededAt != null
+          ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!)
+          : l10n.notSpecified;
 
-      await FirebaseFirestore.instance.collection('blood_requests').add({
-        'userId': FirebaseAuth.instance.currentUser!.uid,
+      // 1. Create the blood request document
+      final docRef =
+          await FirebaseFirestore.instance.collection('blood_requests').add({
+        'userId': uid,
         'patientName': _patientName.text.trim(),
         'hospitalId': _selectedHospitalId,
-        'hospital': hospitalName,
+        'hospital': _selectedHospitalName ?? '',
         'city': _selectedCity,
         'bloodGroup': _selectedGroup,
         'units': _units.text.trim(),
         'phone': _phone.text.trim(),
-        'neededAt': _neededAt != null ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!) : l10n.notSpecified,
+        'neededAt': neededAtFormatted,
         'createdAt': FieldValue.serverTimestamp(),
-        'status': 'pending', 
-        'isVerified': false, 
+        'status': 'pending',
+        'isVerified': false,
       });
 
+      // 2. Notify hospital admins of this hospital (fire and forget)
+      NotificationService().sendToHospitalAdmins(
+        hospitalId: _selectedHospitalId!,
+        titleEn: "🩸 New Blood Request",
+        titleAr: "🩸 طلب دم جديد",
+        bodyEn:
+            "New request: ${_patientName.text.trim()} needs $_selectedGroup blood at ${_selectedHospitalName ?? ''}. Please verify.",
+        bodyAr:
+            "طلب جديد: ${_patientName.text.trim()} يحتاج دم فصيلة $_selectedGroup في ${_selectedHospitalName ?? ''}. يرجى التوثيق.",
+        requestId: docRef.id,
+      );
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.requestSubmittedSuccessfully)));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.requestSubmittedSuccessfully)));
         Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.requestSubmittingError(e.toString()))));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.requestSubmittingError(e.toString()))));
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -117,9 +148,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.requestBlood),
-      ),
+      appBar: AppBar(title: Text(l10n.requestBlood)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppDesignConstants.edgeInsetsMedium,
@@ -128,23 +157,25 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.createBloodRequest,
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text(l10n.createBloodRequest,
+                    style: theme.textTheme.titleMedium),
                 const SizedBox(height: 14),
 
                 // Patient name
                 TextFormField(
                   controller: _patientName,
                   decoration: InputDecoration(labelText: l10n.patientName),
-                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 12),
 
                 // City Dropdown
                 StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('cities').orderBy('name').snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection('cities')
+                      .orderBy('name')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return const LinearProgressIndicator();
                     final cities = snapshot.data!.docs;
@@ -152,53 +183,71 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       value: _selectedCity,
                       decoration: InputDecoration(labelText: l10n.city),
                       hint: Text(l10n.selectCity),
-                      items: cities.map((c) => DropdownMenuItem(
-                        value: c['name'] as String,
-                        child: Text(c['name']),
-                      )).toList(),
+                      items: cities
+                          .map((c) => DropdownMenuItem(
+                                value: c['name'] as String,
+                                child: Text(c['name']),
+                              ))
+                          .toList(),
                       onChanged: (v) {
                         setState(() {
                           _selectedCity = v;
-                          _selectedHospitalId = null; // Reset hospital when city changes
+                          _selectedHospitalId = null;
+                          _selectedHospitalName = null;
                         });
                       },
-                      validator: (v) => v == null ? l10n.requiredField : null,
+                      validator: (v) =>
+                          v == null ? l10n.requiredField : null,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
 
-                // Hospital Dropdown (Filtered by City)
+                // Hospital Dropdown (filtered by city)
                 if (_selectedCity != null)
-                StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('hospitals')
-                      .where('city', isEqualTo: _selectedCity)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) return const LinearProgressIndicator();
-                    final hospitals = snapshot.data!.docs;
-                    return DropdownButtonFormField<String>(
-                      value: _selectedHospitalId,
-                      decoration: InputDecoration(labelText: l10n.hospitalName),
-                      hint: Text(l10n.hospitalName),
-                      items: hospitals.map((h) => DropdownMenuItem(
-                        value: h.id,
-                        child: Text(h['name']),
-                      )).toList(),
-                      onChanged: (v) => setState(() => _selectedHospitalId = v),
-                      validator: (v) => v == null ? l10n.requiredField : null,
-                    );
-                  },
-                ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('hospitals')
+                        .where('city', isEqualTo: _selectedCity)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return const LinearProgressIndicator();
+                      final hospitals = snapshot.data!.docs;
+                      return DropdownButtonFormField<String>(
+                        value: _selectedHospitalId,
+                        decoration:
+                            InputDecoration(labelText: l10n.hospitalName),
+                        hint: Text(l10n.hospitalName),
+                        items: hospitals
+                            .map((h) => DropdownMenuItem(
+                                  value: h.id,
+                                  child: Text(h['name']),
+                                ))
+                            .toList(),
+                        onChanged: (v) {
+                          final selected = hospitals
+                              .firstWhere((h) => h.id == v);
+                          setState(() {
+                            _selectedHospitalId = v;
+                            _selectedHospitalName =
+                                selected['name'] as String?;
+                          });
+                        },
+                        validator: (v) =>
+                            v == null ? l10n.requiredField : null,
+                      );
+                    },
+                  ),
                 const SizedBox(height: 12),
 
-                // phone
+                // Phone
                 TextFormField(
                   controller: _phone,
                   keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(labelText: l10n.phoneNumber),
-                  validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                  decoration:
+                      InputDecoration(labelText: l10n.phoneNumber),
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 12),
 
@@ -210,11 +259,14 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       child: DropdownButtonFormField<String>(
                         value: _selectedGroup,
                         dropdownColor: AppColors.surfaceDark,
-                        decoration: InputDecoration(labelText: l10n.bloodGroup),
+                        decoration:
+                            InputDecoration(labelText: l10n.bloodGroup),
                         items: _bloodGroups
-                            .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                            .map((g) => DropdownMenuItem(
+                                value: g, child: Text(g)))
                             .toList(),
-                        onChanged: (v) => setState(() => _selectedGroup = v!),
+                        onChanged: (v) =>
+                            setState(() => _selectedGroup = v!),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -223,20 +275,25 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       child: TextFormField(
                         controller: _units,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(labelText: l10n.units),
-                        validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
+                        decoration:
+                            InputDecoration(labelText: l10n.units),
+                        validator: (v) =>
+                            (v == null || v.isEmpty)
+                                ? l10n.requiredField
+                                : null,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
 
-                // Needed at picker (shows selected value)
+                // Needed-at picker
                 GestureDetector(
                   onTap: _pickNeededDateTime,
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 12),
                     decoration: BoxDecoration(
                       color: AppColors.fieldDark,
                       borderRadius: AppDesignConstants.borderRadiusMedium,
@@ -247,11 +304,14 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                           child: Text(
                             _neededAt == null
                                 ? l10n.whenBloodNeededTap
-                                : l10n.neededAtValue(DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!)),
+                                : l10n.neededAtValue(DateFormat(
+                                        'dd MMM yyyy, hh:mm a')
+                                    .format(_neededAt!)),
                             style: theme.textTheme.bodyMedium,
                           ),
                         ),
-                        const Icon(Icons.access_time, color: AppColors.primaryRed),
+                        const Icon(Icons.access_time,
+                            color: AppColors.primaryRed),
                       ],
                     ),
                   ),
@@ -263,7 +323,10 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _loading ? null : _submitRequest,
-                    child: _loading ? const CircularProgressIndicator(color: AppColors.textPrimary) : Text(l10n.submitRequest),
+                    child: _loading
+                        ? const CircularProgressIndicator(
+                            color: AppColors.textPrimary)
+                        : Text(l10n.submitRequest),
                   ),
                 ),
               ],

@@ -856,7 +856,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications => 'الإشعارات';
 
   @override
-  String get noNotificationsFound => 'لا توجد إشعارات حالياً';
+  String get noNotificationsFound => 'No notifications yet';
 
   @override
   String get enableNotifications => 'تفعيل الإشعارات';
@@ -888,4 +888,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String pushToken(String token) {
     return 'رمز الدفع (Push Token): $token';
   }
+
+  @override
+  String get markAllRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get notifToday => 'اليوم';
+
+  @override
+  String get notifYesterday => 'أمس';
+
+  @override
+  String get notifEarlier => 'سابقاً';
+
+  @override
+  String get notifTabEmergency => 'طوارئ';
+
+  @override
+  String get notifTabVerification => 'توثيق';
+
+  @override
+  String get notifTabDonation => 'تبرع';
+
+  @override
+  String get notifTabSystem => 'نظام';
+
+  @override
+  String get noNotificationsInTab => 'لا توجد إشعارات في هذه الفئة';
 }

@@ -1,4 +1,5 @@
 import 'package:sheryan/core/utils/qr_dialog.dart';
+import 'package:sheryan/services/notification_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,11 @@ class _RequestsScreenState extends State<RequestsListScreen> {
     }
   }
 
-  Future<void> _markAsDone(String docId) async {
+  /// Marks the request as done in Firestore, then notifies the matched donor
+  /// (if a donation record exists) that the request has been closed.
+  Future<void> _markAsDone(String docId, Map<String, dynamic> data) async {
     final l10n = AppLocalizations.of(context)!;
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -45,7 +49,8 @@ class _RequestsScreenState extends State<RequestsListScreen> {
             child: Text(l10n.cancel),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryRed),
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.yesDone),
           ),
@@ -53,11 +58,22 @@ class _RequestsScreenState extends State<RequestsListScreen> {
       ),
     );
 
-    if (confirm == true) {
-      await FirebaseFirestore.instance
-          .collection('blood_requests')
-          .doc(docId)
-          .update({'status': 'done'});
+    if (confirm != true) return;
+
+    // 1. Update Firestore status
+    await FirebaseFirestore.instance
+        .collection('blood_requests')
+        .doc(docId)
+        .update({'status': 'done'});
+
+    // 2. Notify the matched donor (if donation was registered by hospital)
+    //    This runs in the background — doesn't block the UI
+    NotificationService().sendRequestClosedNotification(requestId: docId);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.statusDone)),
+      );
     }
   }
 
@@ -67,9 +83,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.myBloodRequests),
-      ),
+      appBar: AppBar(title: Text(l10n.myBloodRequests)),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
           stream: _requestsStream,
@@ -77,14 +91,15 @@ class _RequestsScreenState extends State<RequestsListScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
-
             if (snapshot.hasError) {
-              return Center(child: Text(l10n.genericError(snapshot.error.toString())));
+              return Center(
+                  child: Text(
+                      l10n.genericError(snapshot.error.toString())));
             }
-
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return Center(
-                child: Text(l10n.noBloodRequestsFound, style: theme.textTheme.bodyMedium),
+                child: Text(l10n.noBloodRequestsFound,
+                    style: theme.textTheme.bodyMedium),
               );
             }
 
@@ -98,11 +113,12 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                 final data = doc.data() as Map<String, dynamic>;
                 final isDone = data['status'] == 'done';
                 final isVerified = data['isVerified'] ?? false;
-                
+
                 final createdAt = data['createdAt'] != null
                     ? (data['createdAt'] as Timestamp).toDate()
                     : DateTime.now();
-                final formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(createdAt);
+                final formattedDate =
+                    DateFormat('dd MMM yyyy, hh:mm a').format(createdAt);
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 14),
@@ -111,13 +127,16 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Header row
                         Row(
                           children: [
                             CircleAvatar(
                               backgroundColor: AppColors.primaryRed,
                               child: Text(
-                                (data['bloodGroup'] ?? '?'),
-                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                data['bloodGroup'] ?? '?',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -131,43 +150,55 @@ class _RequestsScreenState extends State<RequestsListScreen> {
                           ],
                         ),
                         const Divider(height: 24),
-                        _buildInfoRow(Icons.local_hospital, l10n.hospitalName, data['hospital']),
-                        _buildInfoRow(Icons.location_on, l10n.city, data['city']),
-                        _buildInfoRow(Icons.phone, l10n.phoneNumber, data['phone']),
-                        _buildInfoRow(Icons.invert_colors, l10n.units, data['units']),
-                        _buildInfoRow(Icons.access_time, l10n.neededAtLabel("").replaceAll(":", ""), data['neededAt']),
-                        
-                        const SizedBox(height: 12),
+
+                        // Request details
+                        _buildInfoRow(Icons.local_hospital,
+                            l10n.hospitalName, data['hospital']),
+                        _buildInfoRow(
+                            Icons.location_on, l10n.city, data['city']),
+                        _buildInfoRow(
+                            Icons.phone, l10n.phoneNumber, data['phone']),
+                        _buildInfoRow(
+                            Icons.invert_colors, l10n.units, data['units']),
+                        _buildInfoRow(Icons.access_time, l10n.units,
+                            data['neededAt']),
+
+                        const SizedBox(height: 8),
                         Text(
                           l10n.requestedOnLabel(formattedDate),
                           style: theme.textTheme.labelSmall,
                         ),
+
+                        // Actions (only when not done)
                         if (!isDone) ...[
                           const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               TextButton.icon(
-                                onPressed: () {
-                                  QrDialog.show(
-                                    context,
-                                    data: doc.id,
-                                    label: data['patientName'] ?? l10n.unknownPatient,
-                                    idLabel: l10n.requestId,
-                                  );
-                                },
-                                icon: const Icon(Icons.qr_code, color: AppColors.textSecondary),
-                                label: Text(l10n.showQrCode, style: const TextStyle(color: AppColors.textSecondary)),
+                                onPressed: () => QrDialog.show(
+                                  context,
+                                  data: doc.id,
+                                  label: data['patientName'] ??
+                                      l10n.unknownPatient,
+                                  idLabel: l10n.requestId,
+                                ),
+                                icon: const Icon(Icons.qr_code,
+                                    color: AppColors.textSecondary),
+                                label: Text(l10n.showQrCode,
+                                    style: const TextStyle(
+                                        color: AppColors.textSecondary)),
                               ),
                               const SizedBox(width: 8),
                               ElevatedButton.icon(
-                                onPressed: () => _markAsDone(doc.id),
+                                onPressed: () =>
+                                    _markAsDone(doc.id, data),
                                 icon: const Icon(Icons.check),
                                 label: Text(l10n.markAsDone),
                               ),
                             ],
                           ),
-                        ]
+                        ],
                       ],
                     ),
                   ),
@@ -180,10 +211,11 @@ class _RequestsScreenState extends State<RequestsListScreen> {
     );
   }
 
-  Widget _buildStatusBadge(bool isDone, bool isVerified, AppLocalizations l10n) {
-    IconData icon;
-    Color color;
-    String label;
+  Widget _buildStatusBadge(
+      bool isDone, bool isVerified, AppLocalizations l10n) {
+    final IconData icon;
+    final Color color;
+    final String label;
 
     if (isDone) {
       icon = Icons.check_circle;
@@ -202,7 +234,11 @@ class _RequestsScreenState extends State<RequestsListScreen> {
     return Column(
       children: [
         Icon(icon, color: color, size: 20),
-        Text(label, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+        Text(label,
+            style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.bold)),
       ],
     );
   }
@@ -219,7 +255,8 @@ class _RequestsScreenState extends State<RequestsListScreen> {
           Expanded(
             child: Text(
               value?.toString() ?? "-",
-              style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: AppColors.textPrimary),
             ),
           ),
         ],

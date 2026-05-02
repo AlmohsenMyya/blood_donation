@@ -4,67 +4,141 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sheryan/core/models/app_notification.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
-import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:sheryan/services/notification_service.dart';
 
-class NotificationsScreen extends StatelessWidget {
+// ─── Tab filter definition ────────────────────────────────────────────────────
+
+enum _NotifTab { all, emergency, verification, donation, system }
+
+extension _NotifTabFilter on _NotifTab {
+  bool matches(NotificationType type) {
+    switch (this) {
+      case _NotifTab.all:
+        return true;
+      case _NotifTab.emergency:
+        return type == NotificationType.emergency;
+      case _NotifTab.verification:
+        return type == NotificationType.verification ||
+            type == NotificationType.newRequest;
+      case _NotifTab.donation:
+        return type == NotificationType.gratitude ||
+            type == NotificationType.requestClosed;
+      case _NotifTab.system:
+        return type == NotificationType.general;
+    }
+  }
+}
+
+// ─── Screen ───────────────────────────────────────────────────────────────────
+
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  final String? _userId = FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController =
+        TabController(length: _NotifTab.values.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _markAllRead() {
+    if (_userId != null) {
+      NotificationService().markAllAsRead(_userId!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (_userId == null) return const Scaffold();
 
-    if (userId == null) return const Scaffold();
+    final tabs = [
+      _TabDef(label: l10n.all, filter: _NotifTab.all),
+      _TabDef(label: l10n.notifTabEmergency, filter: _NotifTab.emergency),
+      _TabDef(
+          label: l10n.notifTabVerification, filter: _NotifTab.verification),
+      _TabDef(label: l10n.notifTabDonation, filter: _NotifTab.donation),
+      _TabDef(label: l10n.notifTabSystem, filter: _NotifTab.system),
+    ];
 
     return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
-        title: Text(l10n.notifications),
+        backgroundColor: AppColors.backgroundDark,
+        elevation: 0,
+        title: Text(l10n.notifications,
+            style: const TextStyle(
+                color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+        centerTitle: true,
         actions: [
-          IconButton(
-            tooltip: "Mark all as read",
-            icon: const Icon(Icons.done_all),
-            onPressed: () => NotificationService().markAllAsRead(userId),
+          TextButton.icon(
+            onPressed: _markAllRead,
+            icon: const Icon(Icons.done_all,
+                size: 18, color: AppColors.primaryRed),
+            label: Text(l10n.markAllRead,
+                style: const TextStyle(
+                    color: AppColors.primaryRed, fontSize: 12)),
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          indicatorColor: AppColors.primaryRed,
+          indicatorWeight: 3,
+          labelColor: AppColors.primaryRed,
+          unselectedLabelColor: AppColors.textGrey,
+          labelStyle: const TextStyle(
+              fontSize: 13, fontWeight: FontWeight.w600),
+          unselectedLabelStyle: const TextStyle(fontSize: 13),
+          tabs: tabs.map((t) => Tab(text: t.label)).toList(),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(userId)
+            .doc(_userId)
             .collection('notifications')
             .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(
+                    color: AppColors.primaryRed));
           }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.notifications_none, size: 64, color: AppColors.textGrey.withOpacity(0.5)),
-                  const SizedBox(height: 16),
-                  Text(l10n.noNotificationsFound ?? "No notifications yet", style: TextStyle(color: AppColors.textGrey)),
-                ],
-              ),
-            );
-          }
-
-          final notifications = snapshot.data!.docs
-              .map((doc) => AppNotification.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+          final allItems = (snapshot.data?.docs ?? [])
+              .map((doc) => AppNotification.fromMap(
+                  doc.id, doc.data() as Map<String, dynamic>))
               .toList();
 
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              final item = notifications[index];
-              return _NotificationItem(notification: item, userId: userId);
-            },
+          return TabBarView(
+            controller: _tabController,
+            children: tabs
+                .map((t) => _NotifList(
+                      all: allItems,
+                      filter: t.filter,
+                      userId: _userId!,
+                      l10n: l10n,
+                    ))
+                .toList(),
           );
         },
       ),
@@ -72,72 +146,320 @@ class NotificationsScreen extends StatelessWidget {
   }
 }
 
-class _NotificationItem extends StatelessWidget {
+// ─── Filtered list per tab ────────────────────────────────────────────────────
+
+class _NotifList extends StatelessWidget {
+  final List<AppNotification> all;
+  final _NotifTab filter;
+  final String userId;
+  final AppLocalizations l10n;
+
+  const _NotifList({
+    required this.all,
+    required this.filter,
+    required this.userId,
+    required this.l10n,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final items = all.where((n) => filter.matches(n.type)).toList();
+
+    if (items.isEmpty) {
+      return _EmptyState(
+        isAllTab: filter == _NotifTab.all,
+        l10n: l10n,
+      );
+    }
+
+    // Group by date bucket
+    final groups = _groupByDate(items, l10n);
+
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 8, bottom: 24),
+      itemCount: groups.length,
+      itemBuilder: (context, i) {
+        final group = groups[i];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Date separator
+            Padding(
+              padding:
+                  const EdgeInsets.fromLTRB(16, 16, 16, 6),
+              child: Row(
+                children: [
+                  Text(
+                    group.label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textGrey,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Divider(
+                        color: Colors.grey.shade800, height: 1),
+                  ),
+                ],
+              ),
+            ),
+            // Notification cards
+            ...group.items.map((n) => _NotifCard(
+                  notification: n,
+                  userId: userId,
+                )),
+          ],
+        );
+      },
+    );
+  }
+
+  List<_DateGroup> _groupByDate(
+      List<AppNotification> items, AppLocalizations l10n) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    final Map<String, List<AppNotification>> buckets = {
+      l10n.notifToday: [],
+      l10n.notifYesterday: [],
+      l10n.notifEarlier: [],
+    };
+
+    for (final item in items) {
+      final d = DateTime(
+          item.timestamp.year, item.timestamp.month, item.timestamp.day);
+      if (d == today) {
+        buckets[l10n.notifToday]!.add(item);
+      } else if (d == yesterday) {
+        buckets[l10n.notifYesterday]!.add(item);
+      } else {
+        buckets[l10n.notifEarlier]!.add(item);
+      }
+    }
+
+    return buckets.entries
+        .where((e) => e.value.isNotEmpty)
+        .map((e) => _DateGroup(label: e.key, items: e.value))
+        .toList();
+  }
+}
+
+// ─── Notification card ────────────────────────────────────────────────────────
+
+class _NotifCard extends StatelessWidget {
   final AppNotification notification;
   final String userId;
 
-  const _NotificationItem({required this.notification, required this.userId});
+  const _NotifCard({required this.notification, required this.userId});
 
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
-    final title = locale == 'ar' ? notification.titleAr : notification.titleEn;
-    final body = locale == 'ar' ? notification.bodyAr : notification.bodyEn;
-    final timeStr = DateFormat('hh:mm a, dd MMM').format(notification.timestamp);
+    final isAr = locale == 'ar';
+    final title =
+        isAr ? notification.titleAr : notification.titleEn;
+    final body = isAr ? notification.bodyAr : notification.bodyEn;
+    final timeStr =
+        DateFormat('hh:mm a').format(notification.timestamp);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: notification.isRead ? Colors.transparent : AppColors.primaryRed.withOpacity(0.05),
-        borderRadius: AppDesignConstants.borderRadiusMedium,
-        border: Border.all(
-          color: notification.isRead ? Colors.grey.shade800 : AppColors.primaryRed.withOpacity(0.2),
-        ),
-      ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: _getTypeColor(notification.type).withOpacity(0.2),
-          child: Icon(_getTypeIcon(notification.type), color: _getTypeColor(notification.type), size: 20),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
-            fontSize: 14,
+    final typeColor = _typeColor(notification.type);
+    final typeIcon = _typeIcon(notification.type);
+    final isUnread = !notification.isRead;
+
+    return GestureDetector(
+      onTap: () =>
+          NotificationService().markAsRead(userId, notification.id),
+      child: Container(
+        margin:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: isUnread
+              ? AppColors.surfaceDark
+              : AppColors.backgroundDark,
+          borderRadius: BorderRadius.circular(12),
+          border: Border(
+            left: BorderSide(color: typeColor, width: 4),
+            top: BorderSide(
+                color: isUnread
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade900,
+                width: 0.5),
+            right: BorderSide(
+                color: isUnread
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade900,
+                width: 0.5),
+            bottom: BorderSide(
+                color: isUnread
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade900,
+                width: 0.5),
           ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text(body, style: const TextStyle(fontSize: 13, height: 1.4)),
-            const SizedBox(height: 4),
-            Text(timeStr, style: TextStyle(fontSize: 11, color: AppColors.textGrey)),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Type icon
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: typeColor.withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(typeIcon,
+                    color: typeColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+
+              // Text content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: isUnread
+                                  ? FontWeight.bold
+                                  : FontWeight.w500,
+                              color: isUnread
+                                  ? AppColors.textPrimary
+                                  : AppColors.textGrey,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          timeStr,
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: AppColors.textGrey),
+                        ),
+                        if (isUnread) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: typeColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      body,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          height: 1.4,
+                          color: AppColors.textGrey),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        onTap: () {
-          NotificationService().markAsRead(userId, notification.id);
-          // Future: Navigate to request details if requestId is present
-        },
       ),
     );
   }
 
-  IconData _getTypeIcon(NotificationType type) {
+  IconData _typeIcon(NotificationType type) {
     switch (type) {
-      case NotificationType.emergency: return Icons.warning_amber_rounded;
-      case NotificationType.verification: return Icons.verified_user_rounded;
-      case NotificationType.gratitude: return Icons.favorite_rounded;
-      default: return Icons.notifications;
+      case NotificationType.emergency:
+        return Icons.warning_amber_rounded;
+      case NotificationType.verification:
+        return Icons.verified_user_rounded;
+      case NotificationType.newRequest:
+        return Icons.inbox_rounded;
+      case NotificationType.gratitude:
+        return Icons.favorite_rounded;
+      case NotificationType.requestClosed:
+        return Icons.check_circle_rounded;
+      case NotificationType.general:
+        return Icons.info_rounded;
     }
   }
 
-  Color _getTypeColor(NotificationType type) {
+  Color _typeColor(NotificationType type) {
     switch (type) {
-      case NotificationType.emergency: return AppColors.error;
-      case NotificationType.verification: return Colors.blue;
-      case NotificationType.gratitude: return AppColors.success;
-      default: return AppColors.primaryRed;
+      case NotificationType.emergency:
+        return AppColors.error;
+      case NotificationType.verification:
+        return AppColors.hospitalPrimary;
+      case NotificationType.newRequest:
+        return Colors.orange;
+      case NotificationType.gratitude:
+        return AppColors.success;
+      case NotificationType.requestClosed:
+        return Colors.teal;
+      case NotificationType.general:
+        return AppColors.primaryRed;
     }
   }
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+
+class _EmptyState extends StatelessWidget {
+  final bool isAllTab;
+  final AppLocalizations l10n;
+
+  const _EmptyState({required this.isAllTab, required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            isAllTab
+                ? Icons.notifications_none_rounded
+                : Icons.filter_list_off_rounded,
+            size: 72,
+            color: AppColors.textGrey.withOpacity(0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            isAllTab
+                ? l10n.noNotificationsFound
+                : l10n.noNotificationsInTab,
+            style: TextStyle(
+              color: AppColors.textGrey.withOpacity(0.6),
+              fontSize: 15,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Data models ──────────────────────────────────────────────────────────────
+
+class _TabDef {
+  final String label;
+  final _NotifTab filter;
+  const _TabDef({required this.label, required this.filter});
+}
+
+class _DateGroup {
+  final String label;
+  final List<AppNotification> items;
+  const _DateGroup({required this.label, required this.items});
 }
