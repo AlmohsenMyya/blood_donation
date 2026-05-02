@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheryan/providers/connectivity/connectivity_provider.dart';
 import 'package:sheryan/services/pending_actions_service.dart';
 import 'package:sheryan/widgets/offline_banner.dart';
@@ -27,7 +25,6 @@ import 'package:sheryan/services/auth_service.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
 import 'package:sheryan/providers/locale/locale_provider.dart';
 import 'package:sheryan/screens/auth/sign_in_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
@@ -42,25 +39,22 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  
-  final FirebaseFirestore _fs = FirebaseFirestore.instance;
+  // userData is populated reactively from userProfileProvider in build().
+  // It is kept as a field so helper methods (_greeting, _statCard, etc.) can
+  // read it without requiring explicit parameters.
   Map<String, dynamic>? userData;
-  bool loading = true;
+
   int _selectedTab = 0;
   String _currentQuote = '';
-
-  // Cache key is UID-specific to prevent cross-user data leakage
-  String get _kUserCacheKey {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    return 'sheryan_user_cache_${uid ?? 'anon'}';
-  }
+  bool _notificationsInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _loadUser();
     _listenForReconnect();
   }
+
+  // ─── Connectivity helpers ─────────────────────────────────────────────────
 
   void _listenForReconnect() {
     ref.listenManual(connectivityProvider, (prev, next) {
@@ -85,71 +79,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  Future<void> _saveUserToCache(Map<String, dynamic> data) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kUserCacheKey, jsonEncode(data));
-  }
-
-  Future<Map<String, dynamic>?> _loadUserFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_kUserCacheKey);
-    if (raw == null) return null;
-    return jsonDecode(raw) as Map<String, dynamic>;
-  }
-
-  Future<void> _loadUser() async {
-    if (!mounted) return;
-    setState(() => loading = true);
-
-    final firebaseUser = FirebaseAuth.instance.currentUser;
-    if (firebaseUser == null) {
-      if (mounted) setState(() => loading = false);
-      return;
-    }
-
-    if (mounted) NotificationService().init(context);
-
-    // Try Firestore first — persistence handles online/offline automatically.
-    // Catch errors and fall back to SharedPreferences cache.
-    try {
-      final doc = await _fs.collection('users').doc(firebaseUser.uid).get();
-      if (!mounted) return;
-
-      if (doc.exists && doc.data() != null) {
-        userData = doc.data();
-        await _saveUserToCache(userData!);
-        if (!mounted) return;
-
-        NotificationService().sendUserTags(
-          uid: firebaseUser.uid,
-          city: userData?['city'] ?? 'unknown',
-          bloodGroup: userData?['bloodGroup'] ?? 'unknown',
-          role: userData?['role'] ?? 'user',
-        );
-      } else {
-        // Document not found in Firestore — use local cache
-        userData = await _loadUserFromCache();
-        if (!mounted) return;
-      }
-    } catch (e) {
-      debugPrint('HomeScreen._loadUser: Firestore error, using cache: $e');
-      userData = await _loadUserFromCache();
-      if (!mounted) return;
-    }
-
-    // Always set role from userData before clearing loading state
-    final roleStr = userData?['role'] as String?;
-    ref.read(roleProvider.notifier).setRoleFromString(roleStr);
-
-    if (!mounted) return;
-    final l10n = AppLocalizations.of(context)!;
-    final List<String> quotes = [
-      l10n.quote1, l10n.quote2, l10n.quote3, l10n.quote4,
-      l10n.quote5, l10n.quote6, l10n.quote7,
-    ];
-    _currentQuote = (quotes..shuffle()).first;
-    setState(() => loading = false);
-  }
+  // ─── Auth ─────────────────────────────────────────────────────────────────
 
   Future<void> _signOutAndGoLogin() async {
     try {
@@ -167,6 +97,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  // ─── Language sheet ───────────────────────────────────────────────────────
+
   Future<void> _showLanguageSheet() async {
     final l10n = AppLocalizations.of(context)!;
     final currentCode = ref.read(localeProvider)?.languageCode;
@@ -175,7 +107,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesignConstants.radiusExtraLarge)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDesignConstants.radiusExtraLarge),
+        ),
       ),
       builder: (ctx) {
         return SafeArea(
@@ -192,40 +126,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Text(
-                l10n.changeLanguage,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(l10n.changeLanguage, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               ListTile(
                 leading: const Text('🇺🇸', style: TextStyle(fontSize: 20)),
-                title: Text(
-                  l10n.languageEnglish,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+                title: Text(l10n.languageEnglish, style: Theme.of(context).textTheme.bodyLarge),
                 trailing: currentCode == 'en'
                     ? const Icon(Icons.check, color: AppColors.primaryRed)
                     : null,
                 onTap: () async {
-                  await ref.read(localeProvider.notifier).setLocale(
-                    const Locale('en'),
-                  );
+                  await ref.read(localeProvider.notifier).setLocale(const Locale('en'));
                   if (context.mounted) Navigator.pop(context);
                 },
               ),
               ListTile(
                 leading: const Text('🇸🇦', style: TextStyle(fontSize: 20)),
-                title: Text(
-                  l10n.languageArabic,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+                title: Text(l10n.languageArabic, style: Theme.of(context).textTheme.bodyLarge),
                 trailing: currentCode == 'ar'
                     ? const Icon(Icons.check, color: AppColors.primaryRed)
                     : null,
                 onTap: () async {
-                  await ref.read(localeProvider.notifier).setLocale(
-                    const Locale('ar'),
-                  );
+                  await ref.read(localeProvider.notifier).setLocale(const Locale('ar'));
                   if (context.mounted) Navigator.pop(context);
                 },
               ),
@@ -236,6 +157,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
   }
+
+  // ─── UI helpers ───────────────────────────────────────────────────────────
 
   Widget _topAppBar(UserRole role) {
     final l10n = AppLocalizations.of(context)!;
@@ -263,12 +186,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.notifications_none),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const NotificationsScreen()),
-                      );
-                    },
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                    ),
                   ),
                   if (count > 0)
                     Positioned(
@@ -283,7 +204,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
                         child: Text(
                           '$count',
-                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -367,13 +292,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _greeting() {
     final l10n = AppLocalizations.of(context)!;
-    final name = userData?['name'] ?? l10n.friend;
+    final name = userData?['name'] as String? ?? l10n.friend;
     final hour = DateTime.now().hour;
     final greeting = hour < 12
         ? l10n.goodMorning
         : hour < 18
-        ? l10n.goodAfternoon
-        : l10n.goodEvening;
+            ? l10n.goodAfternoon
+            : l10n.goodEvening;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -397,7 +322,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           textAlign: TextAlign.center,
         ),
         subtitle: Text(
-          subtitle, 
+          subtitle,
           style: Theme.of(context).textTheme.bodyMedium,
           textAlign: TextAlign.center,
         ),
@@ -423,16 +348,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 : Theme.of(context).colorScheme.primary,
           ),
         ),
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          color: AppColors.textGrey,
-          size: 16,
-        ),
+        trailing: const Icon(Icons.arrow_forward_ios, color: AppColors.textGrey, size: 16),
         onTap: onTap,
       ),
     );
@@ -440,11 +358,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildBody(UserRole role) {
     final l10n = AppLocalizations.of(context)!;
-    // Note: loading is always false here — build() returns early when loading=true
+
+    // Refresh by invalidating the stream provider — it will re-subscribe and
+    // return the latest Firestore data (online) or cached data (offline).
+    Future<void> onRefresh() async => ref.invalidate(userProfileProvider);
 
     if (role == UserRole.donor) {
       return RefreshIndicator(
-        onRefresh: _loadUser,
+        onRefresh: onRefresh,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: AppDesignConstants.edgeInsetsMedium,
@@ -457,21 +378,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: _statCard(l10n.bloodGroup, userData?['bloodGroup'] ?? '-')),
+                  Expanded(child: _statCard(l10n.bloodGroup, userData?['bloodGroup'] as String? ?? '-')),
                   const SizedBox(width: 12),
-                  Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
+                  Expanded(child: _statCard(l10n.city, userData?['city'] as String? ?? '-')),
                 ],
               ),
               const SizedBox(height: 18),
               Card(
                 child: InkWell(
                   borderRadius: AppDesignConstants.borderRadiusMedium,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const UsersRequestsScreen()),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const UsersRequestsScreen()),
+                  ),
                   child: ListTile(
                     leading: const Icon(Icons.bloodtype_rounded, color: AppColors.primaryRed),
                     title: Text(l10n.usersBloodRequests, style: Theme.of(context).textTheme.bodyLarge),
@@ -483,12 +402,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Card(
                 child: InkWell(
                   borderRadius: AppDesignConstants.borderRadiusMedium,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const NearbyRequestsScreen()),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NearbyRequestsScreen()),
+                  ),
                   child: ListTile(
                     leading: const Icon(Icons.bloodtype, color: AppColors.primaryRed),
                     title: Text(l10n.nearbyRequests, style: Theme.of(context).textTheme.bodyLarge),
@@ -500,12 +417,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Card(
                 child: InkWell(
                   borderRadius: AppDesignConstants.borderRadiusMedium,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const TipsScreen()),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const TipsScreen()),
+                  ),
                   child: ListTile(
                     leading: const Icon(Icons.tips_and_updates, color: AppColors.primaryRed),
                     title: Text(l10n.awareness, style: Theme.of(context).textTheme.bodyLarge),
@@ -517,80 +432,145 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       );
-    } else {
-      return RefreshIndicator(
-        onRefresh: _loadUser,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: AppDesignConstants.edgeInsetsMedium,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _greeting(),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(child: _statCard(l10n.bloodGroup, userData?['bloodGroup'] ?? '-')),
-                  const SizedBox(width: 12),
-                  Expanded(child: _statCard(l10n.city, userData?['city'] ?? '-')),
-                ],
-              ),
-              const SizedBox(height: 18),
-              _buildCard(
-                Icons.bloodtype,
-                l10n.requestBlood,
-                l10n.createNewBloodRequest,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const RequestBloodScreen()),
-                ),
-              ),
-              _buildCard(
-                Icons.favorite_outline,
-                l10n.myRequests,
-                l10n.trackPreviousRequests,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const RequestsListScreen()),
-                ),
-              ),
-              _buildCard(
-                Icons.near_me,
-                l10n.nearbyDonors,
-                l10n.trackNearbyDonors,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const NearbyDonorsScreen()),
-                ),
-              ),
-              _buildCard(
-                Icons.tips_and_updates,
-                l10n.awareness,
-                l10n.awarenessUserSubtitle,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const TipsScreen()),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
     }
+
+    // Recipient body
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: AppDesignConstants.edgeInsetsMedium,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _greeting(),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: _statCard(l10n.bloodGroup, userData?['bloodGroup'] as String? ?? '-')),
+                const SizedBox(width: 12),
+                Expanded(child: _statCard(l10n.city, userData?['city'] as String? ?? '-')),
+              ],
+            ),
+            const SizedBox(height: 18),
+            _buildCard(
+              Icons.bloodtype,
+              l10n.requestBlood,
+              l10n.createNewBloodRequest,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const RequestBloodScreen()),
+              ),
+            ),
+            _buildCard(
+              Icons.favorite_outline,
+              l10n.myRequests,
+              l10n.trackPreviousRequests,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const RequestsListScreen()),
+              ),
+            ),
+            _buildCard(
+              Icons.near_me,
+              l10n.nearbyDonors,
+              l10n.trackNearbyDonors,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NearbyDonorsScreen()),
+              ),
+            ),
+            _buildCard(
+              Icons.tips_and_updates,
+              l10n.awareness,
+              l10n.awarenessUserSubtitle,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TipsScreen()),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+
+  // ─── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    // Show a full-screen loading scaffold until _loadUser() completes.
-    // This prevents any dashboard from rendering before the role is known.
-    if (loading) {
+    // ── 1. Watch the stream provider (single source of truth for user data) ──
+    final profileAsync = ref.watch(userProfileProvider);
+
+    // ── 2. Show loading spinner while the first snapshot hasn't arrived ──────
+    //    This handles both app-start and hot-restart.
+    if (profileAsync.isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
-    // By the time loading = false, _loadUser() has already set roleProvider.
-    final role = ref.watch(roleProvider) ?? UserRole.recipient;
+    // ── 3. Extract data (stream error treated same as null → loading) ─────────
+    final profile = profileAsync.asData?.value;
+    if (profile == null) {
+      // Could be:
+      //  • Stream errored (Firestore rules / network issues on web)
+      //  • User document doesn't exist yet (race during sign-up)
+      // Either way, show a spinner — the stream will retry automatically once
+      // connectivity is restored or the document is created.
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // ── 4. Sync profile into the local field used by widget helper methods ───
+    userData = profile;
+
+    // ── 5. One-time side effects (notifications, quotes) ─────────────────────
+    if (!_notificationsInitialized) {
+      _notificationsInitialized = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        NotificationService().init(context);
+        final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+        NotificationService().sendUserTags(
+          uid: uid,
+          city: profile['city'] as String? ?? 'unknown',
+          bloodGroup: profile['bloodGroup'] as String? ?? 'unknown',
+          role: profile['role'] as String? ?? 'user',
+        );
+      });
+    }
+
+    if (_currentQuote.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
+      final quotes = [
+        l10n.quote1, l10n.quote2, l10n.quote3, l10n.quote4,
+        l10n.quote5, l10n.quote6, l10n.quote7,
+      ];
+      _currentQuote = (List.from(quotes)..shuffle()).first;
+    }
+
+    // ── 6. Derive role directly from Firestore data ──────────────────────────
+    //    No dependency on roleProvider for routing — avoids all race conditions.
+    final roleStr = profile['role'] as String?;
+    final UserRole role;
+    if (roleStr == 'hospitalAdmin') {
+      role = UserRole.hospitalAdmin;
+    } else if (roleStr == 'superAdmin') {
+      role = UserRole.superAdmin;
+    } else if (roleStr == 'donor') {
+      role = UserRole.donor;
+    } else {
+      role = UserRole.recipient;
+    }
+
+    // Keep roleProvider in sync for any child widgets that still read it.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(roleProvider.notifier).setRoleFromString(roleStr);
+    });
+
+    // ── 7. Route to the appropriate dashboard ────────────────────────────────
     final l10n = AppLocalizations.of(context)!;
 
     if (role == UserRole.hospitalAdmin) {
@@ -623,6 +603,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     }
 
+    // Donor / Recipient
     final List<Widget> tabs = [
       _buildBody(role),
       if (role == UserRole.recipient) const DonorListScreen(),
@@ -643,6 +624,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         BottomNavigationBarItem(icon: const Icon(Icons.person_3), label: l10n.profileTab),
     ];
 
+    // Clamp _selectedTab in case the tab list shrank (e.g. role change)
+    final safeTab = _selectedTab.clamp(0, tabs.length - 1);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -651,11 +635,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Column(
         children: [
           const OfflineBanner(),
-          Expanded(child: tabs[_selectedTab]),
+          Expanded(child: tabs[safeTab]),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedTab,
+        currentIndex: safeTab,
         onTap: (i) => setState(() => _selectedTab = i),
         items: items,
       ),
