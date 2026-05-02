@@ -9,20 +9,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-// =================== Settings Screen ===================
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
-      ),
+      appBar: AppBar(title: Text(l10n.settings)),
       body: ListView(
         children: [
           _buildSection(context, l10n.account, [
@@ -66,9 +62,7 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const PrivacyTermsScreen(isPrivacy: true),
-                  ),
+                  MaterialPageRoute(builder: (_) => const PrivacyTermsScreen(isPrivacy: true)),
                 );
               },
             ),
@@ -79,9 +73,7 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const PrivacyTermsScreen(isPrivacy: false),
-                  ),
+                  MaterialPageRoute(builder: (_) => const PrivacyTermsScreen(isPrivacy: false)),
                 );
               },
             ),
@@ -92,7 +84,6 @@ class SettingsScreen extends ConsumerWidget {
               context: context,
               icon: Icons.info,
               title: l10n.aboutApp,
-
               onTap: () {
                 Navigator.push(
                   context,
@@ -106,17 +97,13 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  // ===== Helper: Build Section =====
   Widget _buildSection(BuildContext context, String title, List<Widget> children) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 10),
           ...children,
         ],
@@ -124,7 +111,6 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  // ===== Helper: Build Card =====
   Widget _buildCard({
     required BuildContext context,
     required IconData icon,
@@ -143,7 +129,6 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  // ===== Helper: Reset Requests =====
   Future<void> _resetRequests(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
@@ -153,10 +138,7 @@ class SettingsScreen extends ConsumerWidget {
         title: Text(l10n.resetAllRequests),
         content: Text(l10n.confirmResetRequests),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed),
             onPressed: () => Navigator.pop(context, true),
@@ -184,7 +166,6 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  // ===== Helper: Contact Support =====
   Future<void> _contactSupport(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final Uri email = Uri(
@@ -195,9 +176,9 @@ class SettingsScreen extends ConsumerWidget {
     if (await canLaunchUrl(email)) {
       await url_launcher.launchUrl(email);
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.errorEmailApp)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorEmailApp)),
+      );
     }
   }
 }
@@ -243,9 +224,6 @@ class _NotificationToggleState extends State<_NotificationToggle> {
   }
 }
 
-// =================== Account Screen ===================
-
-
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
@@ -256,7 +234,6 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   final user = FirebaseAuth.instance.currentUser;
 
-  // ----- Change password (requires old password to re-authenticate) -----
   Future<void> _changePassword() async {
     final l10n = AppLocalizations.of(context)!;
     final TextEditingController oldPass = TextEditingController();
@@ -275,17 +252,13 @@ class _AccountScreenState extends State<AccountScreen> {
                 TextField(
                   controller: oldPass,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: l10n.enterCurrentPassword,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.enterCurrentPassword),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: newPass,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: l10n.enterNewPassword,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.enterNewPassword),
                 ),
               ],
             ),
@@ -307,17 +280,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
                         if (oldP.isEmpty || newP.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.fillBothPasswords),
-                            ),
+                            SnackBar(content: Text(l10n.fillBothPasswords)),
                           );
                           return;
                         }
                         if (newP.length < 6) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.passwordMinLength),
-                            ),
+                            SnackBar(content: Text(l10n.passwordMinLength)),
                           );
                           return;
                         }
@@ -325,43 +294,30 @@ class _AccountScreenState extends State<AccountScreen> {
                         setStateDialog(() => loading = true);
 
                         try {
-                          // Re-authenticate
                           final cred = EmailAuthProvider.credential(
                             email: user!.email!,
                             password: oldP,
                           );
                           await user!.reauthenticateWithCredential(cred);
-
-                          // Update password
                           await user!.updatePassword(newP);
 
                           if (mounted) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.passwordUpdated),
-                              ),
+                              SnackBar(content: Text(l10n.passwordUpdated)),
                             );
                           }
                         } on FirebaseAuthException catch (e) {
                           String message = e.message ?? 'Error';
-                          if (e.code == 'wrong-password') {
-                            message = l10n.currentPasswordIncorrect;
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(message)));
+                          if (e.code == 'wrong-password') message = l10n.currentPasswordIncorrect;
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
                         } catch (e) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(e.toString())));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
                         } finally {
                           setStateDialog(() => loading = false);
                         }
                       },
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : Text(l10n.change),
+                child: loading ? const CircularProgressIndicator() : Text(l10n.change),
               ),
             ],
           );
@@ -370,7 +326,6 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  // ----- Forgot password (send reset email) -----
   Future<void> _forgotPassword() async {
     final l10n = AppLocalizations.of(context)!;
     final email = user?.email;
@@ -387,14 +342,8 @@ class _AccountScreenState extends State<AccountScreen> {
         title: Text(l10n.resetPassword),
         content: Text(l10n.resetPasswordConfirm(email)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.send),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.send)),
         ],
       ),
     );
@@ -406,14 +355,13 @@ class _AccountScreenState extends State<AccountScreen> {
           SnackBar(content: Text(l10n.passwordResetSent)),
         );
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("${l10n.genericError(e.toString())}")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.genericError(e.toString()))),
+        );
       }
     }
   }
 
-  // ----- Sign out and navigate to LoginScreen -----
   Future<void> _signOut() async {
     final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
@@ -422,14 +370,8 @@ class _AccountScreenState extends State<AccountScreen> {
         title: Text(l10n.signOut),
         content: Text(l10n.confirmSignOut),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.signOut),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.signOut)),
         ],
       ),
     );
@@ -445,14 +387,12 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-  // ----- Delete account (requires re-auth + confirm) -----
   Future<void> _deleteAccount() async {
     if (user == null) return;
     final l10n = AppLocalizations.of(context)!;
     final TextEditingController passwordController = TextEditingController();
     bool loading = false;
 
-    // Step 1: Re-auth dialog to get password
     final reauthOk = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -467,17 +407,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: l10n.currentPassword,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.currentPassword),
                 ),
               ],
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(l10n.cancel),
-              ),
+              TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
               ElevatedButton(
                 onPressed: loading
                     ? null
@@ -485,9 +420,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         final pw = passwordController.text.trim();
                         if (pw.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.enterPassword),
-                            ),
+                            SnackBar(content: Text(l10n.enterPassword)),
                           );
                           return;
                         }
@@ -501,23 +434,15 @@ class _AccountScreenState extends State<AccountScreen> {
                           Navigator.pop(context, true);
                         } on FirebaseAuthException catch (e) {
                           String msg = e.message ?? 'Error';
-                          if (e.code == 'wrong-password') {
-                            msg = l10n.passwordIncorrect;
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(msg)));
+                          if (e.code == 'wrong-password') msg = l10n.passwordIncorrect;
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
                           setStateDialog(() => loading = false);
                         } catch (e) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(e.toString())));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
                           setStateDialog(() => loading = false);
                         }
                       },
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : Text(l10n.confirm),
+                child: loading ? const CircularProgressIndicator() : Text(l10n.confirm),
               ),
             ],
           );
@@ -527,40 +452,24 @@ class _AccountScreenState extends State<AccountScreen> {
 
     if (reauthOk != true) return;
 
-    // Step 2: Confirm deletion
     final confirmDelete = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(l10n.deleteAccount),
         content: Text(l10n.confirmDeleteAccount),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.delete)),
         ],
       ),
     );
 
     if (confirmDelete != true) return;
 
-    // Step 3: Delete Firestore doc & Firebase account
     try {
       final uid = user!.uid;
-      // Delete Firestore user doc if exists
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .delete()
-          .catchError((_) {});
-      // Delete Firebase account
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete().catchError((_) {});
       await user!.delete();
-
-      // sign out & navigate to login
       await FirebaseAuth.instance.signOut();
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
@@ -570,17 +479,12 @@ class _AccountScreenState extends State<AccountScreen> {
       );
     } on FirebaseAuthException catch (e) {
       String message = e.message ?? 'Error deleting account';
-      // If account requires recent login, tell the user
-      if (e.code == 'requires-recent-login') {
-        message = l10n.reLoginRequired;
-      }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      if (e.code == 'requires-recent-login') message = l10n.reLoginRequired;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.genericError(e.toString()))),
+      );
     }
   }
 
@@ -590,9 +494,7 @@ class _AccountScreenState extends State<AccountScreen> {
     final email = user?.email ?? l10n.notAvailable;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.account),
-      ),
+      appBar: AppBar(title: Text(l10n.account)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -604,8 +506,6 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
           const SizedBox(height: 10),
-
-          // Change password (reauth required)
           Card(
             child: ListTile(
               leading: const Icon(Icons.lock, color: AppColors.primaryRed),
@@ -614,36 +514,24 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
           const SizedBox(height: 10),
-
-          // Forgot password (send reset email)
           Card(
             child: ListTile(
-              leading: const Icon(
-                Icons.email_outlined,
-                color: AppColors.primaryRed,
-              ),
+              leading: const Icon(Icons.email_outlined, color: AppColors.primaryRed),
               title: Text(l10n.forgotPassword),
               subtitle: Text(l10n.sendResetLinkTo(email)),
               onTap: _forgotPassword,
             ),
           ),
           const SizedBox(height: 10),
-
-          // Delete account
           Card(
             child: ListTile(
-              leading: const Icon(
-                Icons.delete_forever,
-                color: AppColors.primaryRed,
-              ),
+              leading: const Icon(Icons.delete_forever, color: AppColors.primaryRed),
               title: Text(l10n.deleteAccount),
               subtitle: Text(l10n.permanentlyDeleteData),
               onTap: _deleteAccount,
             ),
           ),
           const SizedBox(height: 10),
-
-          // Sign out
           Card(
             child: ListTile(
               leading: const Icon(Icons.logout, color: AppColors.primaryRed),
@@ -657,7 +545,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 }
 
-// =================== About Screen ===================
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
@@ -672,10 +559,7 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.appTitle,
-              style: theme.textTheme.titleLarge,
-            ),
+            Text(l10n.appTitle, style: theme.textTheme.titleLarge),
             const SizedBox(height: 10),
             Text(l10n.aboutDescription, style: theme.textTheme.bodyLarge),
             const SizedBox(height: 20),
@@ -702,10 +586,7 @@ class PrivacyTermsScreen extends StatelessWidget {
       appBar: AppBar(title: Text(title)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Text(
-          text,
-          style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
-        ),
+        child: Text(text, style: theme.textTheme.bodyLarge?.copyWith(height: 1.6)),
       ),
     );
   }

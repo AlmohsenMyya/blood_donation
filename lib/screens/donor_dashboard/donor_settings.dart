@@ -8,15 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-// =================== Settings Screen ===================
+
 class DonorSettingsScreen extends ConsumerWidget {
   const DonorSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     
     return Scaffold(
       appBar: AppBar(
@@ -57,8 +55,7 @@ class DonorSettingsScreen extends ConsumerWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) =>
-                        const DonorPrivacyTermsScreen(isPrivacy: true),
+                    builder: (_) => const DonorPrivacyTermsScreen(isPrivacy: true),
                   ),
                 );
               },
@@ -71,8 +68,7 @@ class DonorSettingsScreen extends ConsumerWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) =>
-                        const DonorPrivacyTermsScreen(isPrivacy: false),
+                    builder: (_) => const DonorPrivacyTermsScreen(isPrivacy: false),
                   ),
                 );
               },
@@ -97,17 +93,13 @@ class DonorSettingsScreen extends ConsumerWidget {
     );
   }
 
-  // ===== Helper: Build Section =====
   Widget _buildSection(BuildContext context, String title, List<Widget> children) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 10),
           ...children,
         ],
@@ -115,7 +107,6 @@ class DonorSettingsScreen extends ConsumerWidget {
     );
   }
 
-  // ===== Helper: Build Card =====
   Widget _buildCard({
     required BuildContext context,
     required IconData icon,
@@ -134,7 +125,6 @@ class DonorSettingsScreen extends ConsumerWidget {
     );
   }
 
-  // ===== Helper: Contact Support =====
   Future<void> _contactSupport(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final Uri email = Uri(
@@ -145,9 +135,9 @@ class DonorSettingsScreen extends ConsumerWidget {
     if (await canLaunchUrl(email)) {
       await launchUrl(email);
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.genericError("Could not open email app"))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.genericError("Could not open email app"))),
+      );
     }
   }
 }
@@ -193,7 +183,6 @@ class _NotificationToggleState extends State<_NotificationToggle> {
   }
 }
 
-// =================== Account Screen ===================
 class DonorAccountScreen extends StatefulWidget {
   const DonorAccountScreen({super.key});
 
@@ -204,7 +193,6 @@ class DonorAccountScreen extends StatefulWidget {
 class _DonorAccountScreenState extends State<DonorAccountScreen> {
   final user = FirebaseAuth.instance.currentUser;
 
-  // ----- Change password (requires old password to re-authenticate) -----
   Future<void> _changePassword() async {
     final l10n = AppLocalizations.of(context)!;
     final TextEditingController oldPass = TextEditingController();
@@ -223,17 +211,13 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                 TextField(
                   controller: oldPass,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: l10n.enterCurrentPassword,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.enterCurrentPassword),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: newPass,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: l10n.enterNewPassword,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.enterNewPassword),
                 ),
               ],
             ),
@@ -255,19 +239,13 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
                         if (oldP.isEmpty || newP.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.signupFillAllFields),
-                            ),
+                            SnackBar(content: Text(l10n.signupFillAllFields)),
                           );
                           return;
                         }
                         if (newP.length < 6) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                l10n.signupPasswordStrong,
-                              ),
-                            ),
+                            SnackBar(content: Text(l10n.signupPasswordStrong)),
                           );
                           return;
                         }
@@ -285,30 +263,20 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                           if (mounted) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.passwordUpdated),
-                              ),
+                              SnackBar(content: Text(l10n.passwordUpdated)),
                             );
                           }
                         } on FirebaseAuthException catch (e) {
                           String message = e.message ?? 'Error';
-                          if (e.code == 'wrong-password') {
-                            message = l10n.currentPasswordIncorrect;
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(message)));
+                          if (e.code == 'wrong-password') message = l10n.currentPasswordIncorrect;
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
                         } catch (e) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(e.toString())));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
                         } finally {
                           setStateDialog(() => loading = false);
                         }
                       },
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : Text(l10n.statusDone),
+                child: loading ? const CircularProgressIndicator() : Text(l10n.statusDone),
               ),
             ],
           );
@@ -317,13 +285,12 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     );
   }
 
-  // ----- Forgot password (send reset email) -----
   Future<void> _forgotPassword() async {
     final l10n = AppLocalizations.of(context)!;
     final email = user?.email;
     if (email == null || email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No email found for this account")),
+        SnackBar(content: Text(l10n.noEmailFound)),
       );
       return;
     }
@@ -332,18 +299,10 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(l10n.resetPassword),
-        content: Text(
-          l10n.sendResetLinkTo(email),
-        ),
+        content: Text(l10n.sendResetLinkTo(email)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.signUp), // Using a general 'Send' or similar if available
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.send)),
         ],
       ),
     );
@@ -355,14 +314,13 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
           SnackBar(content: Text(l10n.passwordResetSent)),
         );
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.genericError(e.toString()))),
+        );
       }
     }
   }
 
-  // ----- Sign out and navigate to LoginScreen -----
   Future<void> _signOut() async {
     final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
@@ -371,14 +329,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
         title: Text(l10n.signOut),
         content: Text(l10n.confirmSignOut),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.signOut),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.signOut)),
         ],
       ),
     );
@@ -394,20 +346,18 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     }
   }
 
-  // ----- Delete account (requires re-auth + confirm) -----
   Future<void> _deleteAccount() async {
     final l10n = AppLocalizations.of(context)!;
     if (user == null) return;
     final TextEditingController passwordController = TextEditingController();
     bool loading = false;
 
-    // Step 1: Re-auth dialog to get password
     final reauthOk = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            title: const Text("Confirm Password"),
+            title: Text(l10n.confirmPassword),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -416,17 +366,12 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: l10n.password,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.password),
                 ),
               ],
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(l10n.cancel),
-              ),
+              TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
               ElevatedButton(
                 onPressed: loading
                     ? null
@@ -434,9 +379,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                         final pw = passwordController.text.trim();
                         if (pw.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.signupFillAllFields),
-                            ),
+                            SnackBar(content: Text(l10n.signupFillAllFields)),
                           );
                           return;
                         }
@@ -450,23 +393,15 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
                           Navigator.pop(context, true);
                         } on FirebaseAuthException catch (e) {
                           String msg = e.message ?? 'Error';
-                          if (e.code == 'wrong-password') {
-                            msg = l10n.currentPasswordIncorrect;
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(msg)));
+                          if (e.code == 'wrong-password') msg = l10n.currentPasswordIncorrect;
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
                           setStateDialog(() => loading = false);
                         } catch (e) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(e.toString())));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
                           setStateDialog(() => loading = false);
                         }
                       },
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : const Text("Confirm"),
+                child: loading ? const CircularProgressIndicator() : Text(l10n.confirm),
               ),
             ],
           );
@@ -476,21 +411,14 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
     if (reauthOk != true) return;
 
-    // Step 2: Confirm deletion
     final confirmDelete = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(l10n.deleteAccount),
         content: Text(l10n.confirmDeleteAccount),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.deleteAccount),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.deleteAccount)),
         ],
       ),
     );
@@ -499,13 +427,8 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
 
     try {
       final uid = user!.uid;
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .delete()
-          .catchError((_) {});
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete().catchError((_) {});
       await user!.delete();
-
       await FirebaseAuth.instance.signOut();
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
@@ -515,16 +438,10 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
       );
     } on FirebaseAuthException catch (e) {
       String message = e.message ?? 'Error deleting account';
-      if (e.code == 'requires-recent-login') {
-        message = 'Please re-login recently and try again.';
-      }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      if (e.code == 'requires-recent-login') message = l10n.reLoginRequired;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.genericError(e.toString()))));
     }
   }
 
@@ -534,9 +451,7 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
     final email = user?.email ?? l10n.notAvailable;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.account),
-      ),
+      appBar: AppBar(title: Text(l10n.account)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -548,7 +463,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
             ),
           ),
           const SizedBox(height: 10),
-
           Card(
             child: ListTile(
               leading: const Icon(Icons.lock, color: AppColors.primaryRed),
@@ -557,33 +471,24 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
             ),
           ),
           const SizedBox(height: 10),
-
           Card(
             child: ListTile(
-              leading: const Icon(
-                Icons.email_outlined,
-                color: AppColors.primaryRed,
-              ),
+              leading: const Icon(Icons.email_outlined, color: AppColors.primaryRed),
               title: Text(l10n.forgotPassword),
               subtitle: Text(l10n.sendResetLinkTo(email)),
               onTap: _forgotPassword,
             ),
           ),
           const SizedBox(height: 10),
-
           Card(
             child: ListTile(
-              leading: const Icon(
-                Icons.delete_forever,
-                color: AppColors.primaryRed,
-              ),
+              leading: const Icon(Icons.delete_forever, color: AppColors.primaryRed),
               title: Text(l10n.deleteAccount),
               subtitle: Text(l10n.permanentlyDeleteData),
               onTap: _deleteAccount,
             ),
           ),
           const SizedBox(height: 10),
-
           Card(
             child: ListTile(
               leading: const Icon(Icons.logout, color: AppColors.primaryRed),
@@ -597,8 +502,6 @@ class _DonorAccountScreenState extends State<DonorAccountScreen> {
   }
 }
 
-
-// =================== About Screen ===================
 class DonorAboutScreen extends StatelessWidget {
   const DonorAboutScreen({super.key});
 
@@ -614,16 +517,9 @@ class DonorAboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.appTitle,
-              style: theme.textTheme.titleLarge,
-            ),
-            
+            Text(l10n.appTitle, style: theme.textTheme.titleLarge),
             const SizedBox(height: 10),
-            Text(
-              l10n.aboutDescription,
-              style: theme.textTheme.bodyLarge,
-            ),
+            Text(l10n.aboutDescription, style: theme.textTheme.bodyLarge),
             const SizedBox(height: 20),
             Text(l10n.developedBy("Almohsen"), style: theme.textTheme.bodyMedium),
           ],

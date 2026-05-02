@@ -1,46 +1,129 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sheryan/core/models/app_notification.dart';
 import 'package:sheryan/core/utils/blood_logic.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:googleapis_auth/auth_io.dart' as auth;
 
 class NotificationService {
-  static const String _oneSignalAppId = "7f8b7b58-1638-4055-a0f9-e5f39ce121dc";
-  
-  // REST API Key from OneSignal Dashboard -> Settings -> API Keys
-  static const String _restApiKey = "os_v2_app_p6fxwwawhbaflihz4xzzzyjb3rmqjf2bgpneetf2br5mqwhpu5hwbyvufsjubohe7mw2dttpx6epy47avktj22nzvrlphfpuceb3xhi";
-
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
   NotificationService._internal();
 
+  final FirebaseFirestore _fs = FirebaseFirestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
   static const String _prefKeyPermissionRequested = "notification_permission_requested";
   static const String _prefKeyEnabled = "notification_enabled";
 
+  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
+    'high_importance_channel', 
+    'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
+    importance: Importance.max,
+    playSound: true,
+  );
+
+  Map<String, dynamic> get _serviceAccount => {
+    "type": "service_account",
+    "project_id": dotenv.env['FCM_PROJECT_ID'],
+    "private_key_id": dotenv.env['FCM_PRIVATE_KEY_ID'],
+    "private_key": dotenv.env['FCM_PRIVATE_KEY']?.replaceAll('\\n', '\n'),
+    "client_email": dotenv.env['FCM_CLIENT_EMAIL'],
+    "client_id": dotenv.env['FCM_CLIENT_ID'],
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40blood-f5990.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  };
+
+  Future<String?> _getAccessToken() async {
+    try {
+      final account = _serviceAccount;
+      if (account["private_key"] == null) {
+        debugPrint("❌ [FCM-DEBUG] Error: FCM_PRIVATE_KEY is missing in .env");
+        return null;
+      }
+
+      final client = await auth.clientViaServiceAccount(
+        auth.ServiceAccountCredentials.fromJson(account),
+        ['https://www.googleapis.com/auth/firebase.messaging'],
+      );
+      return client.credentials.accessToken.data;
+    } catch (e) {
+      debugPrint("❌ [FCM-DEBUG] Access Token Error: $e");
+      return null;
+    }
+  }
+
   Future<void> init(BuildContext context) async {
-    OneSignal.initialize(_oneSignalAppId);
-    
+    await _setupLocalNotifications();
+
     final prefs = await SharedPreferences.getInstance();
     bool isEnabled = prefs.getBool(_prefKeyEnabled) ?? true;
 
     if (isEnabled) {
-      OneSignal.User.pushSubscription.optIn();
       bool alreadyRequested = prefs.getBool(_prefKeyPermissionRequested) ?? false;
       if (!alreadyRequested) await _requestPermissions(context);
-    } else {
-      OneSignal.User.pushSubscription.optOut();
     }
 
-    OneSignal.Notifications.addForegroundWillDisplayListener((event) {
-      event.notification.display();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint("🚀 [FCM] Message received in foreground: ${message.notification?.title}");
+      _showLocalNotification(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      debugPrint("🚀 [FCM] App opened from notification: ${message.data}");
     });
   }
 
+  Future<void> _setupLocalNotifications() async {
+    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosInit = DarwinInitializationSettings();
+    await _localNotifications.initialize(
+      settings: InitializationSettings(android: androidInit, iOS: iosInit),
+    );
+
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(_channel);
+  }
+
+  void _showLocalNotification(RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      _localNotifications.show(
+        id: notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channel.id,
+            _channel.name,
+            channelDescription: _channel.description,
+            icon: android.smallIcon,
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+          ),
+        ),
+      );
+    }
+  }
+
   Future<void> _requestPermissions(BuildContext context) async {
-    bool canRequest = await OneSignal.Notifications.canRequest();
-    if (canRequest && context.mounted) {
+    if (context.mounted) {
       final l10n = AppLocalizations.of(context)!;
       bool? startRequest = await showDialog<bool>(
         context: context,
@@ -57,7 +140,7 @@ class NotificationService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_prefKeyPermissionRequested, true);
       if (startRequest == true) {
-        await OneSignal.Notifications.requestPermission(true);
+        await _fcm.requestPermission(alert: true, badge: true, sound: true);
         await setNotificationEnabled(true);
       } else {
         await setNotificationEnabled(false);
@@ -68,11 +151,6 @@ class NotificationService {
   Future<void> setNotificationEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefKeyEnabled, enabled);
-    if (enabled) {
-      OneSignal.User.pushSubscription.optIn();
-    } else {
-      OneSignal.User.pushSubscription.optOut();
-    }
   }
 
   Future<bool> isNotificationEnabled() async {
@@ -88,12 +166,14 @@ class NotificationService {
   }) async {
     final enabled = await isNotificationEnabled();
     if (!enabled) return;
-    OneSignal.login(uid);
-    OneSignal.User.addTags({
-      "city": city.toLowerCase().trim(),
-      "blood_group": bloodGroup.trim(),
-      "user_role": role.trim(),
-    });
+
+    String safeCity = city.toLowerCase().trim().replaceAll(' ', '_');
+    String safeBlood = bloodGroup.replaceAll('+', '_pos').replaceAll('-', '_neg');
+    
+    debugPrint("🔍 [FCM-DEBUG] Subscribing to Topics: city_$safeCity, blood_$safeBlood, role_$role");
+    await _fcm.subscribeToTopic("city_$safeCity");
+    await _fcm.subscribeToTopic("blood_$safeBlood");
+    await _fcm.subscribeToTopic("role_$role");
   }
 
   Future<void> sendEmergencyNotification({
@@ -101,31 +181,43 @@ class NotificationService {
     required String bloodGroup,
     required String requestId,
   }) async {
+    debugPrint("🔍 [FCM-DEBUG] Emergency Notification started for City: $city");
+    
     final compatibleTypes = BloodLogic.getCompatibleDonors(bloodGroup);
-    List<Map<String, dynamic>> filters = [];
-    for (int i = 0; i < compatibleTypes.length; i++) {
-      if (i > 0) filters.add({"operator": "OR"});
-      filters.addAll([
-        {"field": "tag", "key": "city", "relation": "=", "value": city.toLowerCase().trim()},
-        {"operator": "AND"},
-        {"field": "tag", "key": "user_role", "relation": "=", "value": "donor"},
-        {"operator": "AND"},
-        {"field": "tag", "key": "blood_group", "relation": "=", "value": compatibleTypes[i]},
-      ]);
-    }
-
-    final payload = {
-      "app_id": _oneSignalAppId,
-      "contents": {
-        "en": "🆘 Urgent! $bloodGroup needed in $city. Donate now!",
-        "ar": "🆘 نداء عاجل! فصيلة $bloodGroup مطلوبة في $city. ساهم في الإنقاذ الآن!"
-      },
-      "headings": {"en": "Emergency Blood Request", "ar": "طلب دم طارئ"},
-      "filters": filters,
-      "data": {"requestId": requestId, "type": "emergency"}
+    String safeCity = city.toLowerCase().trim().replaceAll(' ', '_');
+    
+    final message = {
+      "message": {
+        "topic": "city_$safeCity", 
+        "notification": {
+          "title": "🆘 طلب دم طارئ ($bloodGroup)",
+          "body": "نداء استغاثة لفصيلة $bloodGroup في مدينة $city. ساهم في الإنقاذ!"
+        },
+        "data": {
+          "requestId": requestId,
+          "type": "emergency",
+          "bloodGroup": bloodGroup,
+          "click_action": "FLUTTER_NOTIFICATION_CLICK"
+        }
+      }
     };
 
-    await _sendNotification(payload);
+    await _sendV1Notification(message);
+
+    _broadcastToCompatibleDonorsInFirestore(
+      city: city,
+      compatibleTypes: compatibleTypes,
+      notification: AppNotification(
+        id: '',
+        titleAr: "طلب دم طارئ",
+        titleEn: "Emergency Blood Request",
+        bodyAr: "🆘 نداء عاجل! فصيلة $bloodGroup مطلوبة في $city.",
+        bodyEn: "🆘 Urgent! $bloodGroup needed in $city.",
+        timestamp: DateTime.now(),
+        type: NotificationType.emergency,
+        requestId: requestId,
+      ),
+    );
   }
 
   Future<void> sendDirectNotification({
@@ -134,40 +226,116 @@ class NotificationService {
     required String titleAr,
     required String bodyEn,
     required String bodyAr,
+    NotificationType type = NotificationType.general,
+    String? requestId,
   }) async {
-    final payload = {
-      "app_id": _oneSignalAppId,
-      "include_external_user_ids": [targetUid],
-      "contents": {"en": bodyEn, "ar": bodyAr},
-      "headings": {"en": titleEn, "ar": titleAr},
-    };
+    debugPrint("🔍 [FCM-DEBUG] sendDirectNotification to UID: $targetUid");
+    
+    final userDoc = await _fs.collection('users').doc(targetUid).get();
+    final fcmToken = userDoc.data()?['fcmToken'];
 
-    await _sendNotification(payload);
+    if (fcmToken != null) {
+      debugPrint("🔍 [FCM-DEBUG] FCM Token Found: ${fcmToken.substring(0, 10)}...");
+      final message = {
+        "message": {
+          "token": fcmToken,
+          "notification": {
+            "title": titleEn,
+            "body": bodyEn
+          },
+          "data": {
+            "requestId": requestId ?? '',
+            "type": type.name,
+            "click_action": "FLUTTER_NOTIFICATION_CLICK"
+          }
+        }
+      };
+      await _sendV1Notification(message);
+    } else {
+      debugPrint("⚠️ [FCM-DEBUG] No FCM Token found for user $targetUid in Firestore.");
+    }
+
+    await _fs.collection('users').doc(targetUid).collection('notifications').add(AppNotification(
+      id: '',
+      titleAr: titleAr,
+      titleEn: titleEn,
+      bodyAr: bodyAr,
+      bodyEn: bodyEn,
+      timestamp: DateTime.now(),
+      type: type,
+      requestId: requestId,
+    ).toMap());
   }
 
-  Future<void> _sendNotification(Map<String, dynamic> payload) async {
+  Future<void> _sendV1Notification(Map<String, dynamic> message) async {
     try {
-      print("🚀 [OneSignal] Sending Request...");
+      final accessToken = await _getAccessToken();
+      if (accessToken == null) return;
+
+      final projectId = dotenv.env['FCM_PROJECT_ID'];
+      debugPrint("🔍 [FCM-DEBUG] Sending Request to Projects V1 API...");
+      
       final response = await http.post(
-        Uri.parse("https://api.onesignal.com/notifications"),
+        Uri.parse("https://fcm.googleapis.com/v1/projects/$projectId/messages:send"),
         headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "Key $_restApiKey"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken"
         },
-        body: jsonEncode(payload),
+        body: jsonEncode(message),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print("✅ [OneSignal] Success: ${response.body}");
+      if (response.statusCode == 200) {
+        debugPrint("✅ [FCM-DEBUG] Push Sent Successfully: ${response.body}");
       } else {
-        print("❌ [OneSignal] Error ${response.statusCode}: ${response.body}");
+        debugPrint("❌ [FCM-DEBUG] Push Failed (${response.statusCode}): ${response.body}");
       }
     } catch (e) {
-      print("⚠️ [OneSignal] Exception: $e");
+      debugPrint("⚠️ [FCM-DEBUG] Exception in _sendV1Notification: $e");
     }
   }
 
-  Future<void> logout() async {
-    OneSignal.logout();
+  Future<void> _broadcastToCompatibleDonorsInFirestore({
+    required String city,
+    required List<String> compatibleTypes,
+    required AppNotification notification,
+  }) async {
+    final donorsSnapshot = await _fs
+        .collection('users')
+        .where('role', isEqualTo: 'donor')
+        .where('city', isEqualTo: city)
+        .where('bloodGroup', whereIn: compatibleTypes)
+        .get();
+
+    final batch = _fs.batch();
+    for (var doc in donorsSnapshot.docs) {
+      final ref = _fs.collection('users').doc(doc.id).collection('notifications').doc();
+      batch.set(ref, notification.toMap());
+    }
+    await batch.commit();
   }
+
+  Stream<int> getUnreadCountStream(String userId) {
+    return _fs
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .where('isRead', isEqualTo: false)
+        .snapshots()
+        .map((snap) => snap.docs.length);
+  }
+
+  Future<void> markAsRead(String userId, String notificationId) async {
+    await _fs.collection('users').doc(userId).collection('notifications').doc(notificationId).update({'isRead': true});
+  }
+
+  Future<void> markAllAsRead(String userId) async {
+    final batch = _fs.batch();
+    final unread = await _fs.collection('users').doc(userId).collection('notifications').where('isRead', isEqualTo: false).get();
+    for (var doc in unread.docs) {
+      batch.update(doc.reference, {'isRead': true});
+    }
+    await batch.commit();
+  }
+
+  Future<void> logout() async {}
 }
