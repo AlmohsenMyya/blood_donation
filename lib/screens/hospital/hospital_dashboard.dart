@@ -1,7 +1,7 @@
 import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/core/models/app_notification.dart';
+import 'package:sheryan/services/points_service.dart';
 import 'package:flutter/material.dart';
-// ...
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -335,9 +335,21 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
       
       await batch.commit();
 
-      // Trigger Gratitude Notifications (Phase 3)
+      // Award donation points to donor (Phase 1+2)
+      final donorDoc = await FirebaseFirestore.instance.collection('users').doc(donorId).get();
+      final donorBloodGroup = donorDoc.data()?['bloodGroup'] as String? ?? '';
+      final hospitalName = adminProfile?['name'] as String? ?? '';
+
       final requestDoc = await FirebaseFirestore.instance.collection('blood_requests').doc(requestId).get();
       final recipientUid = requestDoc.data()?['userId'];
+      final isUrgent = requestDoc.data()?['isUrgent'] == true;
+
+      await PointsService().awardDonationPoints(
+        donorId!,
+        hospitalName,
+        isEmergency: isUrgent,
+        donorBloodGroup: donorBloodGroup,
+      );
 
       if (donorId != null) {
         NotificationService().sendDirectNotification(
@@ -547,6 +559,18 @@ class _BloodGroupVerificationScreenState
           .collection('users')
           .doc(_scannedDonorId)
           .update({'bloodGroupVerified': true});
+
+      // Award points for blood group verification milestone
+      final updatedSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_scannedDonorId)
+          .get();
+      if (updatedSnap.exists) {
+        await PointsService().checkAndAwardProfileMilestones(
+          _scannedDonorId!,
+          updatedSnap.data()!,
+        );
+      }
 
       NotificationService().sendDirectNotification(
         targetUid: _scannedDonorId!,
