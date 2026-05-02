@@ -465,5 +465,18 @@
   "bloodGroupVerificationTitle": "توثيق زمرة الدم",
   "confirmBloodGroupVerification": "تأكيد التوثيق",
   "bloodGroupVerifiedSuccess": "تم توثيق زمرة الدم بنجاح!",
-  "bloodGroupAlreadyVerified": "زمرة الدم موثقة مسبقاً"
+  "bloodGroupAlreadyVerified": "زمرة الدم موثقة مسبقاً",
+
+  "donationHistory": "سجل التبرعات",
+  "donationHistoryInfo": "يُملأ تلقائياً عندما يسجل مسؤول المستشفى تبرعك عبر مسح الرمز",
+  "noDonationsYet": "لا يوجد سجل تبرعات بعد",
+  "noDonationsYetSubtitle": "بمجرد أن يسجل المستشفى تبرعك، سيظهر هنا تلقائياً",
+  "donationSingular": "تبرع",
+  "donationPlural": "تبرعات",
+  "totalBloodDonated": "إجمالي الدم المتبرع به",
+  "donation": "تبرع",
+  "completed": "مكتمل",
+  "unknownHospital": "مستشفى غير معروف",
+  "viewDonationHistory": "عرض سجل التبرعات",
+  "errorLoadingData": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى."
 }

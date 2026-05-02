@@ -1035,4 +1035,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bloodGroupAlreadyVerified => 'Blood group already verified';
+
+  @override
+  String get donationHistory => 'Donation History';
+
+  @override
+  String get donationHistoryInfo =>
+      'Populated automatically when a hospital admin registers your donation via QR scan';
+
+  @override
+  String get noDonationsYet => 'No donations recorded yet';
+
+  @override
+  String get noDonationsYetSubtitle =>
+      'Once a hospital registers your donation, it will appear here automatically';
+
+  @override
+  String get donationSingular => 'Donation';
+
+  @override
+  String get donationPlural => 'Donations';
+
+  @override
+  String get totalBloodDonated => 'Total blood donated';
+
+  @override
+  String get donation => 'Donation';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get unknownHospital => 'Unknown Hospital';
+
+  @override
+  String get viewDonationHistory => 'View Donation History';
+
+  @override
+  String get errorLoadingData => 'Failed to load data. Please try again.';
 }
