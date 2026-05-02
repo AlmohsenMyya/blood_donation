@@ -271,106 +271,105 @@ class _NotifCard extends StatelessWidget {
     final isUnread = !notification.isRead;
 
     return GestureDetector(
-      onTap: () =>
-          NotificationService().markAsRead(userId, notification.id),
+      onTap: () => NotificationService().markAsRead(userId, notification.id),
       child: Container(
-        margin:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: isUnread
-              ? AppColors.surfaceDark
-              : AppColors.backgroundDark,
           borderRadius: BorderRadius.circular(12),
-          border: Border(
-            left: BorderSide(color: typeColor, width: 4),
-            top: BorderSide(
-                color: isUnread
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade900,
-                width: 0.5),
-            right: BorderSide(
-                color: isUnread
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade900,
-                width: 0.5),
-            bottom: BorderSide(
-                color: isUnread
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade900,
-                width: 0.5),
+          border: Border.all(
+            color: isUnread ? Colors.grey.shade800 : Colors.grey.shade900,
+            width: 0.5,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Type icon
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: typeColor.withOpacity(0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(typeIcon,
-                    color: typeColor, size: 20),
-              ),
-              const SizedBox(width: 12),
-
-              // Text content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Colored left bar
+                Container(width: 4, color: typeColor),
+                // Card content
+                Expanded(
+                  child: Container(
+                    color: isUnread
+                        ? AppColors.surfaceDark
+                        : AppColors.backgroundDark,
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Type icon
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: typeColor.withOpacity(0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(typeIcon, color: typeColor, size: 20),
+                        ),
+                        const SizedBox(width: 12),
+                        // Text content
                         Expanded(
-                          child: Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: isUnread
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
-                              color: isUnread
-                                  ? AppColors.textPrimary
-                                  : AppColors.textGrey,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      title,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: isUnread
+                                            ? FontWeight.bold
+                                            : FontWeight.w500,
+                                        color: isUnread
+                                            ? AppColors.textPrimary
+                                            : AppColors.textGrey,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    timeStr,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: AppColors.textGrey,
+                                    ),
+                                  ),
+                                  if (isUnread) ...[
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: typeColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                body,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  height: 1.4,
+                                  color: AppColors.textGrey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          timeStr,
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: AppColors.textGrey),
-                        ),
-                        if (isUnread) ...[
-                          const SizedBox(width: 6),
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: typeColor,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      body,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          height: 1.4,
-                          color: AppColors.textGrey),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
