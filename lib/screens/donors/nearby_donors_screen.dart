@@ -143,7 +143,7 @@ class _NearbyDonorsScreenState extends State<NearbyDonorsScreen> {
                       );
                     },
                     leading: CircleAvatar(
-                      backgroundColor: isPerfect ? AppColors.primaryRed : Colors.orange,
+                      backgroundColor: isPerfect ? AppColors.primaryRed : theme.colorScheme.secondary,
                       child: Icon(
                         isPerfect ? Icons.check_circle : Icons.person, 
                         color: Colors.white

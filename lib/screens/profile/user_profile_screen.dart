@@ -170,6 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   final cities = snapshot.data!.docs;
                                   return DropdownButtonFormField<String>(
                                     value: _selectedCity,
+                                    dropdownColor: colorScheme.surface,
                                     decoration: InputDecoration(labelText: l10n.city),
                                     items: cities.map((c) => DropdownMenuItem(
                                       value: c['name'] as String,
