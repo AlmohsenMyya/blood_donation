@@ -56,7 +56,7 @@ class DonationHistoryScreen extends StatelessWidget {
           final docs = snapshot.data?.docs ?? [];
 
           if (docs.isEmpty) {
-            return _buildEmptyState(l10n);
+            return _buildEmptyState(context, l10n);
           }
 
           return Column(
@@ -157,7 +157,7 @@ class DonationHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(AppLocalizations l10n) {
+  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),

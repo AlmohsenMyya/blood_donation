@@ -35,3 +35,9 @@ id = "m1ByNr_QQS-aZC1kXRV5P"
 uri = "file://artifacts/mockup-sandbox/public/images/avatar_4.jpg"
 type = "image"
 title = "smiling young middle eastern person portrait profile picture headshot"
+
+[[outputs]]
+id = "dCTzRNBdtMFwqA7Ncn3hm"
+uri = "file://sheryan_graduation_report.docx"
+type = "word_document"
+title = "تقرير مشروع التخرج — منصة شريان (Word/RTL)"

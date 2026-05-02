@@ -384,6 +384,7 @@
       "token": { "type": "String" }
     }
   },
+  "darkMode": "Dark Mode",
   "markAllRead": "Mark all as read",
   "notifToday": "Today",
   "notifYesterday": "Yesterday",
@@ -459,5 +460,30 @@
   "canReceiveFrom": "Receive From",
   "compatSummary": "Compatibility Summary",
   "compatNone": "None",
-  "viewCompatibilityGuide": "Blood Compatibility Guide"
+  "viewCompatibilityGuide": "Blood Compatibility Guide",
+
+  "offlineBannerTitle": "You're offline",
+  "offlineBannerSubtitle": "Showing cached data",
+  "backOnlineMessage": "Back online ✓",
+  "offlineCachedAt": "Last updated: {time}",
+  "@offlineCachedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "requestSavedOffline": "No internet — your request will be sent automatically when back online",
+  "pendingRequestsSynced": "All pending requests have been sent",
+  "hasPendingRequests": "You have {count} pending request(s) waiting to sync",
+  "@hasPendingRequests": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "offlineActionDisabled": "This action requires an internet connection",
+  "cachedDonorsLabel": "Showing {count} cached donors",
+  "@cachedDonorsLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }

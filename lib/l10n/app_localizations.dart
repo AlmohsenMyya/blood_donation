@@ -1724,6 +1724,12 @@ abstract class AppLocalizations {
   /// **'Push Token: {token}'**
   String pushToken(String token);
 
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
   /// No description provided for @markAllRead.
   ///
   /// In en, this message translates to:
@@ -2131,6 +2137,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Blood Compatibility Guide'**
   String get viewCompatibilityGuide;
+
+  /// No description provided for @offlineBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get offlineBannerTitle;
+
+  /// No description provided for @offlineBannerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing cached data'**
+  String get offlineBannerSubtitle;
+
+  /// No description provided for @backOnlineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Back online ✓'**
+  String get backOnlineMessage;
+
+  /// No description provided for @offlineCachedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated: {time}'**
+  String offlineCachedAt(String time);
+
+  /// No description provided for @requestSavedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet — your request will be sent automatically when back online'**
+  String get requestSavedOffline;
+
+  /// No description provided for @pendingRequestsSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'All pending requests have been sent'**
+  String get pendingRequestsSynced;
+
+  /// No description provided for @hasPendingRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} pending request(s) waiting to sync'**
+  String hasPendingRequests(int count);
+
+  /// No description provided for @offlineActionDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This action requires an internet connection'**
+  String get offlineActionDisabled;
+
+  /// No description provided for @cachedDonorsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {count} cached donors'**
+  String cachedDonorsLabel(int count);
 }
 
 class _AppLocalizationsDelegate

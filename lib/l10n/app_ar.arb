@@ -416,6 +416,7 @@
       "token": { "type": "String" }
     }
   },
+  "darkMode": "الوضع الداكن",
   "markAllRead": "تحديد الكل كمقروء",
   "notifToday": "اليوم",
   "notifYesterday": "أمس",
@@ -491,5 +492,30 @@
   "canReceiveFrom": "يستقبل من",
   "compatSummary": "ملخص التوافق",
   "compatNone": "لا يوجد",
-  "viewCompatibilityGuide": "دليل توافق الدم"
+  "viewCompatibilityGuide": "دليل توافق الدم",
+
+  "offlineBannerTitle": "أنت غير متصل بالإنترنت",
+  "offlineBannerSubtitle": "البيانات المعروضة محفوظة مسبقاً",
+  "backOnlineMessage": "تم استعادة الاتصال ✓",
+  "offlineCachedAt": "آخر تحديث: {time}",
+  "@offlineCachedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "requestSavedOffline": "لا يوجد اتصال — سيُرسل طلبك تلقائياً عند عودة الإنترنت",
+  "pendingRequestsSynced": "تم إرسال جميع الطلبات المعلقة بنجاح",
+  "hasPendingRequests": "لديك {count} طلب معلق بانتظار الإرسال",
+  "@hasPendingRequests": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "offlineActionDisabled": "هذا الإجراء يتطلب اتصالاً بالإنترنت",
+  "cachedDonorsLabel": "عرض {count} متبرع محفوظ",
+  "@cachedDonorsLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }

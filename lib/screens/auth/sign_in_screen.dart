@@ -122,7 +122,7 @@ Future<void> _login() async {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscure ? Icons.visibility_off : Icons.visibility,
-                        color: AppColors.textGrey,
+                        color: theme.colorScheme.onSurface.withOpacity(0.5),
                       ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
@@ -134,7 +134,7 @@ Future<void> _login() async {
                   child: ElevatedButton(
                     onPressed: _loading ? null : _login,
                     child: _loading
-                        ? const CircularProgressIndicator(color: AppColors.textPrimary)
+                        ? const CircularProgressIndicator(color: Colors.white)
                         : Text(l10n.login),
                   ),
                 ),

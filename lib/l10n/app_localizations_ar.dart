@@ -890,6 +890,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
   String get markAllRead => 'تحديد الكل كمقروء';
 
   @override
@@ -1098,4 +1101,38 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get viewCompatibilityGuide => 'دليل توافق الدم';
+
+  @override
+  String get offlineBannerTitle => 'أنت غير متصل بالإنترنت';
+
+  @override
+  String get offlineBannerSubtitle => 'البيانات المعروضة محفوظة مسبقاً';
+
+  @override
+  String get backOnlineMessage => 'تم استعادة الاتصال ✓';
+
+  @override
+  String offlineCachedAt(String time) {
+    return 'آخر تحديث: $time';
+  }
+
+  @override
+  String get requestSavedOffline =>
+      'لا يوجد اتصال — سيُرسل طلبك تلقائياً عند عودة الإنترنت';
+
+  @override
+  String get pendingRequestsSynced => 'تم إرسال جميع الطلبات المعلقة بنجاح';
+
+  @override
+  String hasPendingRequests(int count) {
+    return 'لديك $count طلب معلق بانتظار الإرسال';
+  }
+
+  @override
+  String get offlineActionDisabled => 'هذا الإجراء يتطلب اتصالاً بالإنترنت';
+
+  @override
+  String cachedDonorsLabel(int count) {
+    return 'عرض $count متبرع محفوظ';
+  }
 }
