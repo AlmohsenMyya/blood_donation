@@ -36,7 +36,7 @@ class HospitalDashboard extends ConsumerWidget {
                         context,
                         icon: Icons.verified_user,
                         title: l10n.verifyRequest,
-                        color: AppColors.hospitalPrimary,
+                        color: Theme.of(context).colorScheme.primary,
                         onTap: () => _openScanner(context, isVerifyOnly: true),
                       ),
                     ),
@@ -71,7 +71,7 @@ class HospitalDashboard extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
-                const Icon(Icons.list_alt, color: AppColors.hospitalPrimary),
+                Icon(Icons.list_alt, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(l10n.incomingRequests, style: Theme.of(context).textTheme.titleMedium),
               ],
@@ -480,12 +480,13 @@ class _BloodGroupVerificationScreenState
 
   Future<void> _showVerificationDialog(Map<String, dynamic> donor) async {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     final alreadyVerified = donor['bloodGroupVerified'] == true;
 
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceDark,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
             borderRadius: AppDesignConstants.borderRadiusLarge),
         title: Text(l10n.bloodGroupVerificationTitle),
@@ -579,16 +580,17 @@ class _BloodGroupVerificationScreenState
   }
 
   Widget _infoRow(IconData icon, String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.textGrey),
+        Icon(icon, size: 18, color: colorScheme.onSurface.withOpacity(0.5)),
         const SizedBox(width: 8),
         Text('$label: ',
-            style: const TextStyle(color: AppColors.textGrey, fontSize: 13)),
+            style: TextStyle(color: colorScheme.onSurface.withOpacity(0.5), fontSize: 13)),
         Expanded(
           child: Text(value,
-              style: const TextStyle(
-                  color: AppColors.textPrimary,
+              style: TextStyle(
+                  color: colorScheme.onSurface,
                   fontSize: 13,
                   fontWeight: FontWeight.w600)),
         ),

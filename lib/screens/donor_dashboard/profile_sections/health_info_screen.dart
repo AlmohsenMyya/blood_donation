@@ -156,6 +156,7 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
 
   Widget _buildHeader(
       IconData icon, String title, String subtitle, ThemeData theme) {
+    final colorScheme = theme.colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -182,7 +183,7 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
                 const SizedBox(height: 2),
                 Text(subtitle,
                     style: theme.textTheme.bodySmall
-                        ?.copyWith(color: AppColors.textGrey)),
+                        ?.copyWith(color: colorScheme.onSurface.withOpacity(0.5))),
               ],
             ),
           ),
@@ -197,6 +198,7 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
     required String? selected,
     required ValueChanged<String> onSelected,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -207,9 +209,9 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
           selected: isSelected,
           onSelected: (_) => onSelected(options[i]),
           selectedColor: AppColors.primaryRed,
-          backgroundColor: AppColors.fieldDark,
+          backgroundColor: colorScheme.surfaceContainerHighest,
           labelStyle: TextStyle(
-            color: isSelected ? Colors.white : AppColors.textGrey,
+            color: isSelected ? Colors.white : colorScheme.onSurface.withOpacity(0.5),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         );

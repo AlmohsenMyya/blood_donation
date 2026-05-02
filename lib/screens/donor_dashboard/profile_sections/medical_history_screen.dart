@@ -139,7 +139,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
             Text(
               l10n.noneKnown,
               style: theme.textTheme.labelSmall
-                  ?.copyWith(color: AppColors.textGrey),
+                  ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5)),
             ),
             const SizedBox(height: 28),
 
@@ -162,6 +162,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
 
   Widget _buildHeader(
       IconData icon, String title, String subtitle, ThemeData theme) {
+    final colorScheme = theme.colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -188,7 +189,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                 const SizedBox(height: 2),
                 Text(subtitle,
                     style: theme.textTheme.bodySmall
-                        ?.copyWith(color: AppColors.textGrey)),
+                        ?.copyWith(color: colorScheme.onSurface.withOpacity(0.5))),
               ],
             ),
           ),

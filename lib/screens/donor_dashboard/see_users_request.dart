@@ -241,14 +241,15 @@ class _UsersRequestsScreenState extends State<UsersRequestsScreen> {
   }
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
           Icon(icon, size: 16, color: AppColors.primaryRed),
           const SizedBox(width: 8),
-          Text("$label: ", style: const TextStyle(color: AppColors.textGrey, fontSize: 13)),
-          Expanded(child: Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13))),
+          Text("$label: ", style: TextStyle(color: colorScheme.onSurface.withOpacity(0.5), fontSize: 13)),
+          Expanded(child: Text(value, style: TextStyle(color: colorScheme.onSurface, fontSize: 13))),
         ],
       ),
     );

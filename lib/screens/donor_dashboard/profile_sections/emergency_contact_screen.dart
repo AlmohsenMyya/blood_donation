@@ -114,6 +114,7 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
   }
 
   Widget _buildHeader(ThemeData theme, AppLocalizations l10n) {
+    final colorScheme = theme.colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -145,7 +146,7 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
                     const SizedBox(height: 2),
                     Text(l10n.emergencyContactSubtitle,
                         style: theme.textTheme.bodySmall
-                            ?.copyWith(color: AppColors.textGrey)),
+                            ?.copyWith(color: colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),

@@ -93,6 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -104,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             : RefreshIndicator(
                 onRefresh: _refreshProfile,
                 color: AppColors.primaryRed,
-                backgroundColor: AppColors.backgroundBlack,
+                backgroundColor: colorScheme.surface,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: AppDesignConstants.edgeInsetsMedium,
@@ -169,6 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   final cities = snapshot.data!.docs;
                                   return DropdownButtonFormField<String>(
                                     value: _selectedCity,
+                                    dropdownColor: colorScheme.surface,
                                     decoration: InputDecoration(labelText: l10n.city),
                                     items: cities.map((c) => DropdownMenuItem(
                                       value: c['name'] as String,

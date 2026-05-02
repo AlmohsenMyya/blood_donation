@@ -84,7 +84,7 @@ class TipsScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           title,
-                          style: theme.textTheme.titleMedium,
+                          style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurface),
                         ),
                       ],
                     ),

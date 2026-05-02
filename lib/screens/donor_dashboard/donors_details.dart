@@ -86,6 +86,7 @@ class _DonorDetailsState extends State<DonorDetails>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -155,11 +156,11 @@ class _DonorDetailsState extends State<DonorDetails>
                         // 🔴 Info Card Section
                         Container(
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceDark,
+                            color: colorScheme.surface,
                             borderRadius: AppDesignConstants.borderRadiusLarge,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: colorScheme.shadow.withOpacity(0.1),
                                 blurRadius: 8,
                               ),
                             ],
@@ -209,6 +210,7 @@ class _DonorDetailsState extends State<DonorDetails>
 Widget _infoRow(IconData icon, String label, String? value, {Color? color}) {
   final l10n = AppLocalizations.of(context)!;
   final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
   final display = (value == null || value.trim().isEmpty) ? l10n.notAvailable : value;
 
   return Padding(
@@ -230,7 +232,7 @@ Widget _infoRow(IconData icon, String label, String? value, {Color? color}) {
               SelectableText(
                 display,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: color ?? AppColors.textPrimary,
+                  color: color ?? colorScheme.onSurface,
                 ),
               ),
             ],

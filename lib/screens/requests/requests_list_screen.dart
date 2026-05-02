@@ -245,6 +245,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
 
   Widget _buildInfoRow(IconData icon, String label, dynamic value) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
@@ -256,7 +257,7 @@ class _RequestsScreenState extends State<RequestsListScreen> {
             child: Text(
               value?.toString() ?? "-",
               style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppColors.textPrimary),
+                  ?.copyWith(color: colorScheme.onSurface),
             ),
           ),
         ],

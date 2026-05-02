@@ -40,6 +40,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
 
   Future<void> _pickNeededDateTime() async {
     final now = DateTime.now();
+    final colorScheme = Theme.of(context).colorScheme;
     final date = await showDatePicker(
       context: context,
       initialDate: _neededAt ?? now,
@@ -47,11 +48,11 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
       lastDate: DateTime(2100),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.dark(
+          colorScheme: colorScheme.copyWith(
             primary: AppColors.primaryRed,
-            onPrimary: AppColors.textPrimary,
-            surface: AppColors.backgroundDark,
-            onSurface: AppColors.textPrimary,
+            onPrimary: colorScheme.onPrimary,
+            surface: colorScheme.surface,
+            onSurface: colorScheme.onSurface,
           ),
         ),
         child: child!,
@@ -64,11 +65,11 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
       initialTime: TimeOfDay.fromDateTime(_neededAt ?? now),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.dark(
+          colorScheme: colorScheme.copyWith(
             primary: AppColors.primaryRed,
-            onPrimary: AppColors.textPrimary,
-            surface: AppColors.backgroundDark,
-            onSurface: AppColors.textPrimary,
+            onPrimary: colorScheme.onPrimary,
+            surface: colorScheme.surface,
+            onSurface: colorScheme.onSurface,
           ),
         ),
         child: child!,
@@ -146,6 +147,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.requestBlood)),
@@ -258,7 +260,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                       flex: 2,
                       child: DropdownButtonFormField<String>(
                         value: _selectedGroup,
-                        dropdownColor: AppColors.surfaceDark,
+                        dropdownColor: colorScheme.surface,
                         decoration:
                             InputDecoration(labelText: l10n.bloodGroup),
                         items: _bloodGroups
@@ -295,7 +297,7 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 14, horizontal: 12),
                     decoration: BoxDecoration(
-                      color: AppColors.fieldDark,
+                      color: colorScheme.surfaceContainerHighest,
                       borderRadius: AppDesignConstants.borderRadiusMedium,
                     ),
                     child: Row(
@@ -324,8 +326,8 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
                   child: ElevatedButton(
                     onPressed: _loading ? null : _submitRequest,
                     child: _loading
-                        ? const CircularProgressIndicator(
-                            color: AppColors.textPrimary)
+                        ? CircularProgressIndicator(
+                            color: colorScheme.onPrimary)
                         : Text(l10n.submitRequest),
                   ),
                 ),

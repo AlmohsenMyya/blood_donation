@@ -119,12 +119,13 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text(l10n.editAdmin),
+          title: Text(l10n.editAdmin, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameCtrl,
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 decoration: InputDecoration(labelText: l10n.fullName),
               ),
               const SizedBox(height: 12),
@@ -135,6 +136,7 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
                   final hospitals = snapshot.data!.docs;
                   return DropdownButtonFormField<String>(
                     value: hospitalId,
+                    dropdownColor: Theme.of(context).colorScheme.surface,
                     decoration: InputDecoration(labelText: l10n.hospitalName),
                     items: hospitals.map((h) => DropdownMenuItem(
                       value: h.id,
@@ -182,12 +184,14 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _name,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(labelText: l10n.fullName, prefixIcon: const Icon(Icons.person)),
                   validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _email,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(labelText: l10n.email, prefixIcon: const Icon(Icons.email)),
                   validator: (v) => (v == null || v.isEmpty) ? l10n.requiredField : null,
                 ),
@@ -195,6 +199,7 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
                 TextFormField(
                   controller: _password,
                   obscureText: true,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(labelText: l10n.password, prefixIcon: const Icon(Icons.lock)),
                   validator: (v) => (v == null || v.length < 6) ? l10n.passwordMinLength : null,
                 ),
@@ -206,6 +211,7 @@ class _HospitalAdminManagerState extends State<HospitalAdminManager> {
                     final hospitals = snapshot.data!.docs;
                     return DropdownButtonFormField<String>(
                       value: _selectedHospitalId,
+                      dropdownColor: Theme.of(context).colorScheme.surface,
                       decoration: InputDecoration(labelText: l10n.hospitalName, prefixIcon: const Icon(Icons.local_hospital)),
                       items: hospitals.map((h) => DropdownMenuItem(
                         value: h.id,
@@ -316,6 +322,7 @@ class _HospitalManagerState extends State<HospitalManager> {
             children: [
               TextField(
                 controller: _hospitalName,
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 decoration: InputDecoration(hintText: l10n.hospitalName),
               ),
               const SizedBox(height: 12),
@@ -326,6 +333,7 @@ class _HospitalManagerState extends State<HospitalManager> {
                   final cities = snapshot.data!.docs;
                   return DropdownButtonFormField<String>(
                     value: _selectedCity,
+                    dropdownColor: Theme.of(context).colorScheme.surface,
                     hint: Text(l10n.selectCity),
                     items: cities.map((c) => DropdownMenuItem(
                       value: c['name'] as String,
@@ -418,6 +426,7 @@ class _CityManagerState extends State<CityManager> {
               Expanded(
                 child: TextField(
                   controller: _cityName,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(hintText: l10n.cityName),
                 ),
               ),
