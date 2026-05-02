@@ -392,5 +392,47 @@
   "notifTabVerification": "Verification",
   "notifTabDonation": "Donation",
   "notifTabSystem": "System",
-  "noNotificationsInTab": "No notifications in this category"
+  "noNotificationsInTab": "No notifications in this category",
+
+  "profileCompletion": "Profile Completion",
+  "profileSections": "Complete your profile",
+  "completionFull": "Your profile is 100% complete!",
+  "completionGood": "Almost there — great progress!",
+  "completionPartial": "Keep going — halfway done!",
+  "completionLow": "Start completing your profile",
+  "verified": "Verified",
+
+  "healthInfoTitle": "Health Profile",
+  "healthInfoSubtitle": "Height, weight, gender and smoking status",
+  "medicalHistoryTitle": "Medical History",
+  "medicalHistorySubtitle": "Last donation, diseases and allergies",
+  "emergencyContactTitle": "Emergency Contact",
+  "emergencyContactSubtitle": "Trusted person for emergencies",
+  "emergencyContactHint": "This person will be contacted in case of emergency during donation",
+
+  "height": "Height",
+  "weight": "Weight",
+  "gender": "Gender",
+  "genderMale": "Male",
+  "genderFemale": "Female",
+  "smokingStatus": "Smoking Status",
+  "smokingNever": "Non-smoker",
+  "smokingFormer": "Former smoker",
+  "smokingCurrent": "Current smoker",
+
+  "chronicDiseases": "Chronic Diseases",
+  "chronicDiseasesHint": "e.g. Diabetes, Hypertension (leave blank if none)",
+  "allergies": "Allergies",
+  "allergiesHint": "e.g. Penicillin, Latex (leave blank if none)",
+  "noneKnown": "Leave blank if none known",
+
+  "emergencyContactName": "Contact Full Name",
+  "emergencyContactPhone": "Contact Phone Number",
+
+  "verifyDonorBloodGroup": "Verify Donor Blood Group",
+  "scanDonorQrForVerification": "Scan the donor's QR card to verify their blood group",
+  "bloodGroupVerificationTitle": "Blood Group Verification",
+  "confirmBloodGroupVerification": "Confirm Verification",
+  "bloodGroupVerifiedSuccess": "Blood group verified successfully!",
+  "bloodGroupAlreadyVerified": "Blood group already verified"
 }

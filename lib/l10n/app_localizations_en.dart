@@ -924,4 +924,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noNotificationsInTab => 'No notifications in this category';
+
+  @override
+  String get profileCompletion => 'Profile Completion';
+
+  @override
+  String get profileSections => 'Complete your profile';
+
+  @override
+  String get completionFull => 'Your profile is 100% complete!';
+
+  @override
+  String get completionGood => 'Almost there — great progress!';
+
+  @override
+  String get completionPartial => 'Keep going — halfway done!';
+
+  @override
+  String get completionLow => 'Start completing your profile';
+
+  @override
+  String get verified => 'Verified';
+
+  @override
+  String get healthInfoTitle => 'Health Profile';
+
+  @override
+  String get healthInfoSubtitle => 'Height, weight, gender and smoking status';
+
+  @override
+  String get medicalHistoryTitle => 'Medical History';
+
+  @override
+  String get medicalHistorySubtitle => 'Last donation, diseases and allergies';
+
+  @override
+  String get emergencyContactTitle => 'Emergency Contact';
+
+  @override
+  String get emergencyContactSubtitle => 'Trusted person for emergencies';
+
+  @override
+  String get emergencyContactHint =>
+      'This person will be contacted in case of emergency during donation';
+
+  @override
+  String get height => 'Height';
+
+  @override
+  String get weight => 'Weight';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get smokingStatus => 'Smoking Status';
+
+  @override
+  String get smokingNever => 'Non-smoker';
+
+  @override
+  String get smokingFormer => 'Former smoker';
+
+  @override
+  String get smokingCurrent => 'Current smoker';
+
+  @override
+  String get chronicDiseases => 'Chronic Diseases';
+
+  @override
+  String get chronicDiseasesHint =>
+      'e.g. Diabetes, Hypertension (leave blank if none)';
+
+  @override
+  String get allergies => 'Allergies';
+
+  @override
+  String get allergiesHint => 'e.g. Penicillin, Latex (leave blank if none)';
+
+  @override
+  String get noneKnown => 'Leave blank if none known';
+
+  @override
+  String get emergencyContactName => 'Contact Full Name';
+
+  @override
+  String get emergencyContactPhone => 'Contact Phone Number';
+
+  @override
+  String get verifyDonorBloodGroup => 'Verify Donor Blood Group';
+
+  @override
+  String get scanDonorQrForVerification =>
+      'Scan the donor\'s QR card to verify their blood group';
+
+  @override
+  String get bloodGroupVerificationTitle => 'Blood Group Verification';
+
+  @override
+  String get confirmBloodGroupVerification => 'Confirm Verification';
+
+  @override
+  String get bloodGroupVerifiedSuccess => 'Blood group verified successfully!';
+
+  @override
+  String get bloodGroupAlreadyVerified => 'Blood group already verified';
 }

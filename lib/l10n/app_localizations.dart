@@ -1777,6 +1777,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No notifications in this category'**
   String get noNotificationsInTab;
+
+  /// No description provided for @profileCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Completion'**
+  String get profileCompletion;
+
+  /// No description provided for @profileSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your profile'**
+  String get profileSections;
+
+  /// No description provided for @completionFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is 100% complete!'**
+  String get completionFull;
+
+  /// No description provided for @completionGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost there — great progress!'**
+  String get completionGood;
+
+  /// No description provided for @completionPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going — halfway done!'**
+  String get completionPartial;
+
+  /// No description provided for @completionLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Start completing your profile'**
+  String get completionLow;
+
+  /// No description provided for @verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get verified;
+
+  /// No description provided for @healthInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Profile'**
+  String get healthInfoTitle;
+
+  /// No description provided for @healthInfoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Height, weight, gender and smoking status'**
+  String get healthInfoSubtitle;
+
+  /// No description provided for @medicalHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical History'**
+  String get medicalHistoryTitle;
+
+  /// No description provided for @medicalHistorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last donation, diseases and allergies'**
+  String get medicalHistorySubtitle;
+
+  /// No description provided for @emergencyContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Contact'**
+  String get emergencyContactTitle;
+
+  /// No description provided for @emergencyContactSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted person for emergencies'**
+  String get emergencyContactSubtitle;
+
+  /// No description provided for @emergencyContactHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This person will be contacted in case of emergency during donation'**
+  String get emergencyContactHint;
+
+  /// No description provided for @height.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get height;
+
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weight;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @smokingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoking Status'**
+  String get smokingStatus;
+
+  /// No description provided for @smokingNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-smoker'**
+  String get smokingNever;
+
+  /// No description provided for @smokingFormer.
+  ///
+  /// In en, this message translates to:
+  /// **'Former smoker'**
+  String get smokingFormer;
+
+  /// No description provided for @smokingCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current smoker'**
+  String get smokingCurrent;
+
+  /// No description provided for @chronicDiseases.
+  ///
+  /// In en, this message translates to:
+  /// **'Chronic Diseases'**
+  String get chronicDiseases;
+
+  /// No description provided for @chronicDiseasesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Diabetes, Hypertension (leave blank if none)'**
+  String get chronicDiseasesHint;
+
+  /// No description provided for @allergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get allergies;
+
+  /// No description provided for @allergiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Penicillin, Latex (leave blank if none)'**
+  String get allergiesHint;
+
+  /// No description provided for @noneKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave blank if none known'**
+  String get noneKnown;
+
+  /// No description provided for @emergencyContactName.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Full Name'**
+  String get emergencyContactName;
+
+  /// No description provided for @emergencyContactPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Phone Number'**
+  String get emergencyContactPhone;
+
+  /// No description provided for @verifyDonorBloodGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Donor Blood Group'**
+  String get verifyDonorBloodGroup;
+
+  /// No description provided for @scanDonorQrForVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the donor\'s QR card to verify their blood group'**
+  String get scanDonorQrForVerification;
+
+  /// No description provided for @bloodGroupVerificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Group Verification'**
+  String get bloodGroupVerificationTitle;
+
+  /// No description provided for @confirmBloodGroupVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Verification'**
+  String get confirmBloodGroupVerification;
+
+  /// No description provided for @bloodGroupVerifiedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood group verified successfully!'**
+  String get bloodGroupVerifiedSuccess;
+
+  /// No description provided for @bloodGroupAlreadyVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood group already verified'**
+  String get bloodGroupAlreadyVerified;
 }
 
 class _AppLocalizationsDelegate

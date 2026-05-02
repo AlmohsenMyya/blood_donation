@@ -1,4 +1,5 @@
 import 'package:sheryan/services/notification_service.dart';
+import 'package:sheryan/core/models/app_notification.dart';
 import 'package:flutter/material.dart';
 // ...
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,25 +27,40 @@ class HospitalDashboard extends ConsumerWidget {
         children: [
           Padding(
             padding: AppDesignConstants.edgeInsetsMedium,
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  child: _buildActionBtn(
-                    context,
-                    icon: Icons.verified_user,
-                    title: l10n.verifyRequest,
-                    color: AppColors.hospitalPrimary,
-                    onTap: () => _openScanner(context, isVerifyOnly: true),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildActionBtn(
+                        context,
+                        icon: Icons.verified_user,
+                        title: l10n.verifyRequest,
+                        color: AppColors.hospitalPrimary,
+                        onTap: () => _openScanner(context, isVerifyOnly: true),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildActionBtn(
+                        context,
+                        icon: Icons.handshake,
+                        title: l10n.registerDonation,
+                        color: AppColors.success,
+                        onTap: () => _openScanner(context, isVerifyOnly: false),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
                   child: _buildActionBtn(
                     context,
-                    icon: Icons.handshake,
-                    title: l10n.registerDonation,
-                    color: AppColors.success,
-                    onTap: () => _openScanner(context, isVerifyOnly: false),
+                    icon: Icons.bloodtype,
+                    title: l10n.verifyDonorBloodGroup,
+                    color: Colors.deepPurple,
+                    onTap: () => _openBloodGroupVerification(context),
                   ),
                 ),
               ],
@@ -139,6 +155,15 @@ class HospitalDashboard extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (context) => ScannerScreen(isVerifyOnly: isVerifyOnly),
+      ),
+    );
+  }
+
+  void _openBloodGroupVerification(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const BloodGroupVerificationScreen(),
       ),
     );
   }
@@ -391,6 +416,225 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
             ),
           ),
           if (isProcessing)
+            const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Blood Group Verification Screen ────────────────────────────────────────
+
+class BloodGroupVerificationScreen extends ConsumerStatefulWidget {
+  const BloodGroupVerificationScreen({super.key});
+
+  @override
+  ConsumerState<BloodGroupVerificationScreen> createState() =>
+      _BloodGroupVerificationScreenState();
+}
+
+class _BloodGroupVerificationScreenState
+    extends ConsumerState<BloodGroupVerificationScreen> {
+  bool _isProcessing = false;
+  Map<String, dynamic>? _scannedDonor;
+  String? _scannedDonorId;
+
+  void _onDetect(BarcodeCapture capture) async {
+    if (_isProcessing || _scannedDonor != null) return;
+    final code = capture.barcodes.firstOrNull?.rawValue;
+    if (code == null) return;
+
+    setState(() => _isProcessing = true);
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(code)
+          .get();
+
+      if (!doc.exists) throw Exception('Invalid QR code');
+
+      final data = doc.data()!;
+      if (data['role'] != 'donor') {
+        throw Exception('This QR does not belong to a donor');
+      }
+
+      setState(() {
+        _scannedDonorId = code;
+        _scannedDonor = data;
+      });
+
+      if (mounted) await _showVerificationDialog(data);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(e.toString().replaceAll('Exception: ', '')),
+              backgroundColor: AppColors.error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  Future<void> _showVerificationDialog(Map<String, dynamic> donor) async {
+    final l10n = AppLocalizations.of(context)!;
+    final alreadyVerified = donor['bloodGroupVerified'] == true;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surfaceDark,
+        shape: RoundedRectangleBorder(
+            borderRadius: AppDesignConstants.borderRadiusLarge),
+        title: Text(l10n.bloodGroupVerificationTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (alreadyVerified)
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle,
+                        color: AppColors.success, size: 18),
+                    const SizedBox(width: 8),
+                    Text(l10n.bloodGroupAlreadyVerified,
+                        style:
+                            const TextStyle(color: AppColors.success)),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 12),
+            _infoRow(Icons.person, l10n.name, donor['name'] ?? '—'),
+            const SizedBox(height: 8),
+            _infoRow(Icons.bloodtype, l10n.bloodGroup,
+                donor['bloodGroup'] ?? '—'),
+            const SizedBox(height: 8),
+            _infoRow(Icons.location_city, l10n.city, donor['city'] ?? '—'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
+            icon: const Icon(Icons.verified, size: 18),
+            label: Text(l10n.confirmBloodGroupVerification),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) await _verify(donor);
+    setState(() => _scannedDonor = null);
+  }
+
+  Future<void> _verify(Map<String, dynamic> donor) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_scannedDonorId)
+          .update({'bloodGroupVerified': true});
+
+      NotificationService().sendDirectNotification(
+        targetUid: _scannedDonorId!,
+        titleEn: 'Blood Group Verified ✅',
+        titleAr: 'تم توثيق زمرة دمك ✅',
+        bodyEn:
+            'Your blood group (${donor['bloodGroup']}) has been medically verified. Your profile completion increased!',
+        bodyAr:
+            'تم توثيق زمرة دمك (${donor['bloodGroup']}) طبياً من قِبل المستشفى. اكتمال ملفك ازداد!',
+        type: NotificationType.verification,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.bloodGroupVerifiedSuccess),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(e.toString()),
+              backgroundColor: AppColors.error),
+        );
+      }
+    }
+  }
+
+  Widget _infoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: AppColors.textGrey),
+        const SizedBox(width: 8),
+        Text('$label: ',
+            style: const TextStyle(color: AppColors.textGrey, fontSize: 13)),
+        Expanded(
+          child: Text(value,
+              style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600)),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.verifyDonorBloodGroup),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Stack(
+        children: [
+          MobileScanner(onDetect: _onDetect),
+          Center(
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.deepPurpleAccent, width: 2.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 40,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                l10n.scanDonorQrForVerification,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ),
+          if (_isProcessing)
             const Center(child: CircularProgressIndicator()),
         ],
       ),
