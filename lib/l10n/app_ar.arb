@@ -423,5 +423,47 @@
   "notifTabVerification": "توثيق",
   "notifTabDonation": "تبرع",
   "notifTabSystem": "نظام",
-  "noNotificationsInTab": "لا توجد إشعارات في هذه الفئة"
+  "noNotificationsInTab": "لا توجد إشعارات في هذه الفئة",
+
+  "profileCompletion": "اكتمال الملف الشخصي",
+  "profileSections": "أكمل ملفك الشخصي",
+  "completionFull": "ملفك الشخصي مكتمل 100%!",
+  "completionGood": "رائع! أنت قريب من الاكتمال",
+  "completionPartial": "استمر — لقد أنجزت النصف",
+  "completionLow": "ابدأ باكتمال ملفك الشخصي",
+  "verified": "موثق",
+
+  "healthInfoTitle": "البيانات الصحية",
+  "healthInfoSubtitle": "الطول والوزن والجنس وحالة التدخين",
+  "medicalHistoryTitle": "السجل الطبي",
+  "medicalHistorySubtitle": "آخر تبرع والأمراض المزمنة والحساسية",
+  "emergencyContactTitle": "جهة الاتصال الطارئة",
+  "emergencyContactSubtitle": "شخص موثوق في حالات الطوارئ",
+  "emergencyContactHint": "سيتم التواصل مع هذا الشخص في حالات الطوارئ خلال عملية التبرع",
+
+  "height": "الطول",
+  "weight": "الوزن",
+  "gender": "الجنس",
+  "genderMale": "ذكر",
+  "genderFemale": "أنثى",
+  "smokingStatus": "حالة التدخين",
+  "smokingNever": "غير مدخن",
+  "smokingFormer": "مدخن سابق",
+  "smokingCurrent": "مدخن حالياً",
+
+  "chronicDiseases": "الأمراض المزمنة",
+  "chronicDiseasesHint": "مثال: السكري، ارتفاع ضغط الدم (اتركه فارغاً إن لم يوجد)",
+  "allergies": "الحساسية",
+  "allergiesHint": "مثال: البنسلين، اللاتكس (اتركه فارغاً إن لم يوجد)",
+  "noneKnown": "اتركه فارغاً إن لم يكن هناك شيء",
+
+  "emergencyContactName": "اسم جهة الاتصال",
+  "emergencyContactPhone": "رقم هاتف جهة الاتصال",
+
+  "verifyDonorBloodGroup": "توثيق زمرة دم متبرع",
+  "scanDonorQrForVerification": "امسح رمز QR الخاص بالمتبرع لتوثيق زمرة دمه",
+  "bloodGroupVerificationTitle": "توثيق زمرة الدم",
+  "confirmBloodGroupVerification": "تأكيد التوثيق",
+  "bloodGroupVerifiedSuccess": "تم توثيق زمرة الدم بنجاح!",
+  "bloodGroupAlreadyVerified": "زمرة الدم موثقة مسبقاً"
 }

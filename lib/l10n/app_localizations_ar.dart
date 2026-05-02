@@ -915,4 +915,116 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noNotificationsInTab => 'لا توجد إشعارات في هذه الفئة';
+
+  @override
+  String get profileCompletion => 'اكتمال الملف الشخصي';
+
+  @override
+  String get profileSections => 'أكمل ملفك الشخصي';
+
+  @override
+  String get completionFull => 'ملفك الشخصي مكتمل 100%!';
+
+  @override
+  String get completionGood => 'رائع! أنت قريب من الاكتمال';
+
+  @override
+  String get completionPartial => 'استمر — لقد أنجزت النصف';
+
+  @override
+  String get completionLow => 'ابدأ باكتمال ملفك الشخصي';
+
+  @override
+  String get verified => 'موثق';
+
+  @override
+  String get healthInfoTitle => 'البيانات الصحية';
+
+  @override
+  String get healthInfoSubtitle => 'الطول والوزن والجنس وحالة التدخين';
+
+  @override
+  String get medicalHistoryTitle => 'السجل الطبي';
+
+  @override
+  String get medicalHistorySubtitle => 'آخر تبرع والأمراض المزمنة والحساسية';
+
+  @override
+  String get emergencyContactTitle => 'جهة الاتصال الطارئة';
+
+  @override
+  String get emergencyContactSubtitle => 'شخص موثوق في حالات الطوارئ';
+
+  @override
+  String get emergencyContactHint =>
+      'سيتم التواصل مع هذا الشخص في حالات الطوارئ خلال عملية التبرع';
+
+  @override
+  String get height => 'الطول';
+
+  @override
+  String get weight => 'الوزن';
+
+  @override
+  String get gender => 'الجنس';
+
+  @override
+  String get genderMale => 'ذكر';
+
+  @override
+  String get genderFemale => 'أنثى';
+
+  @override
+  String get smokingStatus => 'حالة التدخين';
+
+  @override
+  String get smokingNever => 'غير مدخن';
+
+  @override
+  String get smokingFormer => 'مدخن سابق';
+
+  @override
+  String get smokingCurrent => 'مدخن حالياً';
+
+  @override
+  String get chronicDiseases => 'الأمراض المزمنة';
+
+  @override
+  String get chronicDiseasesHint =>
+      'مثال: السكري، ارتفاع ضغط الدم (اتركه فارغاً إن لم يوجد)';
+
+  @override
+  String get allergies => 'الحساسية';
+
+  @override
+  String get allergiesHint =>
+      'مثال: البنسلين، اللاتكس (اتركه فارغاً إن لم يوجد)';
+
+  @override
+  String get noneKnown => 'اتركه فارغاً إن لم يكن هناك شيء';
+
+  @override
+  String get emergencyContactName => 'اسم جهة الاتصال';
+
+  @override
+  String get emergencyContactPhone => 'رقم هاتف جهة الاتصال';
+
+  @override
+  String get verifyDonorBloodGroup => 'توثيق زمرة دم متبرع';
+
+  @override
+  String get scanDonorQrForVerification =>
+      'امسح رمز QR الخاص بالمتبرع لتوثيق زمرة دمه';
+
+  @override
+  String get bloodGroupVerificationTitle => 'توثيق زمرة الدم';
+
+  @override
+  String get confirmBloodGroupVerification => 'تأكيد التوثيق';
+
+  @override
+  String get bloodGroupVerifiedSuccess => 'تم توثيق زمرة الدم بنجاح!';
+
+  @override
+  String get bloodGroupAlreadyVerified => 'زمرة الدم موثقة مسبقاً';
 }
