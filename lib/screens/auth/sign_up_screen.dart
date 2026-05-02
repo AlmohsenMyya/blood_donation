@@ -123,9 +123,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         ref.read(roleProvider.notifier).setRole(_selectedRole);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.accountCreated)));
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const HomeScreen()),
+          (route) => false,
         );
       } else {
         ScaffoldMessenger.of(context)

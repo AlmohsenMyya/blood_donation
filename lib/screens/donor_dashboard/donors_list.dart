@@ -49,28 +49,26 @@ class _DonorsListState extends ConsumerState<DonorsList> {
   }
 
   Future<void> _loadDonors() async {
+    if (!mounted) return;
     setState(() => loading = true);
-    final isOnline = ref.read(connectivityProvider);
 
-    if (isOnline) {
-      try {
-        final snapshot = await _fs
-            .collection('users')
-            .where('role', isEqualTo: 'donor')
-            .get();
-        final fetched = snapshot.docs
-            .map((d) => {'id': d.id, ...d.data()})
-            .toList();
-        await _saveDonorsToCache(fetched);
-        donors = fetched;
-        _fromCache = false;
-      } catch (_) {
-        final cached = await _loadDonorsFromCache();
-        donors = cached ?? [];
-        _fromCache = donors.isNotEmpty;
-      }
-    } else {
+    try {
+      final snapshot = await _fs
+          .collection('users')
+          .where('role', isEqualTo: 'donor')
+          .get();
+      if (!mounted) return;
+      final fetched = snapshot.docs
+          .map((d) => {'id': d.id, ...d.data()})
+          .toList();
+      await _saveDonorsToCache(fetched);
+      if (!mounted) return;
+      donors = fetched;
+      _fromCache = false;
+    } catch (e) {
+      debugPrint('DonorsList._loadDonors: Firestore error, using cache: $e');
       final cached = await _loadDonorsFromCache();
+      if (!mounted) return;
       donors = cached ?? [];
       _fromCache = donors.isNotEmpty;
     }

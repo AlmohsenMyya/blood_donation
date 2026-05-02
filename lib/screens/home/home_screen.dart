@@ -49,7 +49,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedTab = 0;
   String _currentQuote = '';
 
-  static const _kUserCacheKey = 'sheryan_user_cache';
+  // Cache key is UID-specific to prevent cross-user data leakage
+  String get _kUserCacheKey {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return 'sheryan_user_cache_${uid ?? 'anon'}';
+  }
 
   @override
   void initState() {
@@ -94,60 +98,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _loadUser() async {
+    if (!mounted) return;
     setState(() => loading = true);
-    User? firebaseUser = FirebaseAuth.instance.currentUser;
-    if (firebaseUser != null) {
-      final isOnline = ref.read(connectivityProvider);
 
-      if (isOnline) {
-        if (mounted) NotificationService().init(context);
-        try {
-          final doc =
-              await _fs.collection('users').doc(firebaseUser.uid).get();
-          if (doc.exists) {
-            userData = doc.data();
-            await _saveUserToCache(userData!);
-            NotificationService().sendUserTags(
-              uid: firebaseUser.uid,
-              city: userData?['city'] ?? 'unknown',
-              bloodGroup: userData?['bloodGroup'] ?? 'unknown',
-              role: userData?['role'] ?? 'user',
-            );
-            final roleStr = userData?['role'];
-            if (roleStr != null) {
-              ref.read(roleProvider.notifier).setRoleFromString(roleStr);
-            }
-          }
-        } catch (_) {
-          userData = await _loadUserFromCache();
-          if (userData != null) {
-            ref
-                .read(roleProvider.notifier)
-                .setRoleFromString(userData?['role']);
-          }
-        }
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) {
+      if (mounted) setState(() => loading = false);
+      return;
+    }
+
+    if (mounted) NotificationService().init(context);
+
+    // Try Firestore first — persistence handles online/offline automatically.
+    // Catch errors and fall back to SharedPreferences cache.
+    try {
+      final doc = await _fs.collection('users').doc(firebaseUser.uid).get();
+      if (!mounted) return;
+
+      if (doc.exists && doc.data() != null) {
+        userData = doc.data();
+        await _saveUserToCache(userData!);
+        if (!mounted) return;
+
+        NotificationService().sendUserTags(
+          uid: firebaseUser.uid,
+          city: userData?['city'] ?? 'unknown',
+          bloodGroup: userData?['bloodGroup'] ?? 'unknown',
+          role: userData?['role'] ?? 'user',
+        );
       } else {
+        // Document not found in Firestore — use local cache
         userData = await _loadUserFromCache();
-        if (userData != null) {
-          ref
-              .read(roleProvider.notifier)
-              .setRoleFromString(userData?['role']);
-        }
+        if (!mounted) return;
       }
+    } catch (e) {
+      debugPrint('HomeScreen._loadUser: Firestore error, using cache: $e');
+      userData = await _loadUserFromCache();
+      if (!mounted) return;
     }
-    if (mounted) {
-      final l10n = AppLocalizations.of(context)!;
-      final List<String> quotes = [
-        l10n.quote1,
-        l10n.quote2,
-        l10n.quote3,
-        l10n.quote4,
-        l10n.quote5,
-        l10n.quote6,
-        l10n.quote7,
-      ];
-      _currentQuote = (quotes..shuffle()).first;
-    }
+
+    // Always set role from userData before clearing loading state
+    final roleStr = userData?['role'] as String?;
+    ref.read(roleProvider.notifier).setRoleFromString(roleStr);
+
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    final List<String> quotes = [
+      l10n.quote1, l10n.quote2, l10n.quote3, l10n.quote4,
+      l10n.quote5, l10n.quote6, l10n.quote7,
+    ];
+    _currentQuote = (quotes..shuffle()).first;
     setState(() => loading = false);
   }
 
@@ -440,7 +440,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildBody(UserRole role) {
     final l10n = AppLocalizations.of(context)!;
-    if (loading) return const Center(child: CircularProgressIndicator());
+    // Note: loading is always false here — build() returns early when loading=true
 
     if (role == UserRole.donor) {
       return RefreshIndicator(
@@ -581,8 +581,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final role = ref.watch(roleProvider) ?? 
-                 (userData?['role'] == 'donor' ? UserRole.donor : UserRole.recipient);
+    // Show a full-screen loading scaffold until _loadUser() completes.
+    // This prevents any dashboard from rendering before the role is known.
+    if (loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // By the time loading = false, _loadUser() has already set roleProvider.
+    final role = ref.watch(roleProvider) ?? UserRole.recipient;
     final l10n = AppLocalizations.of(context)!;
 
     if (role == UserRole.hospitalAdmin) {
