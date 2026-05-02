@@ -9,7 +9,6 @@ import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/core/utils/profile_completion.dart';
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
-import 'package:sheryan/providers/connectivity/connectivity_provider.dart';
 import 'package:sheryan/screens/donor_dashboard/blood_compatibility_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/donation_history_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/emergency_contact_screen.dart';
@@ -24,7 +23,8 @@ class DonorProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
-  static const _kProfileCacheKey = 'sheryan_donor_profile_cache';
+  // UID-specific cache key prevents cross-user data leakage
+  String get _kProfileCacheKey => 'sheryan_donor_profile_cache_${user.uid}';
 
   final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -52,31 +52,22 @@ class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
+    if (!mounted) return;
     setState(() => _loading = true);
-    final isOnline = ref.read(connectivityProvider);
 
-    if (isOnline) {
-      try {
-        final doc =
-            await _firestore.collection('users').doc(user.uid).get();
-        if (!mounted) return;
-        final data = doc.data() ?? {};
-        await _saveProfileToCache(data);
-        setState(() {
-          _userData = data;
-          _fromCache = false;
-          _loading = false;
-        });
-      } catch (_) {
-        final cached = await _loadProfileFromCache();
-        if (!mounted) return;
-        setState(() {
-          _userData = cached ?? {};
-          _fromCache = cached != null;
-          _loading = false;
-        });
-      }
-    } else {
+    try {
+      final doc = await _firestore.collection('users').doc(user.uid).get();
+      if (!mounted) return;
+      final data = doc.data() ?? {};
+      await _saveProfileToCache(data);
+      if (!mounted) return;
+      setState(() {
+        _userData = data;
+        _fromCache = false;
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint('DonorProfileScreen._loadProfile: Firestore error: $e');
       final cached = await _loadProfileFromCache();
       if (!mounted) return;
       setState(() {
