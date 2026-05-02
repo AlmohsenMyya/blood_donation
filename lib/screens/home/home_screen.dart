@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sheryan/providers/connectivity/connectivity_provider.dart';
+import 'package:sheryan/services/pending_actions_service.dart';
+import 'package:sheryan/widgets/offline_banner.dart';
 import 'package:sheryan/screens/misc/notifications_screen.dart';
 import 'package:sheryan/services/notification_service.dart';
 import 'package:sheryan/providers/theme/theme_provider.dart';
@@ -44,40 +49,95 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedTab = 0;
   String _currentQuote = '';
 
+  static const _kUserCacheKey = 'sheryan_user_cache';
+
   @override
   void initState() {
     super.initState();
     _loadUser();
+    _listenForReconnect();
+  }
+
+  void _listenForReconnect() {
+    ref.listenManual(connectivityProvider, (prev, next) {
+      if (prev == false && next == true) {
+        _syncPendingRequests();
+      }
+    });
+  }
+
+  Future<void> _syncPendingRequests() async {
+    final count = await PendingActionsService().getPendingCount();
+    if (count == 0 || !mounted) return;
+    final synced = await PendingActionsService().syncPendingRequests();
+    if (synced > 0 && mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pendingRequestsSynced),
+          backgroundColor: Colors.green.shade700,
+        ),
+      );
+    }
+  }
+
+  Future<void> _saveUserToCache(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kUserCacheKey, jsonEncode(data));
+  }
+
+  Future<Map<String, dynamic>?> _loadUserFromCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_kUserCacheKey);
+    if (raw == null) return null;
+    return jsonDecode(raw) as Map<String, dynamic>;
   }
 
   Future<void> _loadUser() async {
     setState(() => loading = true);
     User? firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
-      if (mounted) {
-        NotificationService().init(context);
-      }
+      final isOnline = ref.read(connectivityProvider);
 
-      final doc = await _fs.collection('users').doc(firebaseUser.uid).get();
-      if (doc.exists) {
-        userData = doc.data();
-        
-        NotificationService().sendUserTags(
-          uid: firebaseUser.uid,
-          city: userData?['city'] ?? 'unknown',
-          bloodGroup: userData?['bloodGroup'] ?? 'unknown',
-          role: userData?['role'] ?? 'user',
-        );
-
-        final roleStr = userData?['role'];
-        if (roleStr != null) {
-          ref.read(roleProvider.notifier).setRoleFromString(roleStr);
+      if (isOnline) {
+        if (mounted) NotificationService().init(context);
+        try {
+          final doc =
+              await _fs.collection('users').doc(firebaseUser.uid).get();
+          if (doc.exists) {
+            userData = doc.data();
+            await _saveUserToCache(userData!);
+            NotificationService().sendUserTags(
+              uid: firebaseUser.uid,
+              city: userData?['city'] ?? 'unknown',
+              bloodGroup: userData?['bloodGroup'] ?? 'unknown',
+              role: userData?['role'] ?? 'user',
+            );
+            final roleStr = userData?['role'];
+            if (roleStr != null) {
+              ref.read(roleProvider.notifier).setRoleFromString(roleStr);
+            }
+          }
+        } catch (_) {
+          userData = await _loadUserFromCache();
+          if (userData != null) {
+            ref
+                .read(roleProvider.notifier)
+                .setRoleFromString(userData?['role']);
+          }
+        }
+      } else {
+        userData = await _loadUserFromCache();
+        if (userData != null) {
+          ref
+              .read(roleProvider.notifier)
+              .setRoleFromString(userData?['role']);
         }
       }
     }
     if (mounted) {
-       final l10n = AppLocalizations.of(context)!;
-       final List<String> quotes = [
+      final l10n = AppLocalizations.of(context)!;
+      final List<String> quotes = [
         l10n.quote1,
         l10n.quote2,
         l10n.quote3,
@@ -531,7 +591,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           preferredSize: const Size.fromHeight(60),
           child: _topAppBar(role),
         ),
-        body: const HospitalDashboard(),
+        body: Column(
+          children: const [
+            OfflineBanner(),
+            Expanded(child: HospitalDashboard()),
+          ],
+        ),
       );
     }
 
@@ -541,7 +606,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           preferredSize: const Size.fromHeight(60),
           child: _topAppBar(role),
         ),
-        body: const AdminDashboard(),
+        body: Column(
+          children: const [
+            OfflineBanner(),
+            Expanded(child: AdminDashboard()),
+          ],
+        ),
       );
     }
 
@@ -549,7 +619,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       _buildBody(role),
       if (role == UserRole.recipient) const DonorListScreen(),
       if (role == UserRole.recipient) const ProfileScreen(),
-      if (role == UserRole.donor) const DonorsList(), 
+      if (role == UserRole.donor) const DonorsList(),
       if (role == UserRole.donor) const DonorProfileScreen(),
     ];
 
@@ -570,7 +640,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         preferredSize: const Size.fromHeight(60),
         child: _topAppBar(role),
       ),
-      body: tabs[_selectedTab],
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(child: tabs[_selectedTab]),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
         onTap: (i) => setState(() => _selectedTab = i),

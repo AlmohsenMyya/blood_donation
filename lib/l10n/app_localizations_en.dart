@@ -899,6 +899,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get darkMode => 'Dark Mode';
+
+  @override
   String get markAllRead => 'Mark all as read';
 
   @override
@@ -1106,4 +1109,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewCompatibilityGuide => 'Blood Compatibility Guide';
+
+  @override
+  String get offlineBannerTitle => 'You\'re offline';
+
+  @override
+  String get offlineBannerSubtitle => 'Showing cached data';
+
+  @override
+  String get backOnlineMessage => 'Back online ✓';
+
+  @override
+  String offlineCachedAt(String time) {
+    return 'Last updated: $time';
+  }
+
+  @override
+  String get requestSavedOffline =>
+      'No internet — your request will be sent automatically when back online';
+
+  @override
+  String get pendingRequestsSynced => 'All pending requests have been sent';
+
+  @override
+  String hasPendingRequests(int count) {
+    return 'You have $count pending request(s) waiting to sync';
+  }
+
+  @override
+  String get offlineActionDisabled =>
+      'This action requires an internet connection';
+
+  @override
+  String cachedDonorsLabel(int count) {
+    return 'Showing $count cached donors';
+  }
 }

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:sheryan/services/notification_service.dart';
+import 'package:sheryan/services/pending_actions_service.dart';
 import 'package:intl/intl.dart';
 
 class RequestBloodScreen extends StatefulWidget {
@@ -93,13 +95,43 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
     final l10n = AppLocalizations.of(context)!;
     setState(() => _loading = true);
 
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final isOnline =
+        connectivityResult.any((r) => r != ConnectivityResult.none);
+
+    final neededAtFormatted = _neededAt != null
+        ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!)
+        : l10n.notSpecified;
+
+    if (!isOnline) {
+      await PendingActionsService().saveRequest({
+        'patientName': _patientName.text.trim(),
+        'hospitalId': _selectedHospitalId,
+        'hospital': _selectedHospitalName ?? '',
+        'city': _selectedCity,
+        'bloodGroup': _selectedGroup,
+        'units': _units.text.trim(),
+        'phone': _phone.text.trim(),
+        'neededAt': neededAtFormatted,
+      });
+
+      if (mounted) {
+        setState(() => _loading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.requestSavedOffline),
+            backgroundColor: Colors.orange.shade800,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+        Navigator.pop(context);
+      }
+      return;
+    }
+
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
-      final neededAtFormatted = _neededAt != null
-          ? DateFormat('dd MMM yyyy, hh:mm a').format(_neededAt!)
-          : l10n.notSpecified;
 
-      // 1. Create the blood request document
       final docRef =
           await FirebaseFirestore.instance.collection('blood_requests').add({
         'userId': uid,
@@ -116,7 +148,6 @@ class _RequestBloodScreenState extends State<RequestBloodScreen> {
         'isVerified': false,
       });
 
-      // 2. Notify hospital admins of this hospital (fire and forget)
       NotificationService().sendToHospitalAdmins(
         hospitalId: _selectedHospitalId!,
         titleEn: "🩸 New Blood Request",

@@ -55,8 +55,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       firstDate: DateTime(2000),
       lastDate: now,
       builder: (context, child) => Theme(
-        data: theme.copyWith(
-          colorScheme: theme.colorScheme.copyWith(
+        data: Theme.of(context).copyWith(
+          colorScheme: Theme.of(context).colorScheme.copyWith(
             primary: AppColors.primaryRed,
           ),
         ),

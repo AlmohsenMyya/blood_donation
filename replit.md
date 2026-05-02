@@ -37,6 +37,15 @@ bash run.sh
 - `shared_preferences` uses `^2.3.0` for Dart 3.8.0 compatibility
 - Fixed `BottomAppBarThemeData` → `BottomAppBarTheme` for Flutter 3.32 API
 
+## Offline Mode
+- Firestore offline persistence enabled in `main.dart` (unlimited cache size)
+- `connectivity_plus: ^6.1.1` added for network detection
+- `lib/providers/connectivity/connectivity_provider.dart` — Riverpod `NotifierProvider` watching network state
+- `lib/widgets/offline_banner.dart` — animated banner shown on all screens when offline
+- `lib/services/pending_actions_service.dart` — queues blood requests created while offline, auto-syncs on reconnect
+- User profile, donors list, and donor profile all cached in `SharedPreferences`
+- Create blood request screen queues requests offline and syncs when back online
+
 ## Deployment
 - Type: Static site
 - Build command: `flutter build web --release`

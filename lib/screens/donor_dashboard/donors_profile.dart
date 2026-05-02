@@ -1,30 +1,37 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheryan/core/theme/app_colors.dart';
 import 'package:sheryan/core/theme/app_design_constants.dart';
 import 'package:sheryan/core/utils/profile_completion.dart';
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
+import 'package:sheryan/providers/connectivity/connectivity_provider.dart';
 import 'package:sheryan/screens/donor_dashboard/blood_compatibility_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/donation_history_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/emergency_contact_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/health_info_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/medical_history_screen.dart';
 
-class DonorProfileScreen extends StatefulWidget {
+class DonorProfileScreen extends ConsumerStatefulWidget {
   const DonorProfileScreen({super.key});
 
   @override
-  State<DonorProfileScreen> createState() => _DonorProfileScreenState();
+  ConsumerState<DonorProfileScreen> createState() => _DonorProfileScreenState();
 }
 
-class _DonorProfileScreenState extends State<DonorProfileScreen> {
+class _DonorProfileScreenState extends ConsumerState<DonorProfileScreen> {
+  static const _kProfileCacheKey = 'sheryan_donor_profile_cache';
+
   final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Map<String, dynamic> _userData = {};
   bool _loading = true;
+  bool _fromCache = false;
 
   @override
   void initState() {
@@ -32,13 +39,52 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
     _loadProfile();
   }
 
+  Future<void> _saveProfileToCache(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kProfileCacheKey, jsonEncode(data));
+  }
+
+  Future<Map<String, dynamic>?> _loadProfileFromCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_kProfileCacheKey);
+    if (raw == null) return null;
+    return Map<String, dynamic>.from(jsonDecode(raw) as Map);
+  }
+
   Future<void> _loadProfile() async {
-    final doc = await _firestore.collection('users').doc(user.uid).get();
-    if (!mounted) return;
-    setState(() {
-      _userData = doc.data() ?? {};
-      _loading = false;
-    });
+    setState(() => _loading = true);
+    final isOnline = ref.read(connectivityProvider);
+
+    if (isOnline) {
+      try {
+        final doc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (!mounted) return;
+        final data = doc.data() ?? {};
+        await _saveProfileToCache(data);
+        setState(() {
+          _userData = data;
+          _fromCache = false;
+          _loading = false;
+        });
+      } catch (_) {
+        final cached = await _loadProfileFromCache();
+        if (!mounted) return;
+        setState(() {
+          _userData = cached ?? {};
+          _fromCache = cached != null;
+          _loading = false;
+        });
+      }
+    } else {
+      final cached = await _loadProfileFromCache();
+      if (!mounted) return;
+      setState(() {
+        _userData = cached ?? {};
+        _fromCache = cached != null;
+        _loading = false;
+      });
+    }
   }
 
   Future<void> _navigateToSection(Widget screen) async {
@@ -72,6 +118,11 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
       appBar: AppBar(
         title: Text(l10n.myProfile),
         actions: [
+          if (_fromCache)
+            const Padding(
+              padding: EdgeInsets.only(right: 4),
+              child: Icon(Icons.wifi_off, color: Colors.orange, size: 18),
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadProfile,
