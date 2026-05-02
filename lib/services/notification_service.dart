@@ -462,6 +462,17 @@ class NotificationService {
     } catch (e) {
       debugPrint("⚠️ [FCM] Exception sending push: $e");
     }
+    await batch.commit();
+  }
+
+  Stream<int> getUnreadCountStream(String userId) {
+    return _fs
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .where('isRead', isEqualTo: false)
+        .snapshots()
+        .map((snap) => snap.docs.length);
   }
 
   // ─── Inbox Streams & Actions ─────────────────────────────────────────────────

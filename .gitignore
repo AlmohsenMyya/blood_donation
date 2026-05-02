@@ -1,4 +1,6 @@
-# Miscellaneous
+# Custom Secrets
+lib/services/notification_secrets.dart
+.env
 *.class
 *.log
 *.pyc
