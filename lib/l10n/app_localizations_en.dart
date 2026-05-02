@@ -1073,4 +1073,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorLoadingData => 'Failed to load data. Please try again.';
+
+  @override
+  String get bloodCompatibilityTitle => 'Blood Compatibility Guide';
+
+  @override
+  String get compatCanDonateTo => 'Can Donate To';
+
+  @override
+  String get compatCanReceiveFrom => 'Can Receive From';
+
+  @override
+  String get yourBloodGroup => 'Your Blood Group';
+
+  @override
+  String get universalDonor => 'Universal Donor';
+
+  @override
+  String get universalRecipient => 'Universal Recipient';
+
+  @override
+  String get canDonateTo => 'Donate To';
+
+  @override
+  String get canReceiveFrom => 'Receive From';
+
+  @override
+  String get compatSummary => 'Compatibility Summary';
+
+  @override
+  String get compatNone => 'None';
+
+  @override
+  String get viewCompatibilityGuide => 'Blood Compatibility Guide';
 }

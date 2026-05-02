@@ -479,5 +479,17 @@
   "completed": "مكتمل",
   "unknownHospital": "مستشفى غير معروف",
   "viewDonationHistory": "عرض سجل التبرعات",
-  "errorLoadingData": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى."
+  "errorLoadingData": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",
+
+  "bloodCompatibilityTitle": "دليل توافق الدم",
+  "compatCanDonateTo": "يمكنه التبرع لـ",
+  "compatCanReceiveFrom": "يمكنه الاستقبال من",
+  "yourBloodGroup": "زمرة دمك",
+  "universalDonor": "متبرع عالمي",
+  "universalRecipient": "مستقبل عالمي",
+  "canDonateTo": "يتبرع لـ",
+  "canReceiveFrom": "يستقبل من",
+  "compatSummary": "ملخص التوافق",
+  "compatNone": "لا يوجد",
+  "viewCompatibilityGuide": "دليل توافق الدم"
 }

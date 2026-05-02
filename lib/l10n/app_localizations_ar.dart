@@ -1065,4 +1065,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorLoadingData => 'فشل تحميل البيانات. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get bloodCompatibilityTitle => 'دليل توافق الدم';
+
+  @override
+  String get compatCanDonateTo => 'يمكنه التبرع لـ';
+
+  @override
+  String get compatCanReceiveFrom => 'يمكنه الاستقبال من';
+
+  @override
+  String get yourBloodGroup => 'زمرة دمك';
+
+  @override
+  String get universalDonor => 'متبرع عالمي';
+
+  @override
+  String get universalRecipient => 'مستقبل عالمي';
+
+  @override
+  String get canDonateTo => 'يتبرع لـ';
+
+  @override
+  String get canReceiveFrom => 'يستقبل من';
+
+  @override
+  String get compatSummary => 'ملخص التوافق';
+
+  @override
+  String get compatNone => 'لا يوجد';
+
+  @override
+  String get viewCompatibilityGuide => 'دليل توافق الدم';
 }

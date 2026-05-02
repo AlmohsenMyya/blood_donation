@@ -2065,6 +2065,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load data. Please try again.'**
   String get errorLoadingData;
+
+  /// No description provided for @bloodCompatibilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Compatibility Guide'**
+  String get bloodCompatibilityTitle;
+
+  /// No description provided for @compatCanDonateTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Can Donate To'**
+  String get compatCanDonateTo;
+
+  /// No description provided for @compatCanReceiveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Can Receive From'**
+  String get compatCanReceiveFrom;
+
+  /// No description provided for @yourBloodGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Blood Group'**
+  String get yourBloodGroup;
+
+  /// No description provided for @universalDonor.
+  ///
+  /// In en, this message translates to:
+  /// **'Universal Donor'**
+  String get universalDonor;
+
+  /// No description provided for @universalRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Universal Recipient'**
+  String get universalRecipient;
+
+  /// No description provided for @canDonateTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Donate To'**
+  String get canDonateTo;
+
+  /// No description provided for @canReceiveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive From'**
+  String get canReceiveFrom;
+
+  /// No description provided for @compatSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Compatibility Summary'**
+  String get compatSummary;
+
+  /// No description provided for @compatNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get compatNone;
+
+  /// No description provided for @viewCompatibilityGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Compatibility Guide'**
+  String get viewCompatibilityGuide;
 }
 
 class _AppLocalizationsDelegate
