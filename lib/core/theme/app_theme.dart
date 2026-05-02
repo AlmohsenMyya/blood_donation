@@ -146,7 +146,7 @@ class AppTheme {
         elevation: 8,
       ),
       // Bottom App Bar Theme
-      bottomAppBarTheme: BottomAppBarTheme(color: appBarColor),
+      bottomAppBarTheme: BottomAppBarThemeData(color: appBarColor),
     );
   }
 
