@@ -106,6 +106,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     // Build explicit List<String> for cities (unique)
     final citySet = <String>{};
@@ -142,7 +143,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: selectedCity,
-                          dropdownColor: AppColors.surfaceDark,
+                          dropdownColor: colorScheme.surface,
                           decoration: InputDecoration(
                             labelText: l10n.city,
                           ),
@@ -169,7 +170,7 @@ class _DonorListScreenState extends State<DonorListScreen> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: selectedBlood,
-                          dropdownColor: AppColors.surfaceDark,
+                          dropdownColor: colorScheme.surface,
                           decoration: InputDecoration(
                             labelText: l10n.bloodGroup,
                           ),

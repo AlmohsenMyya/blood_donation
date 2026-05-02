@@ -176,8 +176,8 @@ class DonationHistoryScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               l10n.noDonationsYet,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -186,8 +186,8 @@ class DonationHistoryScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               l10n.noDonationsYetSubtitle,
-              style: const TextStyle(
-                  color: AppColors.textGrey, fontSize: 14, height: 1.5),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5), fontSize: 14, height: 1.5),
               textAlign: TextAlign.center,
             ),
           ],
@@ -220,7 +220,7 @@ class _DonationCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.primaryRed.withOpacity(0.15),
@@ -298,8 +298,8 @@ class _DonationCard extends StatelessWidget {
                                 const SizedBox(height: 6),
                                 Text(
                                   hospitalName,
-                                  style: const TextStyle(
-                                    color: AppColors.textPrimary,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -310,16 +310,16 @@ class _DonationCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      const Divider(
-                          color: AppColors.fieldDark, height: 1),
+                      Divider(
+                          color: Theme.of(context).colorScheme.outline, height: 1),
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          _chip(Icons.calendar_today, date),
+                          _chip(context, Icons.calendar_today, date),
                           const SizedBox(width: 8),
-                          _chip(Icons.schedule, timeStr),
+                          _chip(context, Icons.schedule, timeStr),
                           const Spacer(),
-                          _chip(Icons.water_drop, '450 mL',
+                          _chip(context, Icons.water_drop, '450 mL',
                               color: AppColors.primaryRed),
                         ],
                       ),
@@ -334,17 +334,18 @@ class _DonationCard extends StatelessWidget {
     );
   }
 
-  Widget _chip(IconData icon, String label,
-      {Color color = AppColors.textGrey}) {
+  Widget _chip(BuildContext context, IconData icon, String label,
+      {Color? color}) {
+    final chipColor = color ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 13, color: color),
+        Icon(icon, size: 13, color: chipColor),
         const SizedBox(width: 4),
         Text(
           label,
           style: TextStyle(
-              color: color, fontSize: 12, fontWeight: FontWeight.w500),
+              color: chipColor, fontSize: 12, fontWeight: FontWeight.w500),
         ),
       ],
     );

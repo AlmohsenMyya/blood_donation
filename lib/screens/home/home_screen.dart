@@ -1,5 +1,6 @@
 import 'package:sheryan/screens/misc/notifications_screen.dart';
 import 'package:sheryan/services/notification_service.dart';
+import 'package:sheryan/providers/theme/theme_provider.dart';
 import 'package:sheryan/screens/admin/admin_dashboard.dart';
 import 'package:sheryan/screens/hospital/hospital_dashboard.dart';
 import 'package:sheryan/core/enums/user_role.dart';
@@ -112,7 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.surfaceDark,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesignConstants.radiusExtraLarge)),
       ),
@@ -126,7 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 width: 44,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textGrey.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.outline,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -183,9 +184,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (role == UserRole.donor) title = l10n.donorDashboard;
     if (role == UserRole.hospitalAdmin) title = l10n.hospitalAdminDashboard;
 
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = themeMode == ThemeMode.dark;
+
     return AppBar(
       title: Text(title),
       actions: [
+        IconButton(
+          icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+          onPressed: () => ref.read(themeModeProvider.notifier).toggle(),
+        ),
         if (userId != null)
           StreamBuilder<int>(
             stream: NotificationService().getUnreadCountStream(userId),
@@ -277,9 +285,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Container(
       padding: AppDesignConstants.edgeInsetsMedium,
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: AppDesignConstants.borderRadiusMedium,
-        border: Border.all(color: Colors.grey.shade900),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,8 +355,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.primaryRed,
-          child: Icon(icon, color: AppColors.textPrimary),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          child: Icon(
+            icon,
+            color: icon == Icons.bloodtype || icon == Icons.bloodtype_rounded
+                ? AppColors.bloodRed
+                : Theme.of(context).colorScheme.primary,
+          ),
         ),
         title: Text(
           title,

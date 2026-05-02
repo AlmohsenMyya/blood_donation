@@ -42,7 +42,7 @@ class _BloodCompatibilityScreenState extends State<BloodCompatibilityScreen>
           controller: _tabController,
           indicatorColor: AppColors.primaryRed,
           labelColor: AppColors.primaryRed,
-          unselectedLabelColor: AppColors.textGrey,
+          unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
           tabs: [
             Tab(text: l10n.compatCanDonateTo),
             Tab(text: l10n.compatCanReceiveFrom),
@@ -243,12 +243,12 @@ class _BloodCompatibilityScreenState extends State<BloodCompatibilityScreen>
           decoration: BoxDecoration(
             color: isMatch
                 ? color.withOpacity(0.15)
-                : AppColors.surfaceDark,
+                : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isMatch
                   ? color.withOpacity(0.6)
-                  : AppColors.fieldDark,
+                  : Theme.of(context).colorScheme.outline,
               width: isMatch ? 1.8 : 1,
             ),
           ),
@@ -260,7 +260,7 @@ class _BloodCompatibilityScreenState extends State<BloodCompatibilityScreen>
                 children: [
                   Icon(
                     isMatch ? Icons.check_circle : Icons.cancel_outlined,
-                    color: isMatch ? color : AppColors.textGrey,
+                    color: isMatch ? color : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                     size: 20,
                   ),
                   const SizedBox(height: 4),
@@ -269,7 +269,7 @@ class _BloodCompatibilityScreenState extends State<BloodCompatibilityScreen>
                     style: TextStyle(
                       color: isMatch
                           ? color
-                          : AppColors.textGrey,
+                          : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -306,17 +306,17 @@ class _BloodCompatibilityScreenState extends State<BloodCompatibilityScreen>
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surfaceDark,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.fieldDark),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.compatSummary,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),

@@ -96,7 +96,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                 child: Text(
                   l10n.profileSections,
                   style: theme.textTheme.titleSmall
-                      ?.copyWith(color: AppColors.textGrey),
+                      ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5)),
                 ),
               ),
               const SizedBox(height: 8),
@@ -146,8 +146,8 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                   icon: const Icon(Icons.qr_code),
                   label: Text(l10n.donorCard),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.white38),
-                    foregroundColor: Colors.white,
+                    side: BorderSide(color: theme.colorScheme.primary),
+                    foregroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
@@ -316,7 +316,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
   }) {
     final iconData = _iconForIndex(index);
     final Color statusColor =
-        isComplete ? AppColors.success : AppColors.textGrey;
+        isComplete ? AppColors.success : theme.colorScheme.onSurface.withOpacity(0.5);
     final Color borderColor = isComplete
         ? AppColors.success.withOpacity(0.4)
         : Colors.transparent;
@@ -326,7 +326,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         decoration: BoxDecoration(
-          color: AppColors.surfaceDark,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: borderColor, width: 1.2),
         ),
@@ -340,7 +340,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                 decoration: BoxDecoration(
                   color: isComplete
                       ? AppColors.success.withOpacity(0.12)
-                      : AppColors.fieldDark,
+                      : theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(11),
                 ),
                 child: Icon(iconData, color: statusColor, size: 22),
@@ -353,13 +353,13 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                     Text(title,
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: isComplete
-                              ? AppColors.textPrimary
-                              : AppColors.textSecondary,
+                              ? theme.colorScheme.onSurface
+                              : theme.colorScheme.onSurface.withOpacity(0.7),
                         )),
                     const SizedBox(height: 2),
                     Text(subtitle,
                         style: theme.textTheme.labelSmall
-                            ?.copyWith(color: AppColors.textGrey)),
+                            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
@@ -373,7 +373,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                     decoration: BoxDecoration(
                       color: isComplete
                           ? AppColors.success.withOpacity(0.12)
-                          : AppColors.fieldDark,
+                          : theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -383,7 +383,7 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                         fontWeight: FontWeight.bold,
                         color: isComplete
                             ? AppColors.success
-                            : AppColors.textGrey,
+                            : theme.colorScheme.onSurface.withOpacity(0.5),
                       ),
                     ),
                   ),
@@ -395,8 +395,8 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                     const Icon(Icons.local_hospital_outlined,
                         color: Colors.blue, size: 18)
                   else
-                    const Icon(Icons.chevron_right,
-                        color: AppColors.textGrey, size: 18),
+                    Icon(Icons.chevron_right,
+                        color: theme.colorScheme.onSurface.withOpacity(0.5), size: 18),
                 ],
               ),
             ],
@@ -453,12 +453,12 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                   children: [
                     Text(l10n.bloodCompatibilityTitle,
                         style: theme.textTheme.titleSmall?.copyWith(
-                            color: AppColors.textPrimary,
+                            color: theme.colorScheme.onSurface,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 2),
                     Text(l10n.viewCompatibilityGuide,
                         style: theme.textTheme.labelSmall
-                            ?.copyWith(color: AppColors.textGrey)),
+                            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
@@ -515,12 +515,12 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
                   children: [
                     Text(l10n.donationHistory,
                         style: theme.textTheme.titleSmall?.copyWith(
-                            color: AppColors.textPrimary,
+                            color: theme.colorScheme.onSurface,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 2),
                     Text(l10n.viewDonationHistory,
                         style: theme.textTheme.labelSmall
-                            ?.copyWith(color: AppColors.textGrey)),
+                            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),

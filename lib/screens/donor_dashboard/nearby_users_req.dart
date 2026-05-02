@@ -88,6 +88,7 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +101,7 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.location_off, size: 60, color: AppColors.textGrey),
+                      Icon(Icons.location_off, size: 60, color: colorScheme.onSurface.withOpacity(0.4)),
                       const SizedBox(height: 16),
                       Text(
                         l10n.noNearbyRequests,
@@ -221,14 +222,15 @@ class _NearbyRequestsScreenState extends State<NearbyRequestsScreen> {
   }
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
           Icon(icon, size: 16, color: AppColors.primaryRed),
           const SizedBox(width: 8),
-          Text("$label: ", style: const TextStyle(color: AppColors.textGrey, fontSize: 13)),
-          Expanded(child: Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13))),
+          Text("$label: ", style: TextStyle(color: colorScheme.onSurface.withOpacity(0.5), fontSize: 13)),
+          Expanded(child: Text(value, style: TextStyle(color: colorScheme.onSurface, fontSize: 13))),
         ],
       ),
     );
