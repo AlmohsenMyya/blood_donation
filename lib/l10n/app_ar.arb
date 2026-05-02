@@ -415,6 +415,7 @@
       "token": { "type": "String" }
     }
   },
+  "darkMode": "الوضع الداكن",
   "markAllRead": "تحديد الكل كمقروء",
   "notifToday": "اليوم",
   "notifYesterday": "أمس",

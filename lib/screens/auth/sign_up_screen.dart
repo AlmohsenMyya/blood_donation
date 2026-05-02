@@ -55,8 +55,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       firstDate: DateTime(2000),
       lastDate: now,
       builder: (context, child) => Theme(
-        data: ThemeData.dark().copyWith(
-          colorScheme: const ColorScheme.dark(
+        data: theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
             primary: AppColors.primaryRed,
           ),
         ),
@@ -213,13 +213,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: AppColors.fieldDark,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: AppDesignConstants.borderRadiusMedium,
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<UserRole>(
                       value: _selectedRole,
-                      dropdownColor: AppColors.fieldDark,
+                      dropdownColor: theme.colorScheme.surface,
                       items: [
                         DropdownMenuItem(
                           value: UserRole.donor,
@@ -269,14 +269,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: AppColors.fieldDark,
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius: AppDesignConstants.borderRadiusMedium,
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: _selectedCity.isEmpty ? null : _selectedCity,
                           hint: Text(l10n.city, style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textGrey)),
-                          dropdownColor: AppColors.fieldDark,
+                          dropdownColor: theme.colorScheme.surface,
                           items: cities.map((c) => DropdownMenuItem(value: c, child: Text(c, style: theme.textTheme.bodyLarge))).toList(),
                           onChanged: (v) => setState(() => _selectedCity = v!),
                           isExpanded: true,
@@ -291,13 +291,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      color: AppColors.fieldDark,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: AppDesignConstants.borderRadiusMedium,
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _selectedBlood,
-                        dropdownColor: AppColors.fieldDark,
+                        dropdownColor: theme.colorScheme.surface,
                         items: _bloodTypes
                             .map(
                               (b) => DropdownMenuItem(
@@ -325,7 +325,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       horizontal: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.fieldDark,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: AppDesignConstants.borderRadiusMedium,
                     ),
                     child: Text(

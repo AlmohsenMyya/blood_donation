@@ -384,6 +384,7 @@
       "token": { "type": "String" }
     }
   },
+  "darkMode": "Dark Mode",
   "markAllRead": "Mark all as read",
   "notifToday": "Today",
   "notifYesterday": "Yesterday",
