@@ -414,5 +414,14 @@
     "placeholders": {
       "token": { "type": "String" }
     }
-  }
+  },
+  "markAllRead": "تحديد الكل كمقروء",
+  "notifToday": "اليوم",
+  "notifYesterday": "أمس",
+  "notifEarlier": "سابقاً",
+  "notifTabEmergency": "طوارئ",
+  "notifTabVerification": "توثيق",
+  "notifTabDonation": "تبرع",
+  "notifTabSystem": "نظام",
+  "noNotificationsInTab": "لا توجد إشعارات في هذه الفئة"
 }

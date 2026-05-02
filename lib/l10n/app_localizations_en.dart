@@ -897,4 +897,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String pushToken(String token) {
     return 'Push Token: $token';
   }
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get notifToday => 'Today';
+
+  @override
+  String get notifYesterday => 'Yesterday';
+
+  @override
+  String get notifEarlier => 'Earlier';
+
+  @override
+  String get notifTabEmergency => 'Emergency';
+
+  @override
+  String get notifTabVerification => 'Verification';
+
+  @override
+  String get notifTabDonation => 'Donation';
+
+  @override
+  String get notifTabSystem => 'System';
+
+  @override
+  String get noNotificationsInTab => 'No notifications in this category';
 }

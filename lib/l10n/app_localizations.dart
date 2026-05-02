@@ -1723,6 +1723,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Push Token: {token}'**
   String pushToken(String token);
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @notifToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get notifToday;
+
+  /// No description provided for @notifYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get notifYesterday;
+
+  /// No description provided for @notifEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get notifEarlier;
+
+  /// No description provided for @notifTabEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get notifTabEmergency;
+
+  /// No description provided for @notifTabVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get notifTabVerification;
+
+  /// No description provided for @notifTabDonation.
+  ///
+  /// In en, this message translates to:
+  /// **'Donation'**
+  String get notifTabDonation;
+
+  /// No description provided for @notifTabSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get notifTabSystem;
+
+  /// No description provided for @noNotificationsInTab.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications in this category'**
+  String get noNotificationsInTab;
 }
 
 class _AppLocalizationsDelegate

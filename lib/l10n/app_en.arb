@@ -383,5 +383,14 @@
     "placeholders": {
       "token": { "type": "String" }
     }
-  }
+  },
+  "markAllRead": "Mark all as read",
+  "notifToday": "Today",
+  "notifYesterday": "Yesterday",
+  "notifEarlier": "Earlier",
+  "notifTabEmergency": "Emergency",
+  "notifTabVerification": "Verification",
+  "notifTabDonation": "Donation",
+  "notifTabSystem": "System",
+  "noNotificationsInTab": "No notifications in this category"
 }
