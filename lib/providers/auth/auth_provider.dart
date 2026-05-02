@@ -17,7 +17,7 @@ final authStateProvider = StreamProvider<User?>((ref) {
 final userProfileProvider = StreamProvider<Map<String, dynamic>?>((ref) {
   final user = ref.watch(authStateProvider).value;
   if (user == null) return Stream.value(null);
-  
+
   return FirebaseFirestore.instance
       .collection('users')
       .doc(user.uid)
@@ -33,24 +33,30 @@ final roleProvider = StateNotifierProvider<RoleNotifier, UserRole?>(
 class RoleNotifier extends StateNotifier<UserRole?> {
   RoleNotifier() : super(null);
 
-  /// Set selected role
   void setRole(UserRole role) => state = role;
 
-  /// Set role from string (useful for Firebase integration)
   void setRoleFromString(String? roleStr) {
-    if (roleStr == 'donor') {
-      state = UserRole.donor;
-    } else if (roleStr == 'user' || roleStr == 'recipient') {
-      state = UserRole.recipient;
-    } else if (roleStr == 'hospitalAdmin') {
-      state = UserRole.hospitalAdmin;
-    } else if (roleStr == 'superAdmin') {
-      state = UserRole.superAdmin;
-    } else {
-      state = null;
+    switch (roleStr) {
+      case 'donor':
+        state = UserRole.donor;
+        break;
+      case 'user':
+      case 'recipient':
+        state = UserRole.recipient;
+        break;
+      case 'hospitalAdmin':
+        state = UserRole.hospitalAdmin;
+        break;
+      case 'superAdmin':
+        state = UserRole.superAdmin;
+        break;
+      case 'sponsorOrg':
+        state = UserRole.sponsorOrg;
+        break;
+      default:
+        state = null;
     }
   }
 
-  /// Clear selected role (used on logout)
   void clearRole() => state = null;
 }

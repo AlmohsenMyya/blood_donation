@@ -759,7 +759,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusCompleted => 'Donation Completed';
 
   @override
-  String get invalidQr => 'Invalid QR Code';
+  String get invalidQr => 'Invalid QR code';
 
   @override
   String get waitingForDonor => 'Waiting for Donor QR...';
@@ -1144,4 +1144,142 @@ class AppLocalizationsEn extends AppLocalizations {
   String cachedDonorsLabel(int count) {
     return 'Showing $count cached donors';
   }
+
+  @override
+  String get basicInfoTitle => 'Basic Information';
+
+  @override
+  String get basicInfoSubtitle =>
+      'Name, phone, city, blood group, date of birth';
+
+  @override
+  String get dateOfBirth => 'Date of Birth';
+
+  @override
+  String get myPoints => 'My Points';
+
+  @override
+  String get pointsBalance => 'pts';
+
+  @override
+  String get donorTier => 'Tier';
+
+  @override
+  String get tierBronze => 'Bronze';
+
+  @override
+  String get tierSilver => 'Silver';
+
+  @override
+  String get tierGold => 'Gold';
+
+  @override
+  String get tierPlatinum => 'Platinum';
+
+  @override
+  String get pointsHistory => 'Points History';
+
+  @override
+  String get noPointsYet => 'No points yet';
+
+  @override
+  String get rewardsTab =>
+      'Earn points and redeem rewards from sponsor organizations';
+
+  @override
+  String get availableRewards => 'Available Rewards';
+
+  @override
+  String get noRewardsFound => 'No rewards found in this city';
+
+  @override
+  String get rewardTitle => 'Reward Title';
+
+  @override
+  String get rewardDescription => 'Reward Description';
+
+  @override
+  String get pointsRequired => 'Points Required';
+
+  @override
+  String get redeemReward => 'Redeem';
+
+  @override
+  String get notEnoughPoints => 'Not enough points';
+
+  @override
+  String get showMyQr => 'Show My QR';
+
+  @override
+  String get sponsorDashboard => 'Sponsor Dashboard';
+
+  @override
+  String get myRewards => 'My Rewards';
+
+  @override
+  String get addReward => 'Add Reward';
+
+  @override
+  String get editReward => 'Edit Reward';
+
+  @override
+  String get deleteReward => 'Delete Reward';
+
+  @override
+  String get confirmDeleteReward =>
+      'Are you sure you want to delete this reward?';
+
+  @override
+  String get rewardSaved => 'Reward saved successfully';
+
+  @override
+  String get rewardDeleted => 'Reward deleted';
+
+  @override
+  String get noRewardsAdded => 'No rewards added yet';
+
+  @override
+  String get scanDonorQrRedeem => 'Scan Donor QR to Redeem';
+
+  @override
+  String get redeemSuccess => 'Redeemed successfully';
+
+  @override
+  String get insufficientPoints => 'Donor has insufficient points';
+
+  @override
+  String get sponsorOrgName => 'Organization / Shop Name';
+
+  @override
+  String get sponsorPhone => 'Phone Number';
+
+  @override
+  String get sponsorAddress => 'Address / Location';
+
+  @override
+  String get manageSponsorOrgs => 'Manage Sponsor Organizations';
+
+  @override
+  String get createSponsor => 'Create Sponsor';
+
+  @override
+  String get sponsorCreated => 'Sponsor organization created successfully';
+
+  @override
+  String get sponsorDeleted => 'Sponsor deleted';
+
+  @override
+  String get noSponsorsFound => 'No sponsor organizations found';
+
+  @override
+  String get totalRedeemed => 'Total Redeemed';
+
+  @override
+  String get activeRewards => 'Active Rewards';
+
+  @override
+  String get filterByCity => 'Filter by City';
+
+  @override
+  String get allCities => 'All Cities';
 }

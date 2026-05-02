@@ -37,6 +37,22 @@ bash run.sh
 - `shared_preferences` uses `^2.3.0` for Dart 3.8.0 compatibility
 - Fixed `BottomAppBarThemeData` → `BottomAppBarTheme` for Flutter 3.32 API
 
+## Roles
+- `donor` — main blood donor experience with profile, points, rewards
+- `recipient` (or `user`) — request blood, view donors
+- `hospitalAdmin` — verify blood requests, register donations, verify blood groups via QR
+- `superAdmin` — manage hospital admins, hospitals, cities, and sponsor organizations
+- `sponsorOrg` — created by superAdmin; manages rewards; scans donor QR to redeem points
+
+## Points & Rewards System
+- **PointsService** (`lib/services/points_service.dart`): award/deduct points, tier calculation, milestone checks
+- **Tiers**: Bronze (0–499), Silver (500–999), Gold (1000–1999), Platinum (2000+)
+- **Firestore new collections**: `rewards/{id}`, `redemptions/{id}`, `users/{uid}/pointsHistory/{id}`
+- **Donor UX**: Profile shows points card → RewardsScreen (Available Rewards + Points History tabs)
+- **Sponsor UX**: SponsorDashboard with QR scanner to deduct points on reward redemption
+- **SuperAdmin UX**: 4th tab in AdminDashboard to create/delete sponsor org accounts
+- See `docs/points_rewards_sponsor.md` for full documentation
+
 ## Offline Mode
 - Firestore offline persistence enabled in `main.dart` (unlimited cache size)
 - `connectivity_plus: ^6.1.1` added for network detection

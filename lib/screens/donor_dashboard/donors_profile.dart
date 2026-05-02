@@ -7,11 +7,14 @@ import 'package:sheryan/core/utils/profile_completion.dart';
 import 'package:sheryan/core/utils/qr_dialog.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:sheryan/providers/auth/auth_provider.dart';
+import 'package:sheryan/providers/points/points_provider.dart';
 import 'package:sheryan/screens/donor_dashboard/blood_compatibility_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/donation_history_screen.dart';
+import 'package:sheryan/screens/donor_dashboard/profile_sections/basic_info_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/emergency_contact_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/health_info_screen.dart';
 import 'package:sheryan/screens/donor_dashboard/profile_sections/medical_history_screen.dart';
+import 'package:sheryan/screens/donor_dashboard/rewards_screen.dart';
 
 class DonorProfileScreen extends ConsumerWidget {
   const DonorProfileScreen({super.key});
@@ -24,6 +27,10 @@ class DonorProfileScreen extends ConsumerWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     final profileAsync = ref.watch(userProfileProvider);
+    final pointsData = ref.watch(pointsProvider).asData?.value ??
+        {'points': 0, 'tier': 'bronze'};
+    final points = pointsData['points'] as int;
+    final tier = pointsData['tier'] as String;
 
     if (profileAsync.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -46,13 +53,11 @@ class DonorProfileScreen extends ConsumerWidget {
     final city = data['city'] as String? ?? l10n.unknownCity;
 
     Future<void> navigateToSection(Widget screen) async {
-      final result = await Navigator.push<bool>(
+      await Navigator.push<bool>(
         context,
         MaterialPageRoute(builder: (_) => screen),
       );
-      // Stream auto-updates when Firestore doc changes;
-      // invalidate forces an immediate re-subscribe if needed.
-      if (result == true) ref.invalidate(userProfileProvider);
+      ref.invalidate(userProfileProvider);
     }
 
     return Scaffold(
@@ -75,6 +80,9 @@ class DonorProfileScreen extends ConsumerWidget {
             children: [
               _buildProfileHeader(
                   context, name, bloodGroup, city, isVerified, completion, l10n, theme),
+
+              // ── Points / Tier quick card ──────────────────────────────
+              _buildPointsCard(context, points, tier, l10n, theme),
 
               const SizedBox(height: 8),
 
@@ -103,13 +111,15 @@ class DonorProfileScreen extends ConsumerWidget {
                   requiresHospital: s.requiresHospital,
                   l10n: l10n,
                   theme: theme,
-                  onTap: s.requiresHospital || i == 0
+                  onTap: s.requiresHospital
                       ? null
                       : () => navigateToSection(_screenForIndex(i, data)),
                 );
               }),
 
               const SizedBox(height: 16),
+              _buildRewardsCard(context, l10n, theme),
+              const SizedBox(height: 5),
               _buildDonationHistoryCard(context, l10n, theme),
               const SizedBox(height: 5),
               _buildCompatibilityCard(context, bloodGroup, l10n, theme),
@@ -136,6 +146,87 @@ class DonorProfileScreen extends ConsumerWidget {
               const SizedBox(height: 24),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPointsCard(
+    BuildContext context,
+    int points,
+    String tier,
+    AppLocalizations l10n,
+    ThemeData theme,
+  ) {
+    Color tierColor;
+    IconData tierIcon;
+    String tierLabel;
+    switch (tier) {
+      case 'silver':
+        tierColor = Colors.grey.shade400;
+        tierIcon = Icons.military_tech;
+        tierLabel = l10n.tierSilver;
+        break;
+      case 'gold':
+        tierColor = Colors.amber;
+        tierIcon = Icons.emoji_events;
+        tierLabel = l10n.tierGold;
+        break;
+      case 'platinum':
+        tierColor = Colors.deepPurple;
+        tierIcon = Icons.diamond;
+        tierLabel = l10n.tierPlatinum;
+        break;
+      default:
+        tierColor = Colors.brown;
+        tierIcon = Icons.shield;
+        tierLabel = l10n.tierBronze;
+    }
+
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (_) => const RewardsScreen())),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+              color: AppColors.primaryRed.withOpacity(0.25), width: 1.2),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.primaryRed.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.stars_rounded,
+                  color: AppColors.primaryRed, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.myPoints, style: theme.textTheme.titleSmall),
+                  Text(
+                    '$points ⭐ • $tierLabel',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color:
+                            theme.colorScheme.onSurface.withOpacity(0.6)),
+                  ),
+                ],
+              ),
+            ),
+            Icon(tierIcon, color: tierColor, size: 26),
+            const SizedBox(width: 6),
+            Icon(Icons.chevron_right,
+                color: theme.colorScheme.onSurface.withOpacity(0.4),
+                size: 18),
+          ],
         ),
       ),
     );
@@ -383,6 +474,65 @@ class DonorProfileScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildRewardsCard(
+      BuildContext context, AppLocalizations l10n, ThemeData theme) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const RewardsScreen()),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.amber.withOpacity(0.18),
+              Colors.orange.withOpacity(0.08),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.amber.withOpacity(0.4), width: 1.2),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.amber.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(Icons.card_giftcard,
+                    color: Colors.amber, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.availableRewards,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 2),
+                    Text(l10n.rewardsTab,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color:
+                                theme.colorScheme.onSurface.withOpacity(0.5))),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: Colors.amber, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildCompatibilityCard(
       BuildContext context, String bloodGroup, AppLocalizations l10n, ThemeData theme) {
     return GestureDetector(
@@ -428,12 +578,12 @@ class DonorProfileScreen extends ConsumerWidget {
                   children: [
                     Text(l10n.bloodCompatibilityTitle,
                         style: theme.textTheme.titleSmall?.copyWith(
-                            color: theme.colorScheme.onSurface,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 2),
                     Text(l10n.viewCompatibilityGuide,
                         style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.5))),
+                            color:
+                                theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
@@ -489,12 +639,12 @@ class DonorProfileScreen extends ConsumerWidget {
                   children: [
                     Text(l10n.donationHistory,
                         style: theme.textTheme.titleSmall?.copyWith(
-                            color: theme.colorScheme.onSurface,
                             fontWeight: FontWeight.bold)),
                     const SizedBox(height: 2),
                     Text(l10n.viewDonationHistory,
                         style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.5))),
+                            color:
+                                theme.colorScheme.onSurface.withOpacity(0.5))),
                   ],
                 ),
               ),
@@ -526,6 +676,8 @@ class DonorProfileScreen extends ConsumerWidget {
 
   Widget _screenForIndex(int index, Map<String, dynamic> data) {
     switch (index) {
+      case 0:
+        return BasicInfoScreen(existingData: data);
       case 1:
         return HealthInfoScreen(existingData: data);
       case 2:
