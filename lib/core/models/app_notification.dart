@@ -4,6 +4,8 @@ enum NotificationType {
   emergency,
   verification,
   gratitude,
+  newRequest,
+  requestClosed,
   general
 }
 
