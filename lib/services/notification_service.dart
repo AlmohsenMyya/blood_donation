@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,8 +10,6 @@ import 'package:sheryan/core/utils/blood_logic.dart';
 import 'package:sheryan/l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:googleapis_auth/auth_io.dart' as auth;
-
-import 'notification_secrets.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -34,12 +33,31 @@ class NotificationService {
     importance: Importance.max,
     playSound: true,
   );
-  final Map<String, dynamic> _serviceAccount = NotificationSecrets.serviceAccount;
+
+  Map<String, dynamic> get _serviceAccount => {
+    "type": "service_account",
+    "project_id": dotenv.env['FCM_PROJECT_ID'],
+    "private_key_id": dotenv.env['FCM_PRIVATE_KEY_ID'],
+    "private_key": dotenv.env['FCM_PRIVATE_KEY']?.replaceAll('\\n', '\n'),
+    "client_email": dotenv.env['FCM_CLIENT_EMAIL'],
+    "client_id": dotenv.env['FCM_CLIENT_ID'],
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40blood-f5990.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  };
 
   Future<String?> _getAccessToken() async {
     try {
+      final account = _serviceAccount;
+      if (account["private_key"] == null) {
+        debugPrint("❌ [FCM-DEBUG] Error: FCM_PRIVATE_KEY is missing in .env");
+        return null;
+      }
+
       final client = await auth.clientViaServiceAccount(
-        auth.ServiceAccountCredentials.fromJson(_serviceAccount),
+        auth.ServiceAccountCredentials.fromJson(account),
         ['https://www.googleapis.com/auth/firebase.messaging'],
       );
       return client.credentials.accessToken.data;
@@ -76,7 +94,7 @@ class NotificationService {
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosInit = DarwinInitializationSettings();
     await _localNotifications.initialize(
-      settings: const InitializationSettings(android: androidInit, iOS: iosInit),
+      settings:  InitializationSettings(android: androidInit, iOS: iosInit),
     );
 
     // Create the channel on Android
@@ -174,7 +192,6 @@ class NotificationService {
     String safeCity = city.toLowerCase().trim().replaceAll(' ', '_');
     
     // Simplified targeting to ensure 100% delivery success
-    // We send to everyone in the city, and the app/user filters by blood type visually
     final message = {
       "message": {
         "topic": "city_$safeCity", 
@@ -261,7 +278,7 @@ class NotificationService {
       final accessToken = await _getAccessToken();
       if (accessToken == null) return;
 
-      final projectId = _serviceAccount['project_id'];
+      final projectId = dotenv.env['FCM_PROJECT_ID'];
       debugPrint("🔍 [FCM-DEBUG] Sending Request to Projects V1 API...");
       
       final response = await http.post(
